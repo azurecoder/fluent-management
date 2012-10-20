@@ -1,0 +1,79 @@
+﻿/************************************************************************************************************
+ * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
+ * modify and distribute providing the terms of the license are followed. From the root of the source the   *
+ * license can be found in /Resources/license.txt                                                           * 
+ *                                                                                                          *
+ * Web at: www.elastacloud.com                                                                              *
+ * Email: info@elastacloud.com                                                                              *
+ ************************************************************************************************************/
+
+using System;
+using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+
+namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
+{
+    /// <summary>
+    /// Class used to configure an OS virtual hard disk for the virtual machine - this drive is always c
+    /// </summary>
+    public class OSVirtualHardDisk : VirtualHardDisk, ICustomXmlSerializer
+    {
+        /// <summary>
+        /// The name of the source image used to build the operating system 
+        /// </summary>
+        public string SourceImageName { get; set; }
+
+        #region Implementation of ICustomXmlSerializer
+
+        /// <summary>
+        /// Gets the Xml tree for the custom serialiser
+        /// </summary>
+        /// <returns>An XElement </returns>
+        public override XElement GetXmlTree()
+        {
+            var element = new XElement(Namespaces.NsWindowsAzure + "OSVirtualHardDisk",
+//                                       new XElement(Namespaces.NsWindowsAzure + "HostCaching", HostCaching.ToString()),
+                                       new XElement(Namespaces.NsWindowsAzure + "MediaLink", MediaLink),
+                                       new XElement(Namespaces.NsWindowsAzure + "SourceImageName", SourceImageName)
+                );
+            if (DiskLabel != null)
+                element.Add(new XElement(Namespaces.NsWindowsAzure + "DiskLabel", DiskLabel));
+            if (DiskName != null)
+                element.Add(new XElement(Namespaces.NsWindowsAzure + "DiskName", DiskName));
+            return element;
+        }
+
+        #endregion
+
+        #region Template
+
+        /// <summary>
+        /// This gets the host OS image of Windows Server Data Centre and SQL Server 2012
+        /// </summary>
+        /// <param name="storageAccountName">The path to the media space in blob storage where the host vhd will be placed</param>
+        /// <param name="diskName">The name of the C: drive </param>
+        /// <param name="diskLabel">The drive volume label for C:</param>
+        /// <returns>An OSVirtualHardDisk instance</returns>
+        public static OSVirtualHardDisk GetSqlServerOSImage(string storageAccountName, string diskName = null,
+                                                            string diskLabel = null)
+        {
+            /*<OSVirtualHardDisk>
+                        <MediaLink>http://elastacacheweb.blob.core.windows.net/vhds/elastasql.vhd</MediaLink>
+                        <SourceImageName>MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd</SourceImageName>
+                    </OSVirtualHardDisk>*/
+            var namer = new RandomAccountName();
+            return new OSVirtualHardDisk
+                       {
+                           DiskLabel = diskLabel,
+                           DiskName = diskName,
+                           MediaLink =
+                               String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", storageAccountName,
+                                             namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
+                           SourceImageName = "MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd",
+                           HostCaching = HostCaching.ReadWrite,
+                       };
+        }
+
+        #endregion
+    }
+}
