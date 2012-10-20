@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="HPCAzureService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="2" osVersion="*">
+  <Role name="Frontend">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="" />
+      <Setting name="Microsoft.Hpc.Azure.AzurePortalTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.DiagnosticsConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.NodeMapping" value="nodemappingelastakca78kt2elastakca78kt2bc5cafb3e13545ca144b133f" />
+      <Setting name="Microsoft.Hpc.Azure.DataConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerRole" value="Headnode" />
+      <Setting name="Microsoft.Hpc.Azure.RestServiceFailureActions" value="actions= restart/5000/restart/5000/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.AzureRestServiceTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.ServiceName" value="elastakca78kt2" />
+      <Setting name="Microsoft.Hpc.Azure.ServiceDomain" value="cloudapp.net" />
+      <Setting name="Microsoft.Hpc.Azure.ClusterName" value="elastakca78kt2" />
+      <Setting name="Microsoft.Hpc.Azure.AdminAccount" value="elastacloud" />
+      <Setting name="Microsoft.Hpc.Azure.AdminEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.Hpc.Azure.PasswordCertThumbprint" value="5C014635F5727E2ED5C31FE350F4B77AD203A99B" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshShortInterval" value="5" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshLongInterval" value="30" />
+      <Setting name="Microsoft.Hpc.Azure.HostsFileDistributionTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.SoaRestServiceFailureActions" value="actions= restart/5000/restart/5000/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.SslCertThumbprint" value="5C014635F5727E2ED5C31FE350F4B77AD203A99B" />
+      <Setting name="Microsoft.Hpc.Azure.ModulesEnabled" value="Portal,RestService,SoaRest" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="elastacloud" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-05-12T14:47:40.0000000+01:00" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.Hpc.Azure.Certificate.PasswordEncryptionCert" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+      <Certificate name="Microsoft.Hpc.Azure.Certificate.SSLCert" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+  <Role name="Headnode">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerKey" value="NE4cGMz3MoOClJSnv6CkVsUkbu6OXb5Bobec55DXRak=" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerIV" value="jy5BBtCeP5xWkmEs0yNplw==" />
+      <Setting name="Microsoft.Hpc.Azure.AzureSchedulerTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.DeploymentId" value="7faa0a58-5f5b-4b43-9042-0a440734469b" />
+      <Setting name="Microsoft.Hpc.Azure.RestorationTimeout" value="120" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshInterval" value="30" />
+      <Setting name="Microsoft.Hpc.Azure.NodeRoles" value="Headnode=HpcSmallEmbeddedWorker=Headnode{0}=Worker=False;Computenode=HpcSmallEmbeddedWorker=Computenode{0}=Worker=True" />
+      <Setting name="Microsoft.Hpc.Azure.NodeAutoOnline" value="False" />
+      <Setting name="Microsoft.Hpc.Azure.NamingPattern" value="Headnode{0}" />
+      <Setting name="Microsoft.Hpc.Azure.DataConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.DiagnosticsConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerHeartBeatInterval" value="30000" />
+      <Setting name="Microsoft.Hpc.Azure.AzureNodeManagerTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.AzureFileStagingWorkerTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.AzureNodeCountersTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.NodeMapping" value="nodemappingelastakca78kt2elastakca78kt2bc5cafb3e13545ca144b133f" />
+      <Setting name="Microsoft.Hpc.Azure.Counters" value="counterselastakca78kt2elastakca78kt2bc5cafb3e13545cabc31ca09389" />
+      <Setting name="Microsoft.Hpc.Azure.CollectionInterval" value="10" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerRole" value="Headnode" />
+      <Setting name="Microsoft.Hpc.Azure.NodeFailureActions" value="actions= restart/500/restart/500/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.SessionServiceFailureActions" value="actions= restart/5000/restart/5000/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.BrokerRoles" value="Headnode" />
+      <Setting name="Microsoft.Hpc.Azure.ServiceName" value="elastakca78kt2" />
+      <Setting name="Microsoft.Hpc.Azure.ServiceDomain" value="cloudapp.net" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshShortInterval" value="5" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshLongInterval" value="30" />
+      <Setting name="Microsoft.Hpc.Azure.HostsFileDistributionTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.BrokerServiceFailureActions" value="actions= restart/5000/restart/5000/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.ClusterName" value="elastakca78kt2" />
+      <Setting name="Microsoft.Hpc.Azure.AdminAccount" value="elastacloud" />
+      <Setting name="Microsoft.Hpc.Azure.AdminEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.Hpc.Azure.PasswordCertThumbprint" value="5C014635F5727E2ED5C31FE350F4B77AD203A99B" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerFailureActions" value="actions= restart/15000/restart/15000/reboot/0 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.SqlConnectionString" value="Server=tcp:zxhg5a8bz7.database.windows.net;Database=elastadb;User ID=elastacloud@zxhg5a8bz7;Password=M@c9ju7s7yzk;Trusted_Connection=False;Encrypt=True;trustServerCertificate=true; " />
+      <Setting name="Microsoft.Hpc.Azure.ModulesEnabled" value="Scheduler,Node,Session,DSCService,Broker" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="elastacloud" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-05-12T14:47:40.0000000+01:00" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.Hpc.Azure.Certificate.PasswordEncryptionCert" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+  <Role name="Computenode">
+    <Instances count="4" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="" />
+      <Setting name="Microsoft.Hpc.Azure.NodeAutoOnline" value="True" />
+      <Setting name="Microsoft.Hpc.Azure.NamingPattern" value="Computenode{0}" />
+      <Setting name="Microsoft.Hpc.Azure.DataConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.DiagnosticsConnectionString" value="BlobEndpoint=https://elastakca78kt2.blob.core.windows.net;QueueEndpoint=https://elastakca78kt2.queue.core.windows.net;TableEndpoint=https://elastakca78kt2.table.core.windows.net;AccountName=elastakca78kt2;AccountKey=SWUbDh9PER7jo6tmiWTn+I0VPS77a6NyqhDWWq4k+fvWBw+LND1r40yU4iLPpfJ+zubhmOExydOanJ7iHx9VSw==" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerHeartBeatInterval" value="30000" />
+      <Setting name="Microsoft.Hpc.Azure.AzureNodeManagerTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.AzureFileStagingWorkerTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.AzureNodeCountersTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.NodeMapping" value="nodemappingelastakca78kt2elastakca78kt2bc5cafb3e13545ca144b133f" />
+      <Setting name="Microsoft.Hpc.Azure.Counters" value="counterselastakca78kt2elastakca78kt2bc5cafb3e13545cabc31ca09389" />
+      <Setting name="Microsoft.Hpc.Azure.CollectionInterval" value="10" />
+      <Setting name="Microsoft.Hpc.Azure.ServiceDomain" value="cloudapp.net" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshShortInterval" value="5" />
+      <Setting name="Microsoft.Hpc.Azure.HostsRefreshLongInterval" value="30" />
+      <Setting name="Microsoft.Hpc.Azure.SchedulerRole" value="Headnode" />
+      <Setting name="Microsoft.Hpc.Azure.NodeFailureActions" value="actions= restart/500/restart/500/restart/5000 reset= 1800" />
+      <Setting name="Microsoft.Hpc.Azure.HostsFileDistributionTracing" value="Warning" />
+      <Setting name="Microsoft.Hpc.Azure.ClusterName" value="elastakca78kt2" />
+      <Setting name="Microsoft.Hpc.Azure.AdminAccount" value="elastacloud" />
+      <Setting name="Microsoft.Hpc.Azure.AdminEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.Hpc.Azure.PasswordCertThumbprint" value="5C014635F5727E2ED5C31FE350F4B77AD203A99B" />
+      <Setting name="Microsoft.Hpc.Azure.ModulesEnabled" value="Node,DSCNode" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="elastacloud" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBpQYJKoZIhvcNAQcDoIIBljCCAZICAQAxggFWMIIBUgIBADA6MCYxJDAiBgNVBAMMG2VsYXN0YWtjYTc4a3QyLmNsb3VkYXBwLm5ldAIQAJlsdhbT2gz44Ozhgd3hdTANBgkqhkiG9w0BAQEFAASCAQCDS7QPu/Nj7NLWMgXf8AwJiqFL3dGI1kaGP84pO0V4exEp5PTwsdSSwtGDnWDO4t6TbS6Tdg3laQ2vpnPhJbmv4JNjqX3QggO05RAWsld/sXi9wNCmGkCMMkv8W1KizrTUO2WAwqrqTF2GzbUky1xgJaDrT2iFybEtapBCo+sunFNjlOJ0BRbXhXbHOlAQIKwgmGHJTQ4WAuCjO+6AN0WDxPz1UsHdV86LVmN/2q5Bwlqqt3r7rF21KtiFG2jJDJKga5xeJEA74dnMV0tnMUbMquoJeUhq2efMVwTsu1dn4iDu4FTIH8WjPr9rj6BWlmRjQnHjhlAS1kWhdVNt+rjiMDMGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIS3OdNHfGvHOAELT+44VcLMzsXtjBY6xKYi4=" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2013-05-12T14:47:40.0000000+01:00" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.Hpc.Azure.Certificate.PasswordEncryptionCert" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="5C014635F5727E2ED5C31FE350F4B77AD203A99B" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

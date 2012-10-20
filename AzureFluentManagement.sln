@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent", "Elastacloud.AzureManagement.Fluent\Elastacloud.AzureManagement.Fluent.csproj", "{6119D185-70B4-4137-97ED-876A30E0850B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Tests", "Elastacloud.AzureManagement.Fluent.Tests\Elastacloud.AzureManagement.Fluent.Tests.csproj", "{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{6119D185-70B4-4137-97ED-876A30E0850B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6119D185-70B4-4137-97ED-876A30E0850B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6119D185-70B4-4137-97ED-876A30E0850B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
