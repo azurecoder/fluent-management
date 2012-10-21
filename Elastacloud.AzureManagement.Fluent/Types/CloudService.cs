@@ -7,42 +7,44 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
-using System.Net;
-using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
-using Elastacloud.AzureManagement.Fluent.Types;
 
-namespace Elastacloud.AzureManagement.Fluent.Commands.Services
+namespace Elastacloud.AzureManagement.Fluent.Types
 {
     /// <summary>
-    /// Used to return a list of hosted services to the client 
+    /// Contains the hosted service details 
     /// </summary>
-    internal class GetHostedServiceListCommand : ServiceCommand
+    public class CloudService
     {
         /// <summary>
-        /// Constructs a GetHostedServiceList command
+        /// The name of the hosted service
         /// </summary>
-        internal GetHostedServiceListCommand()
-        {
-            AdditionalHeaders["x-ms-version"] = "2012-03-01";
-            OperationId = "hostedservices";
-            ServiceType = "services";
-            HttpVerb = HttpVerbGet;
-        }
-
+        public string Name { get; set; }
         /// <summary>
-        /// A list of hosted services that live in the subscription
+        /// The hosted service url *.cloudapp.net
         /// </summary>
-        internal List<CloudService> HostedServices { get; set; }
-
+        public string Url { get; set; }
         /// <summary>
-        /// The response with already parsed xml
+        /// Where the cloud service is located
         /// </summary>
-        /// <param name="webResponse">The HttpWebResponse</param>
-        protected override void ResponseCallback(HttpWebResponse webResponse)
-        {
-            HostedServices = Parse(webResponse, BaseParser.GetHostedServiceListParser);
-            SitAndWait.Set();
-        }
+        public string LocationOrAffinityGroup { get; set; }
+        /// <summary>
+        /// The date that the cloud service was created
+        /// </summary>
+        public DateTime Created { get; set; }
+        /// <summary>
+        /// The date that the cloud service was modified
+        /// </summary>
+        public DateTime Modified { get; set; }
+        /// <summary>
+        /// The status of the cloud service e.g. Created, Creating etc.
+        /// </summary>
+        public CloudServiceStatus Status { get; set; }
+        /// <summary>
+        /// The list of deployments the cloud service contains
+        /// </summary>
+        public List<Deployment> Deployments { get; set; }
+
     }
 }

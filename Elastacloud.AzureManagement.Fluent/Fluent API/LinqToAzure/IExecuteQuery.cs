@@ -1,4 +1,4 @@
-﻿/************************************************************************************************************
+/************************************************************************************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -6,22 +6,27 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
+using System;
+using System.Linq;
+using Elastacloud.AzureManagement.Fluent.Linq;
 
-namespace Elastacloud.AzureManagement.Fluent.Types
+namespace Elastacloud.AzureManagement.Fluent.LinqToAzure
 {
     /// <summary>
-    /// Contains the hosted service details 
+    /// Used to determine where to send the queries relating to which azure service based on type
     /// </summary>
-    public class HostedService
+    public interface IExecuteQuery
     {
         /// <summary>
-        /// The name of the hosted service
+        /// Executes the query performing the underlying operation
         /// </summary>
-        public string Name { get; set; }
-
+        /// <typeparam name="T">The type used to define the query - CloudService or StorageAccount</typeparam>
+        /// <param name="inputs">The Authentication inputs needed to fulfil the operation</param>
+        /// <returns>An IQueryable interface</returns>
+        IQueryable<T> Execute<T>(LinqToAzureInputs inputs);
         /// <summary>
-        /// The hosted service url *.cloudapp.net
+        /// Returns a valid type based on what should be executed in this context
         /// </summary>
-        public string Url { get; set; }
+        Type GetValidType();
     }
 }

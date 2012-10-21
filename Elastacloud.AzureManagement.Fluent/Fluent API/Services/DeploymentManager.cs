@@ -410,8 +410,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Gets a list of hosted services within a particualr subscription
         /// </summary>
-        /// <returns>A List<HostedService> collection</HostedService></returns>
-        List<HostedService> IHostedServiceActivity.GetHostedServiceList()
+        /// <returns>A List<CloudService> collection</CloudService></returns>
+        List<CloudService> IHostedServiceActivity.GetHostedServiceList()
         {
             // build the hosted service list command here
             var command = new GetHostedServiceListCommand
@@ -421,6 +421,25 @@ namespace Elastacloud.AzureManagement.Fluent.Services
                               };
             command.Execute();
             return command.HostedServices;
+        }
+
+        /// <summary>
+        /// Gets a list of cloud services with their attached deployments
+        /// </summary>
+        List<CloudService> IHostedServiceActivity.GetCloudServiceListWithDeployments()
+        {
+            var cloudServices = ((IHostedServiceActivity) this).GetHostedServiceList();
+            foreach (var cloudService in cloudServices)
+            {
+                var command = new GetHostedServicePropertiesCommand(cloudService.Name)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                cloudService.Deployments = command.CloudServiceDeployments;
+            }
+            return cloudServices;
         }
 
         /// <summary>
@@ -461,10 +480,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Gets a list of hosted services that contain production deployments for the subscription
         /// </summary>
         /// <returns>A list of hosted services</returns>
-        List<HostedService> IHostedServiceActivity.GetHostedServiceListContainingProductionDeployments()
+        List<CloudService> IHostedServiceActivity.GetHostedServiceListContainingProductionDeployments()
         {
             // create a new service list 
-            var services = new List<HostedService>();
+            var services = new List<CloudService>();
             // build the hosted service list command here
             var command = new GetHostedServiceListCommand
             {

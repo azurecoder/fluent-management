@@ -17,23 +17,24 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
     /// <summary>
     /// Used to return a list of hosted services to the client 
     /// </summary>
-    internal class GetHostedServiceListCommand : ServiceCommand
+    internal class GetHostedServicePropertiesCommand : ServiceCommand
     {
         /// <summary>
         /// Constructs a GetHostedServiceList command
         /// </summary>
-        internal GetHostedServiceListCommand()
+        internal GetHostedServicePropertiesCommand(string serviceName)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
             ServiceType = "services";
             HttpVerb = HttpVerbGet;
+            HttpCommand = serviceName + "?embed-detail=true";
         }
 
         /// <summary>
         /// A list of hosted services that live in the subscription
         /// </summary>
-        internal List<CloudService> HostedServices { get; set; }
+        internal List<Deployment> CloudServiceDeployments { get; set; }
 
         /// <summary>
         /// The response with already parsed xml
@@ -41,7 +42,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// <param name="webResponse">The HttpWebResponse</param>
         protected override void ResponseCallback(HttpWebResponse webResponse)
         {
-            HostedServices = Parse(webResponse, BaseParser.GetHostedServiceListParser);
+            CloudServiceDeployments = Parse(webResponse, BaseParser.GetCloudServicePropertiesParser);
             SitAndWait.Set();
         }
     }

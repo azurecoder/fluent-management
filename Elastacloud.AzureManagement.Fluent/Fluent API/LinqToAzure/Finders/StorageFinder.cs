@@ -1,3 +1,11 @@
+/************************************************************************************************************
+ * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
+ * modify and distribute providing the terms of the license are followed. From the root of the source the   *
+ * license can be found in /Resources/license.txt                                                           * 
+ *                                                                                                          *
+ * Web at: www.elastacloud.com                                                                              *
+ * Email: info@elastacloud.com                                                                              *
+ ************************************************************************************************************/
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Elastacloud.AzureManagement.Fluent.Types;
@@ -21,7 +29,8 @@ namespace Elastacloud.AzureManagement.Fluent.Linq
                 if (_storageAccounts == null)
                 {
                     _storageAccounts = new List<string>();
-                    this.Visit(this._expression);
+                    if(_expression != null)
+                        this.Visit(this._expression);
                 }
                 return this._storageAccounts;
             }

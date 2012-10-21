@@ -78,7 +78,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                                      new GetSubscriptionParser(document),
                                      new GetSubscriberLocationsParser(document),
                                      new GetAggregateDeploymentStatusParser(document),
-                                     new GetRoleStatusParser(document)
+                                     new GetRoleStatusParser(document),
+                                     new GetHostedServicePropertiesParser(document)
                                  };
             foreach (BaseParser baseParser in parserList)
             {
@@ -136,6 +137,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The element for the GetDeploymentConfigurationParser response
         /// </summary>
         public const string GetDeploymentConfigurationParser = "Deployment";
+        /// <summary>
+        /// Used to get the cloud service properties
+        /// </summary>
+        public const string GetCloudServicePropertiesParser = "HostedService";
         /// <summary>
         /// The schema for the Sql azure manmagement request
         /// </summary>

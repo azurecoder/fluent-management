@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Types;
@@ -18,7 +19,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         public GetHostedServiceListParser(XDocument response)
             : base(response)
         {
-            CommandResponse = new List<HostedService>();
+            CommandResponse = new List<CloudService>();
         }
 
         internal override void Parse()
@@ -27,11 +28,19 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 .Elements(GetSchema() + "HostedService");
             foreach (XElement hostedService in rootElements)
             {
-                var service = new HostedService
+                var service = new CloudService
                                   {
                                       Name = (string) hostedService.Element(GetSchema() + "ServiceName"),
-                                      Url = (string) hostedService.Element(GetSchema() + "Url")
+                                      Url = (string) hostedService.Element(GetSchema() + "Url"),
+                                      Created = DateTime.Parse(hostedService.Element(GetSchema() + "HostedServiceProperties").Element(GetSchema() + "DateCreated").Value),
+                                      Modified = DateTime.Parse(hostedService.Element(GetSchema() + "HostedServiceProperties").Element(GetSchema() + "DateLastModified").Value),
+                                      Status = (CloudServiceStatus)Enum.Parse(typeof(CloudServiceStatus), hostedService.Element(GetSchema() + "HostedServiceProperties").Element(GetSchema() + "Status").Value),
+                                      Deployments = new List<Deployment>()
                                   };
+                // if the cloud service has an affinity group then the location will not be returned 
+                service.LocationOrAffinityGroup = (string)hostedService.Element(GetSchema() + "HostedServiceProperties").Element(GetSchema() + "Location") 
+                    ?? (string)hostedService.Element(GetSchema() + "HostedServiceProperties").Element(GetSchema() + "AffinityGroup"); 
+                
                 CommandResponse.Add(service);
             }
         }

@@ -35,8 +35,12 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Used to list of the hosted services in a subscription
         /// </summary>
         /// <returns>A List<HostedServices> containing all of the cloud services in a subscription</HostedServices></returns>
-        List<HostedService> GetHostedServiceList();
+        List<CloudService> GetHostedServiceList();
 
+        /// <summary>
+        /// Gets a list of cloud services with their attached deployments
+        /// </summary>
+        List<CloudService> GetCloudServiceListWithDeployments();
         /// <summary>
         /// Gets a list of role names for a particular hosted service in the production slot
         /// </summary>
@@ -53,7 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Gets a list of hosted services that contain production deployments for the subscription
         /// </summary>
         /// <returns>A list of hosted services</returns>
-        List<HostedService> GetHostedServiceListContainingProductionDeployments(); 
+        List<CloudService> GetHostedServiceListContainingProductionDeployments(); 
 
         /// <summary>
         /// Deletes an existing hosted service and any deployments associated with it 

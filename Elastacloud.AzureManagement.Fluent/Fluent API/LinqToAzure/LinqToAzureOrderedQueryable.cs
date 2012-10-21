@@ -1,12 +1,21 @@
-﻿using System;
+﻿/************************************************************************************************************
+ * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
+ * modify and distribute providing the terms of the license are followed. From the root of the source the   *
+ * license can be found in /Resources/license.txt                                                           * 
+ *                                                                                                          *
+ * Web at: www.elastacloud.com                                                                              *
+ * Email: info@elastacloud.com                                                                              *
+ ************************************************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Linq
 {
-    public class LinqToAzureOrderedQueryable<TData> : IOrderedQueryable<TData>
+    public class LinqToAzureOrderedQueryable<TData> : IOrderedQueryable<TData> 
     {
 
         #region Constructors

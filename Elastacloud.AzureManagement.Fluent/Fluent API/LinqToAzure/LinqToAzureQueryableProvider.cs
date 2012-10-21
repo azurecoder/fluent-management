@@ -1,6 +1,16 @@
+/************************************************************************************************************
+ * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
+ * modify and distribute providing the terms of the license are followed. From the root of the source the   *
+ * license can be found in /Resources/license.txt                                                           * 
+ *                                                                                                          *
+ * Web at: www.elastacloud.com                                                                              *
+ * Email: info@elastacloud.com                                                                              *
+ ************************************************************************************************************/
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Linq
 {
@@ -42,7 +52,7 @@ namespace Elastacloud.AzureManagement.Fluent.Linq
         /// An <see cref="T:System.Linq.IQueryable`1"/> that can evaluate the query represented by the specified expression tree.
         /// </returns>
         /// <param name="expression">An expression tree that represents a LINQ query.</param><typeparam name="TElement">The type of the elements of the <see cref="T:System.Linq.IQueryable`1"/> that is returned.</typeparam>
-        public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
+        public IQueryable<TElement> CreateQuery<TElement>(Expression expression) 
         {
             return new LinqToAzureOrderedQueryable<TElement>(this, expression);
         }
@@ -69,6 +79,7 @@ namespace Elastacloud.AzureManagement.Fluent.Linq
         public TResult Execute<TResult>(Expression expression)
         {
             bool isEnumerable = (typeof(TResult).Name == "IEnumerable`1");
+            Debug.WriteLine(typeof (TResult).Name);
 
             return (TResult)LinqToAzureQueryContext.Execute(expression, isEnumerable, SubscriptionInformation);
 

@@ -12,6 +12,7 @@ using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Deployment = Elastacloud.AzureManagement.Fluent.Types.VirtualMachines.Deployment;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
 {
