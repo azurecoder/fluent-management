@@ -81,6 +81,7 @@
     <Compile Include="Commands\Parsers\ListStorageAccountsParser.cs" />
     <Compile Include="Commands\Parsers\GetHostedServiceListParser.cs" />
     <Compile Include="Commands\Service Bus\GetManagementTokenCommand.cs" />
+    <Compile Include="Commands\Services\UpdateRoleStatusCommand.cs" />
     <Compile Include="Commands\Services\GetHostedServicePropertiesCommand.cs" />
     <Compile Include="Commands\Services\GetHostedServiceContainsDeploymentCommand.cs" />
     <Compile Include="Commands\Services\GetDeploymentConfigurationCommand.cs" />
@@ -122,10 +123,13 @@
     <Compile Include="Fluent API\LinqToAzure\Executors\StorageExecutor.cs" />
     <Compile Include="Fluent API\LinqToAzure\Finders\StorageFinder.cs" />
     <Compile Include="Fluent API\LinqToAzure\TypeSystem.cs" />
+    <Compile Include="Fluent API\Roles\IRoleOperation.cs" />
+    <Compile Include="Fluent API\Roles\RoleContextManager.cs" />
     <Compile Include="Fluent API\Virtual Machines\Classes\VirtualMachineProperties.cs" />
     <Compile Include="Helpers\OPC\PackageFile.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\Deployment.cs" />
+    <Compile Include="Types\UpdateDeploymentStatus.cs" />
     <Compile Include="Types\Virtual Machines\VirtualMachineTemplates.cs" />
     <Compile Include="Fluent API\AzureManager.cs" />
     <Compile Include="Fluent API\IServiceTransaction.cs" />
