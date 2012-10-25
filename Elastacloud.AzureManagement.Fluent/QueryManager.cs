@@ -10,6 +10,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -17,16 +18,60 @@ using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent
 {
-    /// <summary>
-    /// This class is used to build queries and parse XML responses from the Management API 
-    /// </summary>
-    public static class QueryManager
+    internal interface IQueryManager
     {
+        void SetHttpRequestBuilder(QueryManager.IHttpRequestBuilder builder);
+        QueryManager.IHttpRequestBuilder Builder { get; set; }
+
         /// <summary>
         /// This method makes a callback to an AsyncResponseParser and takes a service management request and certificate and sends a request to 
         /// the management endpoint
         /// </summary>
-        public static Task<WebResponse> MakeASyncRequest(ServiceManagementRequest serviceManagementRequest, ServiceManager.AsyncResponseParser parser, ServiceManager.AsyncResponseException error)
+        Task<WebResponse> MakeASyncRequest(ServiceManagementRequest serviceManagementRequest, ServiceManager.AsyncResponseParser parser, ServiceManager.AsyncResponseException error);
+
+        void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest,
+                                              ServiceManager.AsyncResponseParser parser);
+    }
+
+    /// <summary>
+    /// This class is used to build queries and parse XML responses from the Management API 
+    /// </summary>
+    internal class QueryManager : IQueryManager
+    {
+        private IHttpRequestBuilder _builder;
+
+        public void SetHttpRequestBuilder(IHttpRequestBuilder builder)
+        {
+            Builder = builder;
+        }
+
+        public interface IHttpRequestBuilder
+        {
+            void SetUri(Uri requestUri);
+            void AddCertificate(X509Certificate certificate);
+            void AddHeader(string key, string value);
+            void SetMethod(string method);
+            void SetContentType(string contentType);
+            void SetBody(string body);
+            HttpWebRequest Create();
+        }
+
+        public IHttpRequestBuilder Builder
+        {
+            get
+            {
+                if (_builder == null)
+                    return new BasicHttpRequestBuilder();
+                return _builder;
+            }
+            set { _builder = value; }
+        }
+
+        /// <summary>
+        /// This method makes a callback to an AsyncResponseParser and takes a service management request and certificate and sends a request to 
+        /// the management endpoint
+        /// </summary>
+        public Task<WebResponse> MakeASyncRequest(ServiceManagementRequest serviceManagementRequest, ServiceManager.AsyncResponseParser parser, ServiceManager.AsyncResponseException error)
         {
             if (ServicePointManager.ServerCertificateValidationCallback == null)
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
@@ -59,7 +104,7 @@ namespace Elastacloud.AzureManagement.Fluent
             //                        }, null);
         }
 
-        public static void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest,
+        public void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest,
                                             ServiceManager.AsyncResponseParser parser)
         {
             MakeASyncRequest(serviceManagementRequest, parser, null);
@@ -79,7 +124,7 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <summary>
         /// Builds an Azure request which is then sent to the Management Portal 
         /// </summary>
-        private static HttpWebRequest BuildAzureHttpRequest(ServiceManagementRequest serviceManagementRequest)
+        private HttpWebRequest BuildAzureHttpRequest(ServiceManagementRequest serviceManagementRequest)
         {
             string optionalData = serviceManagementRequest.OptionalData != null ? "/" + serviceManagementRequest.OptionalData
                                       : String.Empty;
@@ -89,28 +134,18 @@ namespace Elastacloud.AzureManagement.Fluent
             string requestUriString = String.Format("{0}/{1}", serviceManagementRequest.BaseUri, serviceManagementRequest.SubscriptionId);
             var requestUri = new Uri(requestUriString + serviceType + operationId + optionalData);
 
-            var request = (HttpWebRequest) WebRequest.Create(requestUri);
+            //var request = (HttpWebRequest) WebRequest.Create(requestUri);
             if (serviceManagementRequest.Certificate == null && !serviceManagementRequest.RequestWithoutCertificate)
                 throw new ApplicationException("unable to send management request without valid certificate");
             if (serviceManagementRequest.Certificate != null)
-                request.ClientCertificates.Add(serviceManagementRequest.Certificate);
+                _builder.AddCertificate(serviceManagementRequest.Certificate);//request.ClientCertificates.Add(serviceManagementRequest.Certificate);
             foreach (var item in serviceManagementRequest.AdditionalHeaders)
-                request.Headers.Add(item.Key, item.Value);
-            request.Method = serviceManagementRequest.HttpVerb ?? "GET";
-            request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
-            request.ContentLength = 0;
+                _builder.AddHeader(item.Key, item.Value);//request.Headers.Add(item.Key, item.Value);
+            _builder.SetMethod(serviceManagementRequest.HttpVerb ?? "GET");//request.Method = serviceManagementRequest.HttpVerb ?? "GET";
+            _builder.SetContentType(serviceManagementRequest.ContentType ?? "application/xml");//request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
+            _builder.SetBody(serviceManagementRequest.Body);
 
-            if (serviceManagementRequest.Body != null)
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(serviceManagementRequest.Body);
-                request.ContentLength = bytes.Length;
-                using (Stream stream = request.GetRequestStream())
-                {
-                    stream.Write(bytes, 0, bytes.Length);
-                }
-            }
-
-            return request;
+            return _builder.Create();
         }
 
         #endregion

@@ -25,6 +25,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         #region private members
 
         private string _httpVerb = "POST";
+        private static IQueryManager _queryManager;
 
         #endregion
 
@@ -150,6 +151,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 
         #endregion
 
+        /// <summary>
+        /// Do not remove - only set for Unit testing to inject a mock without requiring ctor changes to commands
+        /// </summary>
+        internal static IQueryManager CurrentQueryManager
+        {
+            get
+            {
+                if (_queryManager==null)
+                    return new QueryManager();
+
+                return _queryManager;
+            }
+            set { _queryManager = value; }
+        }
+
         protected ServiceCommand()
         {
             SitAndWait = new ManualResetEvent(false);
@@ -180,7 +196,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                    RequestWithoutCertificate =
                                                        !(UseCertificate.HasValue && UseCertificate.Value)
                                                };
-            QueryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
+            _queryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
             // wait for up to 30 minutes - if a deployment takes longer than that ... it's probably HPC!
             SitAndWait.WaitOne(200000);
         }
