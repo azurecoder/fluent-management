@@ -9,6 +9,7 @@
 
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Roles;
 using Elastacloud.AzureManagement.Fluent.Services;
 using Elastacloud.AzureManagement.Fluent.SqlAzure;
 using Elastacloud.AzureManagement.Fluent.Storage;
@@ -95,6 +96,19 @@ namespace Elastacloud.AzureManagement.Fluent
         {
             X509Certificate2 certificate = PublishSettingsExtractor.FromStore(certificateThumbprint);
             return new RoleStatusWatcher(serviceName, roleName, slot, certificate, _subscriptionId);
+        }
+
+        /// <summary>
+        /// Added the deployment 
+        /// </summary>
+        /// <param name="certificateThumbprint">The thumbprint of the certificate being used to update the deployment status</param>
+        /// <param name="serviceName">The name of the cloud service</param>
+        /// <param name="slot">The deployment slot</param>
+        /// <returns>A RoleContextManager class instance</returns>
+        public RoleContextManager GetRoleContextManager(string certificateThumbprint, string serviceName, DeploymentSlot slot)
+        {
+            X509Certificate2 certificate = PublishSettingsExtractor.FromStore(certificateThumbprint);
+            return new RoleContextManager(_subscriptionId, certificate, serviceName, slot);
         }
     }
 }

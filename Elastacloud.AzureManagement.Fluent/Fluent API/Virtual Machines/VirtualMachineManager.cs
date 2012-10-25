@@ -20,7 +20,7 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines
     /// </summary>
     public class VirtualMachineManager : ICertificateActivity, IVirtualMachineActivity, IVirtualMachineQuery, IVirtualMachineDeployment
     {
-        public VirtualMachineManager(string subscriptionId)
+        internal VirtualMachineManager(string subscriptionId)
         {
             Properties = new VirtualMachineProperties {SubscriptionId = subscriptionId};
         }

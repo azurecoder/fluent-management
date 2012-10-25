@@ -46,7 +46,12 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
+<<<<<<< HEAD
 [assembly: AssemblyVersion("0.4.1.16")]
 [assembly: AssemblyFileVersion("0.4.1.16")]
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
+=======
+[assembly: AssemblyVersion("0.4.1.20")]
+[assembly: AssemblyFileVersion("0.4.1.20")]
+>>>>>>> 7b98b0201d8456c4a8e781b7853a549bf3ace1d7
