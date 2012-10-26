@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -46,7 +47,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
+// Make internal interfaces visible to Moq and the testing library
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2"), InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
 [assembly: AssemblyVersion("0.4.1.20")]
 [assembly: AssemblyFileVersion("0.4.1.20")]
