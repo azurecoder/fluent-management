@@ -18,7 +18,7 @@ using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent
 {
-    internal interface IQueryManager
+    public interface IQueryManager
     {
         void SetHttpRequestBuilder(QueryManager.IHttpRequestBuilder builder);
         QueryManager.IHttpRequestBuilder Builder { get; set; }
@@ -36,8 +36,12 @@ namespace Elastacloud.AzureManagement.Fluent
     /// <summary>
     /// This class is used to build queries and parse XML responses from the Management API 
     /// </summary>
-    internal class QueryManager : IQueryManager
+    public class QueryManager : IQueryManager
     {
+        internal QueryManager()
+        {
+        }
+
         private IHttpRequestBuilder _builder;
 
         public void SetHttpRequestBuilder(IHttpRequestBuilder builder)
@@ -93,19 +97,9 @@ namespace Elastacloud.AzureManagement.Fluent
                                       parser(response);
                                       return response;
                                   });
-            //IAsyncResult result = request.BeginGetResponse((asyncResult) =>
-            //                        {
-            //                            try
-            //                            {
-            //                                var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
-            //                                parser(response);
-            //                            }
-            //                            catch (WebException ex) { error(ex);}
-            //                        }, null);
         }
 
-        public void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest,
-                                            ServiceManager.AsyncResponseParser parser)
+        public void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest, ServiceManager.AsyncResponseParser parser)
         {
             MakeASyncRequest(serviceManagementRequest, parser, null);
         }

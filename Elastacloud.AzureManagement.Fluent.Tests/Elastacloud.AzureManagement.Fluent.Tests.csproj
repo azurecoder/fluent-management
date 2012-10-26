@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HttpStandard\ServiceBus\GetManagementTokenCommandTest.cs" />
+    <Compile Include="HttpStandard\Services\CreateDeploymentCommandTest.cs" />
+    <Compile Include="HttpStandard\XmlTestHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

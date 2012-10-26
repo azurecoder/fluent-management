@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
@@ -225,6 +226,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             BaseParser parser = BaseParser.GetInstance(response, root, baseParser);
             parser.Parse();
             return parser.CommandResponse;
+        }
+
+        /// <summary>
+        /// Gets the Uri as per the request to Windows Azure
+        /// </summary>
+        public Uri RequestUri
+        {
+            get
+            {
+                string optionalData = HttpCommand != null ? "/" + HttpCommand : String.Empty;
+                string operationId = OperationId == null ? "" : "/" + OperationId;
+                string serviceType = ServiceType == null ? "" : "/" + ServiceType;
+                string requestUriString = String.Format("{0}/{1}", BaseUri, SubscriptionId);
+                return new Uri(requestUriString + serviceType + operationId + optionalData);
+            }
         }
     }
 }
