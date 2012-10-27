@@ -27,6 +27,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 
         private string _httpVerb = "POST";
         private static IQueryManager _queryManager;
+        private string _subscriptionId;
 
         #endregion
 
@@ -127,7 +128,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         internal string HttpCommand { get; set; }
         internal string ServiceType { get; set; }
         internal string OperationId { get; set; }
-        internal string SubscriptionId { get; set; }
+
+        internal string SubscriptionId { get { return _subscriptionId; }
+            set
+            {
+                Guid guid;
+                bool isGuid = Guid.TryParse(value, out guid);
+                if (!isGuid)
+                    throw new ArgumentException("the subscription id has been provided in the wrong format");
+                _subscriptionId = value;
+            }
+        }
         internal X509Certificate2 Certificate { get; set; }
         internal string MsftAsyncResponseId { get; set; }
         internal ManualResetEvent SitAndWait { get; set; }

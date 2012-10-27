@@ -116,14 +116,14 @@ namespace Elastacloud.AzureManagement.Fluent.Tests.HttpStandard.Services
         public void CreateDeploymentCommand_Contains_Correct_Uri()
         {
             string commandUri =
-                "https://management.core.windows.net/tim/services/hostedservices/bob/deploymentslots/production";
+                "https://management.core.windows.net/aaaaaaaa-8130-49d7-95f9-aaaaaaaaaaaa/services/hostedservices/bob/deploymentslots/production";
             _mockQueryManager.Setup(
                 t =>
                 t.MakeASyncRequest(It.IsAny<ServiceManagementRequest>(), It.IsAny<ServiceManager.AsyncResponseParser>(),
                                    It.IsAny<ServiceManager.AsyncResponseException>()));
             var command = new CreateDeploymentCommand("bob", "bill", "mypackage", "config", DeploymentSlot.Production)
                 {
-                    SubscriptionId = "tim"
+                    SubscriptionId = "aaaaaaaa-8130-49d7-95f9-aaaaaaaaaaaa"
                 };
 
 
