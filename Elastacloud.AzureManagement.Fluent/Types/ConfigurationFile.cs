@@ -113,5 +113,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types
                 writer.Write(versionToPersist.ToStringFullXmlDeclaration());
             }
         }
+
+        public override string ToString()
+        {
+            return OriginalVersion.ToStringFullXmlDeclaration();
+        }
     }
 }

@@ -208,7 +208,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                    RequestWithoutCertificate =
                                                        !(UseCertificate.HasValue && UseCertificate.Value)
                                                };
-            _queryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
+            CurrentQueryManager = CurrentQueryManager ?? new QueryManager();
+            CurrentQueryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
             // wait for up to 30 minutes - if a deployment takes longer than that ... it's probably HPC!
             SitAndWait.WaitOne(200000);
         }

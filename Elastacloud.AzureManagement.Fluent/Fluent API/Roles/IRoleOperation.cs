@@ -18,5 +18,11 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
         /// Used to stop a role
         /// </summary>
         void Stop();
+        /// <summary>
+        /// Used to update the number of instances for an existing role
+        /// </summary>
+        /// <param name="roleName">The name of the role</param>
+        /// <param name="instanceCount">the number of instances to increment or decrement to</param>
+        void UpdateInstanceCountForRole(string roleName, int instanceCount);
     }
 }

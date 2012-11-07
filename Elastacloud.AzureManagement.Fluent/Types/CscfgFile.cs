@@ -138,14 +138,34 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// </summary>
         public int GetInstanceCountForRole(string roleName)
         {
-            XElement role =
-                OriginalVersion.Descendants(Namespaces.NsServiceManagement + "Role").FirstOrDefault(
-                    a => (string) a.Attribute("name") == roleName);
-            // updates the instance count number here
-            return int.Parse(role.Elements(Namespaces.NsServiceManagement + "Instances")
-                                 .FirstOrDefault()
-                                 .Attribute("count")
-                                 .Value);
+            var elementForRole = GetInstanceCountElementForRole(roleName);
+            return int.Parse(elementForRole.Attribute("count").Value);
         }
+
+        /// <summary>
+        /// Sets an instance count attribute value for a particular role
+        /// </summary>
+        /// <param name="roleName">the name of the role</param>
+        /// <param name="instanceCount">the number of instance of the role</param>
+        public void SetInstanceCountForRole(string roleName, int instanceCount)
+        {
+            var elementForRole = GetInstanceCountElementForRole(roleName);
+            elementForRole.SetAttributeValue("count", instanceCount);
+        }
+
+        /// <summary>
+        /// Gets the instance count for the role
+        /// </summary>
+        /// <param name="roleName">The name of the role</param>
+        /// <returns>An XElement instance of the instance count element</returns>
+        private XElement GetInstanceCountElementForRole(string roleName)
+        {
+            XElement role = OriginalVersion.Descendants(Namespaces.NsServiceManagement + "Role")
+               .FirstOrDefault(a => (string)a.Attribute("name") == roleName);
+            // updates the instance count number here
+            return role.Elements(Namespaces.NsServiceManagement + "Instances")
+                .FirstOrDefault();
+        }
+
     }
 }

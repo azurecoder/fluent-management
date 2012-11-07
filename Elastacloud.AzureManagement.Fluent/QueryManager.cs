@@ -65,7 +65,7 @@ namespace Elastacloud.AzureManagement.Fluent
             get
             {
                 if (_builder == null)
-                    return new BasicHttpRequestBuilder();
+                    _builder = new BasicHttpRequestBuilder();
                 return _builder;
             }
             set { _builder = value; }
@@ -127,19 +127,19 @@ namespace Elastacloud.AzureManagement.Fluent
                                      : "/" + serviceManagementRequest.ServiceType;
             string requestUriString = String.Format("{0}/{1}", serviceManagementRequest.BaseUri, serviceManagementRequest.SubscriptionId);
             var requestUri = new Uri(requestUriString + serviceType + operationId + optionalData);
-
+            Builder.SetUri(requestUri);
             //var request = (HttpWebRequest) WebRequest.Create(requestUri);
             if (serviceManagementRequest.Certificate == null && !serviceManagementRequest.RequestWithoutCertificate)
                 throw new ApplicationException("unable to send management request without valid certificate");
             if (serviceManagementRequest.Certificate != null)
-                _builder.AddCertificate(serviceManagementRequest.Certificate);//request.ClientCertificates.Add(serviceManagementRequest.Certificate);
+                Builder.AddCertificate(serviceManagementRequest.Certificate);//request.ClientCertificates.Add(serviceManagementRequest.Certificate);
             foreach (var item in serviceManagementRequest.AdditionalHeaders)
-                _builder.AddHeader(item.Key, item.Value);//request.Headers.Add(item.Key, item.Value);
-            _builder.SetMethod(serviceManagementRequest.HttpVerb ?? "GET");//request.Method = serviceManagementRequest.HttpVerb ?? "GET";
-            _builder.SetContentType(serviceManagementRequest.ContentType ?? "application/xml");//request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
-            _builder.SetBody(serviceManagementRequest.Body);
+                Builder.AddHeader(item.Key, item.Value);//request.Headers.Add(item.Key, item.Value);
+            Builder.SetMethod(serviceManagementRequest.HttpVerb ?? "GET");//request.Method = serviceManagementRequest.HttpVerb ?? "GET";
+            Builder.SetContentType(serviceManagementRequest.ContentType ?? "application/xml");//request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
+            Builder.SetBody(serviceManagementRequest.Body);
 
-            return _builder.Create();
+            return Builder.Create();
         }
 
         #endregion

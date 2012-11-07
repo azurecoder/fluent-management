@@ -84,6 +84,7 @@
     <Compile Include="Commands\Parsers\ListStorageAccountsParser.cs" />
     <Compile Include="Commands\Parsers\GetHostedServiceListParser.cs" />
     <Compile Include="Commands\Service Bus\GetManagementTokenCommand.cs" />
+    <Compile Include="Commands\Services\SetDeploymentConfigurationCommand.cs" />
     <Compile Include="Commands\Services\GetHostedServicePropertiesCommand.cs" />
     <Compile Include="Commands\Services\GetHostedServiceContainsDeploymentCommand.cs" />
     <Compile Include="Commands\Services\GetDeploymentConfigurationCommand.cs" />
