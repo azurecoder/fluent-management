@@ -60,10 +60,9 @@ namespace Elastacloud.AzureManagement.Fluent.LinqToAzure
             try
             {
                 var deploymentManager = manager.GetDeploymentManager();
-                accounts = deploymentManager.ForServiceInformationQuery()
-                    .UseExistingBuild()
+                accounts = deploymentManager
                     .AddCertificateFromStore(inputs.ManagementCertificateThumbprint)
-                    .IgnoreServiceCertificate()
+                    .ForServiceInformationQuery()
                     .GetCloudServiceListWithDeployments();
             }
             catch (Exception ex)

@@ -12,8 +12,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
     public interface IDeploymentConfigurationStorageActivity
     {
         IDeploymentConfigurationParamActivity WithStorageConnectionStringName(string connectionStringName);
-
-        IDeploymentConfigurationParamActivity WithStorageConnectionString(string storageAccountName,
-                                                                          string storageAccountKey);
+        IDeploymentConfigurationParamActivity WithStorageAccount(string storageAccountName);
     }
 }

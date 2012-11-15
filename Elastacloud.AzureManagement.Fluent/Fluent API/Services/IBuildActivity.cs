@@ -22,16 +22,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Sets the build root directory
         /// </summary>
-        IBuildActivity SetBuildDirectoryRoot(string directoryName);
-
-        /// <summary>
-        /// A rebuild command issued which invokes the command 
-        /// </summary>
-        ICertificateActivity Rebuild();
-
-        /// <summary>
-        /// Using the existing build rather than keeping on building 
-        /// </summary>
-        ICertificateActivity UseExistingBuild();
+        IDefinitionActivity SetBuildDirectoryRoot(string directoryName);
     }
 }

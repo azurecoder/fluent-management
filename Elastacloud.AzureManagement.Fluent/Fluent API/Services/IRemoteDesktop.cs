@@ -18,6 +18,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Adds a username and password to the configuration 
         /// </summary>
-        ICertificateActivity WithUsernameAndPassword(string username, string password);
+        IServiceCertificate WithUsernameAndPassword(string username, string password);
     }
 }

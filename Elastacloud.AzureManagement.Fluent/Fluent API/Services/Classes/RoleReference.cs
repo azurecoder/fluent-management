@@ -28,17 +28,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
         IRoleActivity IRoleReference.ForRole(string name)
         {
-            XElement roleName = _manager.CscfgFileInstance.NewVersion.Descendants(Namespaces.NsServiceManagement +
-                                                                                  "ServiceConfiguration")
-                .Descendants(Namespaces.NsServiceManagement + "Role").FirstOrDefault(
-                    a => (string) a.Attribute("name") == name);
-            if (roleName == null)
-                throw new ApplicationException(String.Format("role {0} does not exist in specified configuration", name));
-            int instanceCount = int.Parse(
-                roleName.Element(Namespaces.NsServiceManagement + "Instances")
-                    .Attributes("count")
-                    .FirstOrDefault().Value);
-            _manager.RolesInstances.Add(name, instanceCount);
+            var cscfg = CscfgFile.GetAdHocInstance(_manager.CscfgFileInstance.NewVersion);
+            int count = cscfg.GetInstanceCountForRole(name);
+           
+            _manager.RolesInstances.Add(name, count);
             return _manager;
         }
 
@@ -63,9 +56,15 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// <summary>
         /// This is used to check whether all of the role instances are running in the deployment 
         /// </summary>
-        IRoleReference IRoleReference.WaitUntilAllRoleInstancesAreRunning()
+        IServiceCompleteActivity IRoleReference.WaitUntilAllRoleInstancesAreRunning()
         {
             _manager.WaitUntilAllRoleInstancesAreRunning = true;
+            return _manager;
+        }
+
+        IServiceCompleteActivity IRoleReference.ReturnWithoutWaitingForRunningRoles()
+        {
+            _manager.WaitUntilAllRoleInstancesAreRunning = false;
             return _manager;
         }
 

@@ -19,6 +19,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
     /// </summary>
     public class BuildActivity : IBuildActivity
     {
+        private const string PublishPath = @"\app.publish";
+        private const string DebugPackageRoot = @"\bin\Debug\";
+        private const string ReleasePackageRoot = @"\bin\Release\";
+
         private readonly DeploymentManager _manager;
 
         public string DirectoryRoot;
@@ -34,17 +38,37 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
         #region Implementation of IBuildActivity
 
+        /// <summary>
+        /// This will set the endpoint to the .cspkg file and determine whether it exists locally or in blob storage
+        /// </summary>
         IBuildActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint)
         {
-            _manager.CspkgEndpoint = uriEndpoint;
+            UseExistingBuild = true;
+            // ensure that the string **looks** like a blob endpoint
+            if (uriEndpoint.StartsWith("http") && uriEndpoint.Contains("blob"))
+            {
+                _manager.CspkgEndpoint = uriEndpoint;
+            }
+            else
+            {
+                if(!(uriEndpoint.Contains(Path.Combine(DebugPackageRoot, PublishPath)) || 
+                    uriEndpoint.Contains(Path.Combine(ReleasePackageRoot, PublishPath))))
+                {
+                    throw new ApplicationException("unknown endpoint use the default azure package build path");                          
+                }
+                var activity = new DeploymentConfigurationFileActivity(_manager);
+                ((IDeploymentConfigurationFileActivity)activity).WithPackageConfigDirectory(uriEndpoint);
+            }
+            
             return this;
         }
 
         /// <summary>
         /// Creates a buildactivity if one does not already exist and sets the ccproj file for msbuild
         /// </summary>
-        IBuildActivity IBuildActivity.SetBuildDirectoryRoot(string directoryName)
+        IDefinitionActivity IBuildActivity.SetBuildDirectoryRoot(string directoryName)
         {
+            UseExistingBuild = false;
             if (!Directory.Exists(directoryName))
                 throw new ApplicationException("provided build and package root does not exist!");
             DirectoryRoot = directoryName;
@@ -57,7 +81,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// <summary>
         /// Rebuilds the build with the new params and file changes for csdef
         /// </summary>
-        ICertificateActivity IBuildActivity.Rebuild()
+        public void Rebuild()
         {
             int fileCount = 0;
 
@@ -81,16 +105,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                     "inconsistent build files in directory, check for multiple or zero service definitions or .ccproj files");
 
             UseExistingBuild = false;
-            return _manager;
-        }
-
-        /// <summary>
-        /// This bypasses the build step altogether and uses the existing build file 
-        /// </summary>
-        ICertificateActivity IBuildActivity.UseExistingBuild()
-        {
-            UseExistingBuild = true;
-            return _manager;
         }
 
         #endregion

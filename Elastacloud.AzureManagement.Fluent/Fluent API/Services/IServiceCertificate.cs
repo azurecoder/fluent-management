@@ -29,10 +29,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// </summary>
         IHostedServiceActivity UsePreviouslyUploadedServiceCertificate(string name, string thumbprint);
 
-        /// <summary>
-        /// Continues without adding a service certificate to the deployment
-        /// </summary>
-        /// <returns></returns>
-        IHostedServiceActivity IgnoreServiceCertificate();
+        ///// <summary>
+        ///// Continues without adding a service certificate to the deployment
+        ///// </summary>
+        ///// <returns></returns>
+        //IHostedServiceActivity IgnoreServiceCertificate();
     }
 }

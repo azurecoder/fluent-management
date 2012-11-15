@@ -26,7 +26,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
     public class DeploymentManager : IAzureManager, IDeploymentActivity, IDeploymentConfigurationFileActivity,
                                      IDeploymentConfigurationStorageActivity, IDeploymentConfigurationParamActivity,
                                      IRoleReference, IRoleActivity, IHostedServiceActivity, ICertificateActivity,
-                                     IBuildActivity, IServiceCertificate, IRemoteDesktop
+                                     IBuildActivity, IServiceCertificate, IRemoteDesktop, IDefinitionActivity, IQueryCloudService
     {
         #region properties 
 
@@ -62,6 +62,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         public string Location { get; private set; }
         public string Base64CsfgFile { get; internal set; }
         public bool WaitUntilAllRoleInstancesAreRunning { get; set; }
+        /// <summary>
+        /// Sets a flag to determine whether the storage account needs to have a post step to check whether the account exists
+        /// </summary>
+        internal bool PostStorageStep { get; set; }
 
         public List<ICloudConfig> CloudConfigChanges { get; private set; }
         public BuildActivity BuildActivity { get; set; }
@@ -77,12 +81,12 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             EnableSsl = EnableRemoteDesktop = false;
         }
 
-        #region Implementation of ICertificateActivity
+        #region Implementation of IDefinitionActivity
 
         /// <summary>
         /// Enables SSL for the particular role by updating the necessary config
         /// </summary>
-        ICertificateActivity ICertificateActivity.EnableSslForRole(string name)
+        IServiceCertificate IDefinitionActivity.EnableSslForRole(string name)
         {
             EnableSsl = true;
             SslRoleName = name;
@@ -92,7 +96,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Enables RD for the particular role by updating the config
         /// </summary>
-        IRemoteDesktop ICertificateActivity.EnableRemoteDesktopForRole(string name)
+        IRemoteDesktop IDefinitionActivity.EnableRemoteDesktopForRole(string name)
         {
             EnableRemoteDesktop = true;
             RdRoleName = name;
@@ -100,9 +104,24 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         }
 
         /// <summary>
+        /// Used to enable remote desktop 
+        /// </summary>
+        IRemoteDesktop IDefinitionActivity.EnableRemoteDesktopAndSslForRole(string name)
+        {
+            EnableSsl = true;
+            SslRoleName = name;
+            return ((IDefinitionActivity) this).EnableRemoteDesktopForRole(name);
+        }
+
+        #endregion
+
+        #region Implementation of ICertificateActivity
+
+
+        /// <summary>
         /// Adds a management certificate to the request
         /// </summary>
-        IServiceCertificate ICertificateActivity.AddCertificate(X509Certificate2 certificate)
+        IDeploymentActivity ICertificateActivity.AddCertificate(X509Certificate2 certificate)
         {
             ManagementCertificate = certificate;
             return this;
@@ -111,17 +130,17 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Given a publish settings files - adds a management certificate to the request
         /// </summary>
-        IServiceCertificate ICertificateActivity.AddPublishSettingsFromFile(string path)
+        IDeploymentActivity ICertificateActivity.AddPublishSettingsFromFile(string path)
         {
             var settings = new PublishSettingsExtractor(path);
-            ManagementCertificate = settings.GetCertificateFromFile();
+            ManagementCertificate = settings.AddPublishSettingsToPersonalMachineStore();
             return this;
         }
 
         /// <summary>
         /// Given a publish settings block of Xml - adds a management certificate to the request
         /// </summary>
-        IServiceCertificate ICertificateActivity.AddPublishSettingsFromXml(string xml)
+        IDeploymentActivity ICertificateActivity.AddPublishSettingsFromXml(string xml)
         {
             ManagementCertificate = PublishSettingsExtractor.GetCertificateFromXml(xml);
             return this;
@@ -130,11 +149,13 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Given a certificate thumbprint scours several local stores to find the cert by thumbprint
         /// </summary>
-        IServiceCertificate ICertificateActivity.AddCertificateFromStore(string thumbprint)
+        IDeploymentActivity ICertificateActivity.AddCertificateFromStore(string thumbprint)
         {
             ManagementCertificate = PublishSettingsExtractor.FromStore(thumbprint);
             return this;
         }
+
+        #endregion
 
         #region Implementation of IServiceCertificate
 
@@ -176,21 +197,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Currently just a passthru - this will be implemented in future versions but it is assumed that you can only use 
         /// a single certificate with the deployment however will be use in future with a roles collection 
         /// </summary>
-        IHostedServiceActivity IServiceCertificate.UsePreviouslyUploadedServiceCertificate(string name,
-                                                                                           string thumbprint)
+        IHostedServiceActivity IServiceCertificate.UsePreviouslyUploadedServiceCertificate(string name, string thumbprint)
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// This method ensures that no service certificate is added to the deployment
-        /// </summary>
-        IHostedServiceActivity IServiceCertificate.IgnoreServiceCertificate()
-        {
-            return this;
-        }
-
-        #endregion
 
         #endregion
 
@@ -208,7 +218,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Just used for a service information query
         /// </summary>
-        IBuildActivity IDeploymentActivity.ForServiceInformationQuery()
+        IQueryCloudService IDeploymentActivity.ForServiceInformationQuery()
         {
             return this;
         }
@@ -217,8 +227,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
 
         #region Implementation of IDeploymentConfigurationFileActivity
 
-        IDeploymentConfigurationStorageActivity IDeploymentConfigurationFileActivity.WithPackageConfigDirectory(
-            string directoryName)
+        IDeploymentConfigurationStorageActivity IDeploymentConfigurationFileActivity.WithPackageConfigDirectory(string directoryName)
         {
             IDeploymentConfigurationFileActivity deploymentConfigurationActivity =
                 new DeploymentConfigurationFileActivity(this);
@@ -251,17 +260,19 @@ namespace Elastacloud.AzureManagement.Fluent.Services
                 throw new ApplicationException("connection string is not in correct format");
             StorageAccountName = parts[1].Remove(0, accountName.Count());
             StorageAccountKey = parts[2].Remove(0, accountKey.Count());
+            PostStorageStep = false;
+            
             return this;
         }
 
-        IDeploymentConfigurationParamActivity IDeploymentConfigurationStorageActivity.WithStorageConnectionString(
-            string storageAccountName, string storageAccountKey)
+        IDeploymentConfigurationParamActivity IDeploymentConfigurationStorageActivity.WithStorageAccount(string storageAccountName)
         {
+            PostStorageStep = true;
             StorageAccountName = storageAccountName;
-            StorageAccountKey = storageAccountKey;
-
             return this;
         }
+
+       
 
         #endregion
 
@@ -345,7 +356,13 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Waits until all of the role instances are running in a deployment before releasing
         /// </summary>
         /// <returns></returns>
-        IRoleReference IRoleReference.WaitUntilAllRoleInstancesAreRunning()
+        IServiceCompleteActivity IRoleReference.WaitUntilAllRoleInstancesAreRunning()
+        {
+            IRoleReference roleReference = new RoleReference(this);
+            return roleReference.WaitUntilAllRoleInstancesAreRunning();
+        }
+
+        IServiceCompleteActivity IRoleReference.ReturnWithoutWaitingForRunningRoles()
         {
             IRoleReference roleReference = new RoleReference(this);
             return roleReference.WaitUntilAllRoleInstancesAreRunning();
@@ -407,18 +424,38 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             return this;
         }
 
+       
+
+        /// <summary>
+        /// Deletes an existing hosted service and any deployments associated with it 
+        /// </summary>
+        /// <param name="name">the name of the hosted service</param>
+        /// <returns>An IServiceCompleteActivity interface</returns>
+        void IHostedServiceActivity.DeleteExistingHostedService(string name)
+        {
+            HostedServiceName = name;
+            ActionType = ActionType.Delete;
+            var action = new HostedServiceActivity(this);
+
+            action.Delete();
+        }
+
+        #endregion
+
+        #region Implementation of IQueryCloudService
+
         /// <summary>
         /// Gets a list of hosted services within a particualr subscription
         /// </summary>
         /// <returns>A List<CloudService> collection</CloudService></returns>
-        List<CloudService> IHostedServiceActivity.GetHostedServiceList()
+        List<CloudService> IQueryCloudService.GetHostedServiceList()
         {
             // build the hosted service list command here
             var command = new GetHostedServiceListCommand
-                              {
-                                  SubscriptionId = SubscriptionId,
-                                  Certificate = ManagementCertificate
-                              };
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
             command.Execute();
             return command.HostedServices;
         }
@@ -426,9 +463,9 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Gets a list of cloud services with their attached deployments
         /// </summary>
-        List<CloudService> IHostedServiceActivity.GetCloudServiceListWithDeployments()
+        List<CloudService> IQueryCloudService.GetCloudServiceListWithDeployments()
         {
-            var cloudServices = ((IHostedServiceActivity) this).GetHostedServiceList();
+            var cloudServices = ((IQueryCloudService)this).GetHostedServiceList();
             foreach (var cloudService in cloudServices)
             {
                 var command = new GetHostedServicePropertiesCommand(cloudService.Name)
@@ -447,7 +484,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// </summary>
         /// <param name="serviceName">The name of the service</param>
         /// <returns>A string list</returns>
-        List<string> IHostedServiceActivity.GetRoleNamesForProductionDeploymentForServiceWithName(string serviceName)
+        List<string> IQueryCloudService.GetRoleNamesForProductionDeploymentForServiceWithName(string serviceName)
         {
             // build the hosted service list command here
             var command = new GetDeploymenRoleNamesCommand(serviceName)
@@ -464,7 +501,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// </summary>
         /// <param name="serviceName">The name of the cloud service</param>
         /// <returns>A CscfgFile instance</returns>
-        CscfgFile IHostedServiceActivity.GetConfigurationForProductionDeploymentForServiceWithName(string serviceName)
+        CscfgFile IQueryCloudService.GetConfigurationForProductionDeploymentForServiceWithName(string serviceName)
         {
             // build the hosted service list command here
             var command = new GetDeploymenConfigurationCommand(serviceName)
@@ -480,7 +517,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// Gets a list of hosted services that contain production deployments for the subscription
         /// </summary>
         /// <returns>A list of hosted services</returns>
-        List<CloudService> IHostedServiceActivity.GetHostedServiceListContainingProductionDeployments()
+        List<CloudService> IQueryCloudService.GetHostedServiceListContainingProductionDeployments()
         {
             // create a new service list 
             var services = new List<CloudService>();
@@ -495,10 +532,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             command.HostedServices.ForEach(a =>
             {
                 var serviceCommand = new GetHostedServiceContainsDeploymentCommand(a.Name)
-                        {
-                            SubscriptionId = SubscriptionId,
-                            Certificate = ManagementCertificate
-                        };
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
                 serviceCommand.Execute();
                 if (serviceCommand.ContainsProductionDeployment)
                 {
@@ -507,20 +544,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             });
             // return the new collection instead
             return services;
-        }
-
-        /// <summary>
-        /// Deletes an existing hosted service and any deployments associated with it 
-        /// </summary>
-        /// <param name="name">the name of the hosted service</param>
-        /// <returns>An IServiceCompleteActivity interface</returns>
-        void IHostedServiceActivity.DeleteExistingHostedService(string name)
-        {
-            HostedServiceName = name;
-            ActionType = ActionType.Delete;
-            var action = new HostedServiceActivity(this);
-
-            action.Delete();
         }
 
         #endregion
@@ -557,15 +580,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
 
         #region Implementation of IBuildActivity
 
-        /// <summary>
-        /// This bypasses the build step altogether and uses the existing build file 
-        /// </summary>
-        ICertificateActivity IBuildActivity.UseExistingBuild()
-        {
-            if (BuildActivity == null)
-                BuildActivity = new BuildActivity(this);
-            return ((IBuildActivity) BuildActivity).UseExistingBuild();
-        }
 
         /// <summary>
         /// Sets the endpoint for the package instead of doing an upload
@@ -580,21 +594,14 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Sets the root path to .ccproj 
         /// </summary>
-        IBuildActivity IBuildActivity.SetBuildDirectoryRoot(string directoryName)
+        IDefinitionActivity IBuildActivity.SetBuildDirectoryRoot(string directoryName)
         {
             if (BuildActivity == null)
                 BuildActivity = new BuildActivity(this);
-            return ((IBuildActivity) BuildActivity).SetBuildDirectoryRoot(directoryName);
-        }
+            ((IBuildActivity) BuildActivity).SetBuildDirectoryRoot(directoryName);
+            BuildActivity.Rebuild();
 
-        /// <summary>
-        /// Rebuilds with the new settings
-        /// </summary>
-        ICertificateActivity IBuildActivity.Rebuild()
-        {
-            if (BuildActivity == null)
-                throw new ApplicationException("Call SetBuildDirectoryRoot before calling this!");
-            return ((IBuildActivity) BuildActivity).Rebuild();
+            return this;
         }
 
         #endregion
@@ -604,7 +611,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Sets the username and password for the remote desktop configuration 
         /// </summary>
-        ICertificateActivity IRemoteDesktop.WithUsernameAndPassword(string username, string password)
+        IServiceCertificate IRemoteDesktop.WithUsernameAndPassword(string username, string password)
         {
             RdUsername = username;
             RdPassword = password;
@@ -613,5 +620,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         }
 
         #endregion
+
     }
 }

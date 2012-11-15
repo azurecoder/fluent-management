@@ -40,8 +40,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         public void Create()
         {
             // create the hosted service here
-            var service = new CreateHostedServiceCommand(_manager.HostedServiceName, _manager.Description,
-                                                         _manager.Location)
+            var service = new CreateHostedServiceCommand(_manager.HostedServiceName, _manager.Description, _manager.Location)
                               {
                                   Certificate = _manager.ManagementCertificate,
                                   SubscriptionId = _manager.SubscriptionId
@@ -50,10 +49,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
             if (_manager.ServiceCertificate == null)
                 return;
             // first of all upload the service certificate 
-            byte[] export = _manager.ServiceCertificate.Certificate.Export(X509ContentType.Pkcs12,
-                                                                           _manager.ServiceCertificate.PvkPassword);
-            var command = new AddServiceCertificateCommand(export, _manager.ServiceCertificate.PvkPassword,
-                                                           _manager.HostedServiceName)
+            byte[] export = _manager.ServiceCertificate.Certificate.Export(X509ContentType.Pkcs12, _manager.ServiceCertificate.PvkPassword);
+            var command = new AddServiceCertificateCommand(export, _manager.ServiceCertificate.PvkPassword, _manager.HostedServiceName)
                               {
                                   Certificate = _manager.ManagementCertificate,
                                   SubscriptionId = _manager.SubscriptionId
@@ -65,13 +62,11 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         {
             try
             {
-                var deleteDeployment = new DeleteDeploymentCommand(_manager.HostedServiceName, DeploymentSlot.Production)
+                var deleteDeployment = new DeleteDeploymentCommand(_manager.HostedServiceName, _manager.DeploymentSlot)
                                            {
                                                Certificate = _manager.ManagementCertificate,
                                                SubscriptionId = _manager.SubscriptionId
                                            };
-                deleteDeployment.Execute();
-                deleteDeployment.DeploymentSlot = DeploymentSlot.Staging;
                 deleteDeployment.Execute();
             }
             catch (Exception)

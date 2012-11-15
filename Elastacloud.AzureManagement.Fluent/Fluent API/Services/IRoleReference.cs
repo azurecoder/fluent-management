@@ -32,6 +32,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Blocks and waits until all of the roles are running
         /// </summary>
-        IRoleReference WaitUntilAllRoleInstancesAreRunning();
+        IServiceCompleteActivity WaitUntilAllRoleInstancesAreRunning();
+
+        IServiceCompleteActivity ReturnWithoutWaitingForRunningRoles();
     }
 }

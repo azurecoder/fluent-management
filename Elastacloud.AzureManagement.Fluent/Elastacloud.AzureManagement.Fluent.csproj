@@ -129,7 +129,10 @@
     <Compile Include="Fluent API\LinqToAzure\TypeSystem.cs" />
     <Compile Include="Fluent API\Roles\IRoleOperation.cs" />
     <Compile Include="Fluent API\Roles\RoleContextManager.cs" />
+    <Compile Include="Fluent API\Services\IDefinitionActivity.cs" />
+    <Compile Include="Fluent API\Services\IQueryCloudService.cs" />
     <Compile Include="Fluent API\Virtual Machines\Classes\VirtualMachineProperties.cs" />
+    <Compile Include="Helpers\LocationConstants.cs" />
     <Compile Include="Helpers\OPC\PackageFile.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\Deployment.cs" />

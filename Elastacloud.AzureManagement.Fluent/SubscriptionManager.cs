@@ -17,7 +17,6 @@ using Elastacloud.AzureManagement.Fluent.Subscriptions;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Watchers;
-using ICertificateActivity = Elastacloud.AzureManagement.Fluent.Subscriptions.ICertificateActivity;
 
 namespace Elastacloud.AzureManagement.Fluent
 {
@@ -43,7 +42,7 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <summary>
         /// Gets a manager to use on all types of deployment for PaaS
         /// </summary>
-        public IDeploymentActivity GetDeploymentManager()
+        public Services.ICertificateActivity GetDeploymentManager()
         {
             return new DeploymentManager(_subscriptionId);
         }
@@ -69,7 +68,7 @@ namespace Elastacloud.AzureManagement.Fluent
         /// Allows access to a SubscriptionDetailsManager so that information about the subscription such as locations allowed etc. cna be returned
         /// </summary>
         /// <returns>A SubscriptionDetailsManager instance</returns>
-        public ICertificateActivity GetSubscriptionDetailsManager()
+        public Subscriptions.ICertificateActivity GetSubscriptionDetailsManager()
         {
             return new SubscriptionDetailsManager(_subscriptionId);
         }
@@ -110,5 +109,6 @@ namespace Elastacloud.AzureManagement.Fluent
             X509Certificate2 certificate = PublishSettingsExtractor.FromStore(certificateThumbprint);
             return new RoleContextManager(_subscriptionId, certificate, serviceName, slot);
         }
+
     }
 }

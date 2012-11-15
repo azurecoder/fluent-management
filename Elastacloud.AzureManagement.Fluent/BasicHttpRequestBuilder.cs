@@ -53,6 +53,11 @@ namespace Elastacloud.AzureManagement.Fluent
             _body = body;
         }
 
+        public bool HttpHeaderExists(string key)
+        {
+            return _headers.ContainsKey(key);
+        }
+
         public HttpWebRequest Create()
         {
             var request = (HttpWebRequest) WebRequest.Create(_requestUri);

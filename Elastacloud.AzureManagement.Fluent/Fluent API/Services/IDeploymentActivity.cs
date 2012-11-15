@@ -12,6 +12,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services
     public interface IDeploymentActivity
     {
         IBuildActivity ForNewDeployment(string name);
-        IBuildActivity ForServiceInformationQuery();
+        IQueryCloudService ForServiceInformationQuery();
     }
 }

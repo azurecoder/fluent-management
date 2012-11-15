@@ -78,6 +78,22 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
         /// <param name="instanceCount">the number of instances to increment or decrement to</param>
         public void UpdateInstanceCountForRole(string roleName, int instanceCount)
         {
+            var config = GetConfiguration(roleName);
+            config.SetInstanceCountForRole(roleName, instanceCount);
+
+            var commandSetter = new SetDeploymenConfigurationCommand(ServiceName, config, DeploymentSlot)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            commandSetter.Execute();
+        }
+
+        /// <summary>
+        /// Returns the configuration file for the particular role
+        /// </summary>
+        private CscfgFile GetConfiguration(string roleName)
+        {
             RoleName = roleName;
             // get the details configuration for the role
             var command = new GetDeploymenConfigurationCommand(ServiceName, DeploymentSlot)
@@ -88,14 +104,16 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
             command.Execute();
             // use the configuration and reset the instance count for the role in question
             var config = command.Configuration;
-            config.SetInstanceCountForRole(roleName, instanceCount);
+            return config;
+        }
 
-            var commandSetter = new SetDeploymenConfigurationCommand(ServiceName, config, DeploymentSlot)
-                {
-                    SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
-                };
-            commandSetter.Execute();
+        /// <summary>
+        /// Returns the instance count for the role being queried
+        /// </summary>
+        public int GetInstanceCountForRole(string roleName)
+        {
+            var config = GetConfiguration(roleName);
+            return config.GetInstanceCountForRole(roleName);
         }
 
         #endregion

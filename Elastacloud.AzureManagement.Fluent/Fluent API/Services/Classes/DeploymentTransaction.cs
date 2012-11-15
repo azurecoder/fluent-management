@@ -9,6 +9,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
@@ -122,26 +123,22 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
             if (!_manager.UseExistingHostedService)
             {
-                var hostedServiceCreate = new CreateHostedServiceCommand(_manager.HostedServiceName,
-                                                                         _manager.Description, _manager.Location)
+                var hostedServiceCreate = new CreateHostedServiceCommand(_manager.HostedServiceName, _manager.Description ?? "Deployed by Fluent Management", _manager.Location)
                                               {
                                                   Certificate = _manager.ManagementCertificate,
                                                   SubscriptionId = _manager.SubscriptionId
                                               };
                 hostedServiceCreate.Execute();
-                _manager.WriteComplete(EventPoint.HostedServiceCreated,
-                                       "Hosted service with name " + _manager.HostedServiceName + " created");
+                _manager.WriteComplete(EventPoint.HostedServiceCreated, "Hosted service with name " + _manager.HostedServiceName + " created");
             }
 
             // send up service certificate - whatever happens we want the certificate up there - sometimes we may get a request but not need to alter the config of the SSL
             if (_manager.EnableSsl)
             {
-                byte[] export = _manager.ServiceCertificate.Certificate.Export(X509ContentType.Pkcs12,
-                                                                               _manager.ServiceCertificate.PvkPassword);
+                byte[] export = _manager.ServiceCertificate.Certificate.Export(X509ContentType.Pkcs12, _manager.ServiceCertificate.PvkPassword);
 
                 var addCertificate =
-                    new AddServiceCertificateCommand(export, _manager.ServiceCertificate.PvkPassword,
-                                                     _manager.HostedServiceName)
+                    new AddServiceCertificateCommand(export, _manager.ServiceCertificate.PvkPassword, _manager.HostedServiceName)
                         {
                             SubscriptionId = _manager.SubscriptionId,
                             Certificate = _manager.ManagementCertificate
@@ -153,10 +150,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
             bool startImmediately = true, treatErrorsAsWarnings = false;
             if (_manager.DeploymentParams.HasValue)
             {
-                startImmediately = (_manager.DeploymentParams.Value & DeploymentParams.StartImmediately) ==
-                                   DeploymentParams.StartImmediately;
-                treatErrorsAsWarnings = (_manager.DeploymentParams.Value & DeploymentParams.WarningsAsErrors) ==
-                                        DeploymentParams.WarningsAsErrors;
+                startImmediately = (_manager.DeploymentParams.Value & DeploymentParams.StartImmediately) == DeploymentParams.StartImmediately;
+                treatErrorsAsWarnings = (_manager.DeploymentParams.Value & DeploymentParams.WarningsAsErrors) == DeploymentParams.WarningsAsErrors;
             }
             // read in the config and convert Base64
             var deployment = new CreateDeploymentCommand(_manager.HostedServiceName, _manager.DeploymentName,
@@ -190,8 +185,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 // check here and execute on a timer to see if the role are ready and running
                 if (_manager.WaitUntilAllRoleInstancesAreRunning)
                 {
-                    var command = new GetAggregateDeploymentStatusCommand(_manager.HostedServiceName,
-                                                                          _manager.DeploymentSlot)
+                    var command = new GetAggregateDeploymentStatusCommand(_manager.HostedServiceName, _manager.DeploymentSlot)
                                       {
                                           Certificate = _manager.ManagementCertificate,
                                           SubscriptionId = _manager.SubscriptionId
@@ -212,25 +206,32 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// </summary>
         private string UploadPackageBlob()
         {
+            // checks to see whether the storage account is being used 
+            if (_manager.PostStorageStep)
+                GetStorageAccount(_manager.StorageAccountName);
+            // creates the blob container if it doesn't exist "elastadeploy" and uses the account details - if it does it may have a 409 conflict
             var blobContainer = new CreateBlobContainerCommand(Constants.DefaultBlobContainerName)
                                     {
                                         AccountKey = _manager.StorageAccountKey,
                                         AccountName = _manager.StorageAccountName
                                     };
             blobContainer.Execute();
-            _manager.WriteComplete(EventPoint.StorageBlobContainerCreated,
-                                   "Blob container " + Constants.DefaultBlobContainerName + " created");
-
-            var blobCreate = new CreateAndUploadBlobCommand(Constants.DefaultBlobContainerName,
-                                                            Path.GetFileName(_manager.LocalPackagePathName),
-                                                            _manager.LocalPackagePathName)
+            _manager.WriteComplete(EventPoint.StorageBlobContainerCreated, "Blob container " + Constants.DefaultBlobContainerName + " created");
+            // TODO: this smells really bad fix!!
+            if(_manager.LocalPackagePathName == null)
+            {
+                var configuration = new DeploymentConfigurationFileActivity(_manager);
+                ((IDeploymentConfigurationFileActivity) configuration).WithPackageConfigDirectory(
+                    _manager.BuildActivity.PackageNameLocation);
+            }
+            var packageName = _manager.LocalPackagePathName;
+            var blobCreate = new CreateAndUploadBlobCommand(Constants.DefaultBlobContainerName, Path.GetFileName(packageName), packageName)
                                  {
                                      AccountName = _manager.StorageAccountName,
                                      AccountKey = _manager.StorageAccountKey
                                  };
             blobCreate.Execute();
-            _manager.WriteComplete(EventPoint.DeploymentPackageUploadComplete,
-                                   "Uploaded package to default blob container");
+            _manager.WriteComplete(EventPoint.DeploymentPackageUploadComplete, "Uploaded package to default blob container");
             return blobCreate.DeploymentPath;
         }
 
@@ -290,6 +291,22 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         {
             // if we don't call this now the package will be left in an inconsistent state with the config files
             _manager.BuildActivity.StartMsBuildProcess();
+        }
+
+        private StorageAccount GetStorageAccount(string storageAccountName)
+        {
+            var subscriptionManager = new SubscriptionManager(_manager.SubscriptionId);
+            var storageAccounts = subscriptionManager.GetStorageManager()
+                .ForStorageInformationQuery()
+                .AddCertificate(_manager.ManagementCertificate)
+                .GetStorageAccountList(true);
+            var account = storageAccounts.FirstOrDefault(a => a.Name == storageAccountName);
+
+            if (account == null)
+                throw new ApplicationException("unknown storage account are you sure this account exists in your subscription");
+
+            _manager.StorageAccountKey = account.PrimaryAccessKey;
+            return account;
         }
 
         #endregion
