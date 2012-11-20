@@ -9,9 +9,9 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
@@ -24,6 +24,10 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
     /// </summary>
     public class DeploymentTransaction : IServiceTransaction
     {
+        /// <summary>
+        /// The blob client used to upload blobs and create containers
+        /// </summary>
+        private readonly BlobClient _blobClient;
         /// <summary>
         /// The DeploymentManager field 
         /// </summary>
@@ -41,6 +45,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         public DeploymentTransaction(DeploymentManager manager)
         {
             _manager = manager;
+            _blobClient = new BlobClient(_manager.SubscriptionId, Constants.DefaultBlobContainerName, _manager.StorageAccountName, _manager.StorageAccountKey);
         }
 
         #region Implementation of IServiceTransaction
@@ -120,6 +125,9 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         private void CreateDeployment(string packageLocation)
         {
             bool deleted = false;
+
+            if(!_blobClient.CheckStorageAccountHasResolved())
+                throw new ApplicationException("unable to proceed storage account cannot be resolved after default 5 minute timeout");
 
             if (!_manager.UseExistingHostedService)
             {
@@ -206,16 +214,13 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// </summary>
         private string UploadPackageBlob()
         {
-            // checks to see whether the storage account is being used 
-            if (_manager.PostStorageStep)
-                GetStorageAccount(_manager.StorageAccountName);
-            // creates the blob container if it doesn't exist "elastadeploy" and uses the account details - if it does it may have a 409 conflict
-            var blobContainer = new CreateBlobContainerCommand(Constants.DefaultBlobContainerName)
-                                    {
-                                        AccountKey = _manager.StorageAccountKey,
-                                        AccountName = _manager.StorageAccountName
-                                    };
-            blobContainer.Execute();
+            //var blobContainer = new CreateBlobContainerCommand(Constants.DefaultBlobContainerName)
+            //                        {
+            //                            AccountKey = _manager.StorageAccountKey,
+            //                            AccountName = _manager.StorageAccountName
+            //                        };
+            //blobContainer.Execute();
+            _blobClient.CreatBlobContainer();
             _manager.WriteComplete(EventPoint.StorageBlobContainerCreated, "Blob container " + Constants.DefaultBlobContainerName + " created");
             // TODO: this smells really bad fix!!
             if(_manager.LocalPackagePathName == null)
@@ -225,14 +230,16 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                     _manager.BuildActivity.PackageNameLocation);
             }
             var packageName = _manager.LocalPackagePathName;
-            var blobCreate = new CreateAndUploadBlobCommand(Constants.DefaultBlobContainerName, Path.GetFileName(packageName), packageName)
-                                 {
-                                     AccountName = _manager.StorageAccountName,
-                                     AccountKey = _manager.StorageAccountKey
-                                 };
-            blobCreate.Execute();
+            string deploymentPath = _blobClient.CreateAndUploadBlob(Path.GetFileName(packageName), packageName);
+            //var blobCreate = new CreateAndUploadBlobCommand(Constants.DefaultBlobContainerName, Path.GetFileName(packageName), packageName)
+            //                     {
+            //                         AccountName = _manager.StorageAccountName,
+            //                         AccountKey = _manager.StorageAccountKey
+            //                     };
+            //blobCreate.Execute();
             _manager.WriteComplete(EventPoint.DeploymentPackageUploadComplete, "Uploaded package to default blob container");
-            return blobCreate.DeploymentPath;
+            //return blobCreate.DeploymentPath;
+            return deploymentPath;
         }
 
         /// <summary>
@@ -291,22 +298,6 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         {
             // if we don't call this now the package will be left in an inconsistent state with the config files
             _manager.BuildActivity.StartMsBuildProcess();
-        }
-
-        private StorageAccount GetStorageAccount(string storageAccountName)
-        {
-            var subscriptionManager = new SubscriptionManager(_manager.SubscriptionId);
-            var storageAccounts = subscriptionManager.GetStorageManager()
-                .ForStorageInformationQuery()
-                .AddCertificate(_manager.ManagementCertificate)
-                .GetStorageAccountList(true);
-            var account = storageAccounts.FirstOrDefault(a => a.Name == storageAccountName);
-
-            if (account == null)
-                throw new ApplicationException("unknown storage account are you sure this account exists in your subscription");
-
-            _manager.StorageAccountKey = account.PrimaryAccessKey;
-            return account;
         }
 
         #endregion

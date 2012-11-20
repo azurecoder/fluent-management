@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
+    <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\IBlobClient.cs" />
     <Compile Include="Commands\Blobs\BlobCommand.cs" />
     <Compile Include="Commands\Blobs\CreateAndUploadBlobCommand.cs" />
     <Compile Include="Commands\Blobs\CreateBlobContainerCommand.cs" />

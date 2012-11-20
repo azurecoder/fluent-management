@@ -14,6 +14,7 @@ using System.IO;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 {
@@ -60,8 +61,44 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
             DateHeader = DateTime.UtcNow.ToString("R", CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Checks to see whether a storage account exists based on checking every second the operation will either return a 502
+        /// if the DNS cannot resolve or a 400 if it can 
+        /// </summary>
+        /// <param name="timeoutInSeconds">The timeout in seconds to stop the checking</param>
+        /// <returns>A value indicating that the storage exists</returns>
+        public bool CheckStorageAccountExists(int timeoutInSeconds)
+        {
+            int i = 0;
+            bool hasCompleted = false;
+            while (i++ < timeoutInSeconds)
+            {
+                try
+                {
+                    var request = HttpWebRequest.Create(String.Format("http://{0}.blob.core.windows.net", AccountName));
+                    request.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    if (((HttpWebResponse) ex.Response).StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        hasCompleted = true;
+                        break;
+                    }
+                }
+                Thread.Sleep(1000);
+            }
+            return hasCompleted;
+        }
+
         #region File Handling
 
+        /// <summary>
+        /// Finds out the length and returns a byte array of the files 
+        /// </summary>
+        /// <param name="fileName">The filename being used to retrieve the bytes and length</param>
+        /// <param name="contentLength">The length of the file in bytes</param>
+        /// <returns>The byte array containing the file data</returns>
         protected byte[] GetPackageFileBytesAndLength(string fileName, out int contentLength)
         {
             byte[] ms = null;
@@ -80,8 +117,15 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         #region Request Handling
 
-        private HttpWebRequest PrepareRequest(string url, string authHeader, byte[] fileBytes = null,
-                                              int contentLength = 0)
+        /// <summary>
+        /// Preprares the request for sending and using blob storage
+        /// </summary>
+        /// <param name="url">The url to send the request to</param>
+        /// <param name="authHeader">The signature being used</param>
+        /// <param name="fileBytes">The request content</param>
+        /// <param name="contentLength">The length of the content</param>
+        /// <returns>The HttpWebRequest containing the file</returns>
+        private HttpWebRequest PrepareRequest(string url, string authHeader, byte[] fileBytes = null, int contentLength = 0)
         {
             var uri = new Uri(url);
             var request = (HttpWebRequest) WebRequest.Create(uri);
@@ -152,6 +196,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         #region ICommand Members
 
+        /// <summary>
+        /// Abstract method used to execute the any command againt blob storage
+        /// </summary>
         public abstract void Execute();
 
         #endregion
