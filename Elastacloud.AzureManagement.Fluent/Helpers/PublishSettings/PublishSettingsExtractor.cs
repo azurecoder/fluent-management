@@ -14,11 +14,11 @@ using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Xml;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Properties;
+using Elastacloud.AzureManagement.Fluent.Types;
 
-namespace Elastacloud.AzureManagement.Fluent.Helpers
+namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
 {
     /// <summary>
     /// Enum illustrates two possible file types publishsettings and certificate
@@ -34,6 +34,8 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
     /// </summary>
     public class PublishSettingsExtractor
     {
+        private List<Subscription> _subscriptions = new List<Subscription>();
+        public double SchemaVersion { get; set; }
         /// <summary>
         /// The filepath to the .publishsettings file
         /// </summary>
@@ -47,19 +49,57 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// Used to construct a publishsetting extractor class
         /// </summary>
         /// <param name="filePath">The filepath to the .publishsettings file</param>
-        public PublishSettingsExtractor(string filePath)
+        /// <param name="xmlContent">Used to define whether the string is xml or a file</param>
+        public PublishSettingsExtractor(string filePath, bool xmlContent = false)
         {
-            _publishSettingsFile = filePath;
-            _publishSettingsFileXml = XDocument.Load(filePath);
+            _publishSettingsFileXml = xmlContent ? XDocument.Parse(filePath) : XDocument.Load(filePath);
+            Parse();
         }
+
+        /// <summary>
+        /// Returns a PublishSettingsExtractor given a valid path 
+        /// </summary>
+        public static PublishSettingsExtractor GetFromFile(string file)
+        {
+            return new PublishSettingsExtractor(file);
+        }
+
+        /// <summary>
+        /// Returns a PublishSettingsExtractor given a valid xml document
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        public static PublishSettingsExtractor GetFromXml(string xml)
+        {
+            return new PublishSettingsExtractor(xml, true);
+        }
+
+        /// <summary>
+        /// Used to parse a .publishsettings file to determine the schema 
+        /// </summary>
+        private void Parse()
+        {
+            var schemaAttrs = _publishSettingsFileXml.Descendants("PublishProfile").FirstOrDefault().Attributes("SchemaVersion");
+            var containsSchema = schemaAttrs.Any();
+            SchemaVersion = containsSchema ? (int)double.Parse(schemaAttrs.FirstOrDefault().Value) : 1D;
+
+            _subscriptions = _publishSettingsFileXml.Descendants("Subscription").Select(a => new Subscription()
+                                                                    { 
+                                                        Id = a.Attribute("Id").Value,
+                                                        Name = a.Attribute("Name").Value,
+                                                        ManagementUrl = "https://management.core.windows.net/",
+                                                        ManagementCertificate = GetCertificateFromFile()
+                                                                    }).ToList();
+
+        }
+
         /// <summary>
         /// Gets a list of subscriptions in a .publishsettings file
         /// </summary>
-        /// <param name="file">The path to the file</param>
         /// <returns>a list of subscriptions</returns>
-        public Dictionary<string, string> GetSubscriptions()
+        public List<Subscription> GetSubscriptions()
         {
-            return _publishSettingsFileXml.Descendants("Subscription").ToDictionary(a => a.Attribute("Id").Value, a => a.Attribute("Name").Value);
+            return _subscriptions;
         }
 
         /// <summary>
@@ -190,21 +230,26 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         {
             var storageFlagKeySet = location == StoreLocation.CurrentUser ? X509KeyStorageFlags.UserKeySet : X509KeyStorageFlags.MachineKeySet;
             // settings downloaded from https://windows.azure.com/download/publishprofile.aspx
-            byte[] certBytes =
-                Convert.FromBase64String(_publishSettingsFileXml.Descendants("PublishProfile").Single().Attribute("ManagementCertificate").Value);
+            byte[] certBytes = SchemaVersion == 1
+                                   ? Convert.FromBase64String(
+                                       _publishSettingsFileXml.Descendants("PublishProfile")
+                                                              .Single()
+                                                              .Attribute("ManagementCertificate")
+                                                              .Value)
+                                   : Convert.FromBase64String(
+                                       _publishSettingsFileXml.Descendants("Subscription")
+                                                              .FirstOrDefault()
+                                                              .Attribute("ManagementCertificate")
+                                                              .Value);
+
             return new X509Certificate2(certBytes, string.Empty, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet | storageFlagKeySet);
         }
 
         //TODO: Set a password at the start don't persist this and treat via a secure string
         public static X509Certificate2 GetCertificateFromXml(string xml, StoreLocation location = StoreLocation.CurrentUser)
         {
-            var storageFlagKeySet = location == StoreLocation.CurrentUser ? X509KeyStorageFlags.UserKeySet : X509KeyStorageFlags.MachineKeySet;
-            XDocument doc = XDocument.Parse(xml);
-            byte[] certBytes =
-                Convert.FromBase64String(
-                    doc.Descendants("PublishProfile").Single().Attribute("ManagementCertificate").Value);
-            //return new X509Certificate2(certBytes, String.Empty, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.MachineKeySet);
-            return new X509Certificate2(certBytes, string.Empty, X509KeyStorageFlags.Exportable|X509KeyStorageFlags.PersistKeySet|storageFlagKeySet);
+            var ps = GetFromXml(xml);
+            return ps.GetCertificateFromFile(location);
         }
 
         /// <summary>

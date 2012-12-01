@@ -15,6 +15,7 @@ using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
 
@@ -584,11 +585,15 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Sets the endpoint for the package instead of doing an upload
         /// </summary>
-        IBuildActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint)
+        IHostedServiceActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint, string cscfgFilePath = null)
         {
+            if((uriEndpoint.StartsWith("http://") || uriEndpoint.StartsWith("https://")) && cscfgFilePath == null)
+                throw new ApplicationException("please define a valid .cscfg file");
             if (BuildActivity == null)
                 BuildActivity = new BuildActivity(this);
-            return ((IBuildActivity) BuildActivity).SetCspkgEndpoint(uriEndpoint);
+            ((IBuildActivity) BuildActivity).SetCspkgEndpoint(uriEndpoint, cscfgFilePath);
+
+            return this;
         }
 
         /// <summary>

@@ -7,21 +7,31 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-namespace Elastacloud.AzureManagement.Fluent.Services
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+
+namespace Elastacloud.AzureManagement.Fluent.Types
 {
     /// <summary>
-    /// Interface used to specify the possible buyild activity tasks and settings 
+    /// A class which is used to provide subscription information via the the .publishsettings file
     /// </summary>
-    public interface IBuildActivity
+    public class Subscription
     {
         /// <summary>
-        /// Sets the cspkg endpoint in blob storage
+        /// The friendly name of the subscription
         /// </summary>
-        IHostedServiceActivity SetCspkgEndpoint(string uriEndpoint, string cscfgFilePath = null);
-
+        public string Name { get; set; }
         /// <summary>
-        /// Sets the build root directory
+        /// the GUID subscription id
         /// </summary>
-        IDefinitionActivity SetBuildDirectoryRoot(string directoryName);
+        public string Id { get; set; }
+        /// <summary>
+        /// The managementcertificate used by the subscription
+        /// </summary>
+        public X509Certificate2 ManagementCertificate { get; set; }
+        /// <summary>
+        /// The mangagement url - usually the service management api Url
+        /// </summary>
+        public string ManagementUrl { get; set; }
     }
 }

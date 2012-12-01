@@ -10,6 +10,7 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 
 namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 {

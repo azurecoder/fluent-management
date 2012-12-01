@@ -10,6 +10,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Storage.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
 

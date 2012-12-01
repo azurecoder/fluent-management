@@ -97,8 +97,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types
                     versionToPersist = NewVersion;
                     break;
                 case ConfigurationFileType.Backup:
-                    filePath = Path.Combine(Path.GetDirectoryName(Filename),
-                                            Path.GetFileNameWithoutExtension(Filename) + ".old");
+                    filePath = Path.Combine(Path.GetDirectoryName(Filename), Path.GetFileNameWithoutExtension(Filename) + ".old");
                     versionToPersist = OriginalVersion;
                     break;
                 case ConfigurationFileType.Replacement:
@@ -114,6 +113,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types
             }
         }
 
+        /// <summary>
+        /// Saves the updated version of the Xml document
+        /// </summary>
+        public void SaveAs(string filePath)
+        {
+            NewVersion.Save(filePath);
+        }
+
+        /// <summary>
+        /// Used to return the Xml representation for the current configuration file
+        /// </summary>
         public override string ToString()
         {
             return OriginalVersion.ToStringFullXmlDeclaration();

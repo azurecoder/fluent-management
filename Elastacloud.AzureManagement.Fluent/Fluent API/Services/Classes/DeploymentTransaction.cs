@@ -93,8 +93,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
             }
             catch (Exception ex)
             {
-                _manager.WriteComplete(EventPoint.ExceptionOccurrence,
-                                       ex.GetType() + ": " + ex.Message + ", Failed to rollback hosted service");
+                _manager.WriteComplete(EventPoint.ExceptionOccurrence, ex.GetType() + ": " + ex.Message + ", Failed to rollback hosted service");
             }
         }
 
@@ -162,10 +161,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 treatErrorsAsWarnings = (_manager.DeploymentParams.Value & DeploymentParams.WarningsAsErrors) == DeploymentParams.WarningsAsErrors;
             }
             // read in the config and convert Base64
-            var deployment = new CreateDeploymentCommand(_manager.HostedServiceName, _manager.DeploymentName,
-                                                         packageLocation,
-                                                         _manager.Base64CsfgFile, _manager.DeploymentSlot,
-                                                         startImmediately, treatErrorsAsWarnings)
+            var deployment = new CreateDeploymentCommand(_manager.HostedServiceName, _manager.DeploymentName,packageLocation,
+                                                         _manager.Base64CsfgFile, _manager.DeploymentSlot, startImmediately, treatErrorsAsWarnings)
                                  {
                                      Certificate = _manager.ManagementCertificate,
                                      SubscriptionId = _manager.SubscriptionId
@@ -174,8 +171,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
             try
             {
                 deployment.Execute();
-                _manager.WriteComplete(EventPoint.DeploymentCreated,
-                                       "Deployment " + _manager.DeploymentName + " created");
+                _manager.WriteComplete(EventPoint.DeploymentCreated, "Deployment " + _manager.DeploymentName + " created");
             }
             catch (Exception)
             {
@@ -187,8 +183,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 if (deleted)
                 {
                     deployment.Execute();
-                    _manager.WriteComplete(EventPoint.DeploymentCreated,
-                                           "Deployment " + _manager.DeploymentName + " created");
+                    _manager.WriteComplete(EventPoint.DeploymentCreated, "Deployment " + _manager.DeploymentName + " created");
                 }
                 // check here and execute on a timer to see if the role are ready and running
                 if (_manager.WaitUntilAllRoleInstancesAreRunning)
@@ -214,29 +209,17 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// </summary>
         private string UploadPackageBlob()
         {
-            //var blobContainer = new CreateBlobContainerCommand(Constants.DefaultBlobContainerName)
-            //                        {
-            //                            AccountKey = _manager.StorageAccountKey,
-            //                            AccountName = _manager.StorageAccountName
-            //                        };
-            //blobContainer.Execute();
             _blobClient.CreatBlobContainer();
             _manager.WriteComplete(EventPoint.StorageBlobContainerCreated, "Blob container " + Constants.DefaultBlobContainerName + " created");
             // TODO: this smells really bad fix!!
             if(_manager.LocalPackagePathName == null)
             {
                 var configuration = new DeploymentConfigurationFileActivity(_manager);
-                ((IDeploymentConfigurationFileActivity) configuration).WithPackageConfigDirectory(
-                    _manager.BuildActivity.PackageNameLocation);
+                ((IDeploymentConfigurationFileActivity) configuration).WithPackageConfigDirectory(_manager.BuildActivity.PackageNameLocation);
             }
             var packageName = _manager.LocalPackagePathName;
             string deploymentPath = _blobClient.CreateAndUploadBlob(Path.GetFileName(packageName), packageName);
-            //var blobCreate = new CreateAndUploadBlobCommand(Constants.DefaultBlobContainerName, Path.GetFileName(packageName), packageName)
-            //                     {
-            //                         AccountName = _manager.StorageAccountName,
-            //                         AccountKey = _manager.StorageAccountKey
-            //                     };
-            //blobCreate.Execute();
+            
             _manager.WriteComplete(EventPoint.DeploymentPackageUploadComplete, "Uploaded package to default blob container");
             //return blobCreate.DeploymentPath;
             return deploymentPath;

@@ -41,13 +41,14 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// <summary>
         /// This will set the endpoint to the .cspkg file and determine whether it exists locally or in blob storage
         /// </summary>
-        IBuildActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint)
+        IHostedServiceActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint, string cscfgFilePath)
         {
             UseExistingBuild = true;
             // ensure that the string **looks** like a blob endpoint
-            if (uriEndpoint.StartsWith("http") && uriEndpoint.Contains("blob"))
+            if ((uriEndpoint.StartsWith("http") && uriEndpoint.Contains("blob")))
             {
                 _manager.CspkgEndpoint = uriEndpoint;
+                _manager.CscfgFileInstance = CscfgFile.GetInstance(cscfgFilePath);
             }
             else
             {
@@ -60,7 +61,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 ((IDeploymentConfigurationFileActivity)activity).WithPackageConfigDirectory(uriEndpoint);
             }
             
-            return this;
+            return _manager;
         }
 
         /// <summary>

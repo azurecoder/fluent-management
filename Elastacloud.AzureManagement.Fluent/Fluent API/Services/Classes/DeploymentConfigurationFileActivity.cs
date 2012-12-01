@@ -24,8 +24,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
         #region Implementation of IDeploymentConfigurationFileActivity
 
-        IDeploymentConfigurationStorageActivity IDeploymentConfigurationFileActivity.WithPackageConfigDirectory(
-            string directoryName)
+        IDeploymentConfigurationStorageActivity IDeploymentConfigurationFileActivity.WithPackageConfigDirectory(string directoryName)
         {
             int cspkgCount = 0;
             Manager.DeploymentFolder = directoryName;
@@ -37,8 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 if (Path.GetExtension(fileName) == Constants.CspkgExtension)
                 {
                     if (cspkgCount > 1)
-                        throw new ApplicationException(
-                            "Only a single .cspkg file can be present in the deployment folder");
+                        throw new ApplicationException("Only a single .cspkg file can be present in the deployment folder");
                     Manager.LocalPackagePathName = fileName;
                     cspkgCount++;
                 }
