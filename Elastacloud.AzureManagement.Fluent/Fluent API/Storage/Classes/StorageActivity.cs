@@ -7,11 +7,13 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
-using System.Collections.Generic;
+using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Commands.Storage;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
+using System;
+using System.Collections.Generic;
 
 namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
 {
@@ -36,6 +38,11 @@ namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
         private StorageAccount _storageAccount;
 
         /// <summary>
+        /// the client used to abstract the commands
+        /// </summary>
+        private StorageClient _client;
+
+        /// <summary>
         /// Used to a hold a value for whether the transaction has started and is successful
         /// </summary>
         private bool _success;
@@ -46,6 +53,7 @@ namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
         internal StorageActivity(StorageManager manager)
         {
             Manager = manager;
+            _client = new StorageClient(manager.SubscriptionId, manager.ManagementCertificate);
         }
 
         #region IStorageActivity Members
@@ -73,27 +81,18 @@ namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
         /// </summary>
         List<StorageAccount> IStorageActivity.GetStorageAccountList(bool includeKeys)
         {
-            var getStorageAccountList = new ListStorageAccountsCommand
-                                            {
-                                                SubscriptionId = Manager.SubscriptionId,
-                                                Certificate = Manager.ManagementCertificate
-                                            };
-            getStorageAccountList.Execute();
+            var getStorageAccountList = _client.GetStorageAccountList();
             if(!includeKeys)
-                return getStorageAccountList.StorageAccounts;
+                return getStorageAccountList;
             // if the get keys flag is supplied then ensure that this returns the keys with the structure
-            foreach (var storageAccount in getStorageAccountList.StorageAccounts)
+            foreach (var storageAccount in getStorageAccountList)
             {
-                var keys = new GetStorageAccountKeysCommand(storageAccount.Name)
-                    {
-                        SubscriptionId = Manager.SubscriptionId,
-                        Certificate = Manager.ManagementCertificate
-                    };
-                keys.Execute();
-                storageAccount.PrimaryAccessKey = keys.PrimaryStorageKey;
-                storageAccount.SecondaryAccessKey = keys.SecondaryStorageKey;
+                var keys = _client.GetStorageAccountKeys(storageAccount.Name);
+                
+                storageAccount.PrimaryAccessKey = keys[0];
+                storageAccount.SecondaryAccessKey = keys[1];
             }
-            return getStorageAccountList.StorageAccounts;
+            return getStorageAccountList;
         }
 
         /// <summary>
@@ -113,19 +112,12 @@ namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
         {
             try
             {
-                var delete = new DeleteStorageAccountCommand(Manager.StorageAccountName)
-                                 {
-                                     SubscriptionId = Manager.SubscriptionId,
-                                     Certificate = Manager.ManagementCertificate
-                                 };
-                delete.Execute();
-                Manager.WriteComplete(EventPoint.StorageAccountCreated,
-                                      "Storage account " + Manager.StorageAccountName + " created");
+                _client.DeleteStorageAccount(Manager.StorageAccountName);
+                Manager.WriteComplete(EventPoint.StorageAccountCreated, "Storage account " + Manager.StorageAccountName + " created");
             }
             catch (Exception)
             {
-                Manager.WriteComplete(EventPoint.StorageAccountCreated,
-                                      "Storage account " + Manager.StorageAccountName + " not created");
+                Manager.WriteComplete(EventPoint.StorageAccountCreated, "Storage account " + Manager.StorageAccountName + " not created");
                 return false;
             }
 
@@ -147,27 +139,21 @@ namespace Elastacloud.AzureManagement.Fluent.Storage.Classes
             try
             {
                 // issue the create storage account command 
-                var create = new CreateStorageAccountCommand(Manager.StorageAccountName,
-                                                             Manager.StorageAccountDescription,
-                                                             Manager.StorageAccountLocation)
-                                 {
-                                     SubscriptionId = Manager.SubscriptionId,
-                                     Certificate = Manager.ManagementCertificate
-                                 };
-                create.Execute();
-                Manager.WriteComplete(EventPoint.StorageAccountCreated,
-                                      "Storage account " + Manager.StorageAccountName + " created");
+                _client.CreateNewStorageAccount(Manager.StorageAccountName, Manager.StorageAccountLocation);
+
+                while (StorageStatus.Created != _client.GetStorageStatus(Manager.StorageAccountName))
+                {
+                    Thread.Sleep(5000);
+                }
+
+                Manager.WriteComplete(EventPoint.StorageAccountCreated, "Storage account " + Manager.StorageAccountName + " created");
                 // get the storage account keys 
-                var keys = new GetStorageAccountKeysCommand(Manager.StorageAccountName)
-                               {
-                                   SubscriptionId = Manager.SubscriptionId,
-                                   Certificate = Manager.ManagementCertificate
-                               };
-                keys.Execute();
+                var keys = _client.GetStorageAccountKeys(Manager.StorageAccountName);
+
                 Manager.WriteComplete(EventPoint.StorageKeyRequestSuccess, "Keys returned from storage request");
                 // populate the primary and secondary keys 
-                Manager.StorageAccountPrimaryKey = keys.PrimaryStorageKey;
-                Manager.StorageAccountSecondaryKey = keys.SecondaryStorageKey;
+                Manager.StorageAccountPrimaryKey = keys[0];
+                Manager.StorageAccountSecondaryKey = keys[1];
             }
             catch (Exception exception)
             {

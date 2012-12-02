@@ -64,6 +64,10 @@
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
     <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\ServiceClient.cs" />
+    <Compile Include="Clients\IServiceClient.cs" />
+    <Compile Include="Clients\StorageClient.cs" />
+    <Compile Include="Clients\IStorageClient.cs" />
     <Compile Include="Clients\IBlobClient.cs" />
     <Compile Include="Commands\Blobs\BlobCommand.cs" />
     <Compile Include="Commands\Blobs\CreateAndUploadBlobCommand.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="Commands\SqlAzure\AddNewFirewallRuleWithIPDetectCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlServerCommand.cs" />
     <Compile Include="Commands\SqlAzure\ISqlAzureFirewallRule.cs" />
+    <Compile Include="Commands\Storage\GetStorageAccountStatusCommand.cs" />
     <Compile Include="Commands\Storage\DeleteStorageAccountCommand.cs" />
     <Compile Include="Commands\Storage\ListStorageAccountsCommand.cs" />
     <Compile Include="Commands\Storage\GetStorageAccountKeysCommand.cs" />
@@ -137,6 +142,7 @@
     <Compile Include="Helpers\LocationConstants.cs" />
     <Compile Include="Helpers\OPC\PackageFile.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
+    <Compile Include="Types\StorageStatus.cs" />
     <Compile Include="Types\Deployment.cs" />
     <Compile Include="Types\Subscription.cs" />
     <Compile Include="Types\UpdateDeploymentStatus.cs" />

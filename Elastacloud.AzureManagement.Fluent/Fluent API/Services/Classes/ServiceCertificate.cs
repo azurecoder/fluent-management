@@ -22,13 +22,20 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// <summary>
         /// Constructor to set default properties validity 1 year from today and default pvk "password"
         /// </summary>
-        public ServiceCertificate(string name)
+        public ServiceCertificate(string name) : this(name, "password")
+        {
+        }
+
+        /// <summary>
+        /// Constructor to set default properties validity 1 year from today and default pvk "password"
+        /// </summary>
+        public ServiceCertificate(string name, string password)
         {
             Name = name;
             ValidFrom = DateTime.Now;
             ValidTo = DateTime.Now.AddYears(1);
             UseExisting = false;
-            PvkPassword = "password";
+            PvkPassword = password;
         }
 
         /// <summary>

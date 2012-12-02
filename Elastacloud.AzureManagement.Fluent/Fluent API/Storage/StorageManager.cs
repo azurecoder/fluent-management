@@ -156,7 +156,7 @@ namespace Elastacloud.AzureManagement.Fluent.Storage
         /// <returns>an ICertificateActivity interface to promote the use of a management certificate</returns>
         public ICertificateActivity CreateNew(string name)
         {
-            StorageAccountName = name;
+            StorageAccountName = name.ToLower();
             CreateNewStorageAccount = true;
             return this;
         }
@@ -168,7 +168,7 @@ namespace Elastacloud.AzureManagement.Fluent.Storage
         /// <returns>An ICertificateActivity interface used to return certificate activity</returns>
         public ICertificateActivity Delete(string name)
         {
-            StorageAccountName = name;
+            StorageAccountName = name.ToLower();
             CreateNewStorageAccount = false;
             return this;
         }

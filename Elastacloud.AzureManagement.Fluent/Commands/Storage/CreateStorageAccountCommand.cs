@@ -22,7 +22,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
     {
         internal CreateStorageAccountCommand(string name, string description, string location = "North Europe")
         {
-            Name = name;
+            Name = name.ToLower();
             Description = description;
             Location = location;
             HttpVerb = HttpVerbPost;

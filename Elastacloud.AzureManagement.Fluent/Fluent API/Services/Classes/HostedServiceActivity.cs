@@ -9,8 +9,10 @@
 
 using System;
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Services.Classes
@@ -24,6 +26,11 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// A private reference to the DeploymentManager containing the state for the operation
         /// </summary>
         private readonly DeploymentManager _manager;
+        /// <summary>
+        /// Service client for all cloud service requests
+        /// </summary>
+        private readonly ServiceClient _client;
+
 
         /// <summary>
         /// Used to construct the HostedServiceActivity
@@ -32,6 +39,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         public HostedServiceActivity(DeploymentManager manager)
         {
             _manager = manager;
+            _client = new ServiceClient(_manager.SubscriptionId, _manager.ManagementCertificate, _manager.HostedServiceName);
         }
 
         /// <summary>
@@ -40,46 +48,26 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         public void Create()
         {
             // create the hosted service here
-            var service = new CreateHostedServiceCommand(_manager.HostedServiceName, _manager.Description, _manager.Location)
-                              {
-                                  Certificate = _manager.ManagementCertificate,
-                                  SubscriptionId = _manager.SubscriptionId
-                              };
-            service.Execute();
+            var description = _manager.Description ?? "Fluent Management created cloud service";
+            var location = _manager.Location ?? LocationConstants.NorthEurope;
+            _client.CreateNewCloudService(location, description);
             if (_manager.ServiceCertificate == null)
                 return;
             // first of all upload the service certificate 
-            byte[] export = _manager.ServiceCertificate.Certificate.Export(X509ContentType.Pkcs12, _manager.ServiceCertificate.PvkPassword);
-            var command = new AddServiceCertificateCommand(export, _manager.ServiceCertificate.PvkPassword, _manager.HostedServiceName)
-                              {
-                                  Certificate = _manager.ManagementCertificate,
-                                  SubscriptionId = _manager.SubscriptionId
-                              };
-            command.Execute();
+            _client.UploadServiceCertificate(_manager.ServiceCertificate.Certificate, _manager.ServiceCertificate.PvkPassword);
         }
 
         public void Delete()
         {
             try
             {
-                var deleteDeployment = new DeleteDeploymentCommand(_manager.HostedServiceName, _manager.DeploymentSlot)
-                                           {
-                                               Certificate = _manager.ManagementCertificate,
-                                               SubscriptionId = _manager.SubscriptionId
-                                           };
-                deleteDeployment.Execute();
+                _client.DeleteDeployment(_manager.DeploymentSlot);
             }
-            catch (Exception)
+            catch
             {
                 // no deployment here who cares!
             }
-            // delete the hosted service
-            var deleteService = new DeleteHostedServiceCommand(_manager.HostedServiceName)
-                                    {
-                                        Certificate = _manager.ManagementCertificate,
-                                        SubscriptionId = _manager.SubscriptionId
-                                    };
-            deleteService.Execute();
+            _client.DeleteCloudService();
         }
     }
 }
