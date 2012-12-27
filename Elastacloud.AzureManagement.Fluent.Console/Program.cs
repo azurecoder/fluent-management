@@ -44,9 +44,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             }
             if (mobile && create)
             {
-                return new MobileCreate(args[2], null, args[3]);
+                return new MobileCreate(args[2], _certificate, args[3]);
             }
-            return new MobileGet(args[2], null, args[3]);
+            return new MobileGet(args[2], _certificate, args[3]);
         }
     }
 }
