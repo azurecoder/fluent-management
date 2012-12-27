@@ -83,6 +83,7 @@
     <Compile Include="Commands\CommandNameMap.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\MobileServices\RestartMobileServiceCommand.cs" />
     <Compile Include="Commands\MobileServices\RegenerateMobileServiceKeyCommand.cs" />
     <Compile Include="Commands\MobileServices\GetMobileServiceLogsCommand.cs" />
     <Compile Include="Commands\MobileServices\GetMobileServiceSettingsCommand.cs" />

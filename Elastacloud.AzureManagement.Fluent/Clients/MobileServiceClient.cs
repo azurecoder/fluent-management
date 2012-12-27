@@ -184,7 +184,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             command = new RegenerateMobileServiceKeyCommand(MobileServiceName, KeyType.Master) { SubscriptionId = SubscriptionId, Certificate = ManagementCertificate };
             command.Execute();
+            // TODO: This takes ages the - the key information is returned from the query so just use that to populate 
             Refresh();
+        }
+
+        /// <summary>
+        /// Used to restart the mobile service
+        /// </summary>
+        public void Restart()
+        {
+            var command = new RestartMobileServiceCommand(MobileServiceName){SubscriptionId = SubscriptionId, Certificate = ManagementCertificate};
+            command.Execute();
         }
 
         #region Properties 
@@ -194,6 +204,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public string ApplicationKey { get; private set; }
 
+      
         /// <summary>
         /// The secret used to access the mobile service
         /// </summary>

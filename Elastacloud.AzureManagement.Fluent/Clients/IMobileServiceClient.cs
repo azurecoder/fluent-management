@@ -52,6 +52,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         string ApplicationKey { get; }
         /// <summary>
+        /// Used to restart the mobile service
+        /// </summary>
+        void Restart();
+        /// <summary>
         /// The secret used to access the mobile service
         /// </summary>
         string MasterKey { get; }
