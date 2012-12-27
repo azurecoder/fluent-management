@@ -57,18 +57,14 @@ namespace Elastacloud.AzureManagement.Fluent
             void SetMethod(string method);
             void SetContentType(string contentType);
             void SetBody(string body);
+            void SetAccept(string accept);
             bool HttpHeaderExists(string key);
             HttpWebRequest Create();
         }
 
         public IHttpRequestBuilder Builder
         {
-            get
-            {
-                if (_builder == null)
-                    _builder = new BasicHttpRequestBuilder();
-                return _builder;
-            }
+            get { return _builder ?? (_builder = new BasicHttpRequestBuilder()); }
             set { _builder = value; }
         }
 
@@ -140,6 +136,7 @@ namespace Elastacloud.AzureManagement.Fluent
             Builder.SetMethod(serviceManagementRequest.HttpVerb ?? "GET");//request.Method = serviceManagementRequest.HttpVerb ?? "GET";
             Builder.SetContentType(serviceManagementRequest.ContentType ?? "application/xml");//request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
             Builder.SetBody(serviceManagementRequest.Body);
+            Builder.SetAccept(serviceManagementRequest.Accept);
 
             return Builder.Create();
         }

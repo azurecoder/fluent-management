@@ -21,6 +21,10 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// The Service defintion namespace text
         /// </summary>
         public static string ServiceDefinition = "http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition";
+        /// <summary>
+        /// The BaseUri used to manage Sql Azure
+        /// </summary>
+        public static string SqlServiceManagement = "https://management.core.windows.net:8443";
 
         /// <summary>
         /// An XNamespace which container the service management schema
@@ -36,5 +40,10 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// An XNamespace which container the service management schema
         /// </summary>
         public static XNamespace NsServiceDefinition = XNamespace.Get(ServiceDefinition);
+        /// <summary>
+        /// Used to manage Sql Azure 
+        /// </summary>
+        public static XNamespace NsSqlServiceManagement = XNamespace.Get(SqlServiceManagement);
+
     }
 }

@@ -12,16 +12,23 @@ using System;
 namespace Elastacloud.AzureManagement.Fluent.Types.Exceptions
 {
     /// <summary>
-    /// Exception thrown when a storage account doesnot exist
+    /// A special type of exception used to capture the command that failed
     /// </summary>
-    public class StorageAccountDoesNotExistException : ApplicationException
+    public class FluentManagementException : ApplicationException
     {
         /// <summary>
-        /// Uses the storage account name to construct a message for the user 
+        /// Used to construct a fluent management exceptino
         /// </summary>
-        public StorageAccountDoesNotExistException(string accountName)
-            : base(String.Format("Account with name {0} does not exist", accountName))
+        /// <param name="message">The exception message</param>
+        /// <param name="commandName">The name of the command</param>
+        public FluentManagementException(string message, string commandName) : base(commandName + ": " + message)
         {
+            CommandName = commandName;
         }
+
+        /// <summary>
+        /// Used to capture the name of the command that failed
+        /// </summary>
+        public string CommandName { get; set; }
     }
 }

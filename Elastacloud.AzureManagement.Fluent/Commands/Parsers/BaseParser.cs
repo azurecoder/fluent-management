@@ -142,6 +142,15 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// </summary>
         public const string GetCloudServicePropertiesParser = "HostedService";
         /// <summary>
+        /// Gets the details for the mobile services application
+        /// </summary>
+        public const string GetMobileServiceDetailsParser = "ServiceResource";
+        /// <summary>
+        /// Gets the mobile services resource parser 
+        /// </summary>
+        public const string GetMobileServiceResourcesParser = "Application";
+        
+        /// <summary>
         /// The schema for the Sql azure manmagement request
         /// </summary>
         public const string SqlAzureSchema = "http://schemas.microsoft.com/sqlazure/2010/12/";

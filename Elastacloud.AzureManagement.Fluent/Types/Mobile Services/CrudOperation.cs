@@ -7,21 +7,28 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
-
-namespace Elastacloud.AzureManagement.Fluent.Types.Exceptions
+namespace Elastacloud.AzureManagement.Fluent.Types.MobileServices
 {
     /// <summary>
-    /// Exception thrown when a storage account doesnot exist
+    /// The operations for the data pipeline scripts within mobile services
     /// </summary>
-    public class StorageAccountDoesNotExistException : ApplicationException
+    public enum CrudOperation
     {
         /// <summary>
-        /// Uses the storage account name to construct a message for the user 
+        /// Used to insert a mobile service table row
         /// </summary>
-        public StorageAccountDoesNotExistException(string accountName)
-            : base(String.Format("Account with name {0} does not exist", accountName))
-        {
-        }
+        Insert,
+        /// <summary>
+        /// Used to update a mobile service table row
+        /// </summary>
+        Update,
+        /// <summary>
+        /// Used to delete a mobile service table row
+        /// </summary>
+        Delete,
+        /// <summary>
+        /// Used to read a mobile service table row
+        /// </summary>
+        Read
     }
 }

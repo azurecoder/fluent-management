@@ -56,6 +56,11 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         public string Body { get; set; }
 
         /// <summary>
+        /// The HTTP accept header to use
+        /// </summary>
+        public string Accept { get; set; }
+
+        /// <summary>
         /// Value contains a bypass for the certificate check 
         /// </summary>
         public bool RequestWithoutCertificate { get; set; }

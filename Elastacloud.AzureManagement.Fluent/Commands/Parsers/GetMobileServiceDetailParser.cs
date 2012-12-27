@@ -10,24 +10,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
 {
     /// <summary>
-    /// Summary parses a response from the fabric for the nodes that are deployed and returns the requisite status for each role instance
+    /// Gets a list of roles for a deployment that can be summed 
     /// </summary>
-    internal class GetAggregateDeploymentStatusParser : BaseParser
+    internal class GetMobileServiceDetailParser : BaseParser
     {
         /// <summary>
-        /// Creates a new aggregate deployment status reponse parser
+        /// Creates a new GetRoleStatusParser to pull the status of the deployment
         /// </summary>
-        /// <param name="response"></param>
-        public GetAggregateDeploymentStatusParser(XDocument response)
+        /// <param name="response">The document returned by the web</param>
+        public GetMobileServiceDetailParser(XDocument response)
             : base(response)
         {
-            CommandResponse = false;
+            // set the commandresponse to a Cscfg file in the parse method
         }
 
         /// <summary>
@@ -36,22 +37,29 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// </summary>
         internal override void Parse()
         {
-            IEnumerable<XElement> rootElements = Document.Element(GetSchema() + RootElement)
-                .Descendants(GetSchema() + "RoleInstance");
-            if (rootElements.Select(roleInstance => roleInstance.Element(GetSchema() + "InstanceStatus").Value).Select(instanceStatus => (DeploymentStatus) Enum.Parse(typeof (DeploymentStatus), instanceStatus)).Any(status => status != DeploymentStatus.ReadyRole))
-            {
-                return;
-            }
-            CommandResponse = true;
+            // have to ensure that both the IaaS and PaaS roles are returned
+            var dictionary = new Dictionary<string, string>(4);
+            var serviceResource = Document.Element(GetSchema() + RootElement);
+            dictionary["ApplicationKey"] = serviceResource.Element(GetSchema() + "ApplicationKey").Value;
+            dictionary["ApplicationUrl"] = serviceResource.Element(GetSchema() + "ApplicationUrl").Value;
+            dictionary["MasterKey"] = serviceResource.Element(GetSchema() + "MasterKey").Value;
+            dictionary["Location"] = serviceResource.Element(GetSchema() + "Region").Value;
+            CommandResponse = dictionary;
         }
-
+       
         #region Overrides of BaseParser
 
+        /// <summary>
+        /// The GetRoleStatus parser root element
+        /// </summary>
         internal override string RootElement
         {
-            get { return GetAggregateDeploymentsParser; }
+            get { return GetMobileServiceDetailsParser; }
         }
 
+        /// <summary>
+        /// Gets the schema of the Xml response
+        /// </summary>
         protected override XNamespace GetSchema()
         {
             return XNamespace.Get(WindowsAzureSchema);

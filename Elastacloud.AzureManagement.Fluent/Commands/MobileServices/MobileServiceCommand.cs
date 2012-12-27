@@ -7,21 +7,25 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
+using Elastacloud.AzureManagement.Fluent.Commands.Services;
 
-namespace Elastacloud.AzureManagement.Fluent.Types.Exceptions
+namespace Elastacloud.AzureManagement.Fluent.Commands.MobileServices
 {
     /// <summary>
-    /// Exception thrown when a storage account doesnot exist
+    /// Used to a create a deployment for a web or worker role given some specific deployment parameters
     /// </summary>
-    public class StorageAccountDoesNotExistException : ApplicationException
+    internal class MobileServiceCommand : ServiceCommand
     {
         /// <summary>
-        /// Uses the storage account name to construct a message for the user 
+        /// Constructs a mobile services command
         /// </summary>
-        public StorageAccountDoesNotExistException(string accountName)
-            : base(String.Format("Account with name {0} does not exist", accountName))
+        public MobileServiceCommand()
         {
+            Accept = "application/xml";
         }
+        /// <summary>
+        /// The base64 config of the deployment
+        /// </summary>
+        internal string Config { get; set; }
     }
 }

@@ -7,21 +7,28 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
-
-namespace Elastacloud.AzureManagement.Fluent.Types.Exceptions
+namespace Elastacloud.AzureManagement.Fluent.Types.MobileServices
 {
     /// <summary>
-    /// Exception thrown when a storage account doesnot exist
+    /// The roles used by Mobile Services to control access to scripts
     /// </summary>
-    public class StorageAccountDoesNotExistException : ApplicationException
+    public enum Roles
     {
         /// <summary>
-        /// Uses the storage account name to construct a message for the user 
+        /// Any recognised user
         /// </summary>
-        public StorageAccountDoesNotExistException(string accountName)
-            : base(String.Format("Account with name {0} does not exist", accountName))
-        {
-        }
+        User,
+        /// <summary>
+        /// The application being used to access the mobile services script
+        /// </summary>
+        Application,
+        /// <summary>
+        /// Also the administrator of the mobile service
+        /// </summary>
+        Admin,
+        /// <summary>
+        /// Any anonymous member 
+        /// </summary>
+        Public
     }
 }

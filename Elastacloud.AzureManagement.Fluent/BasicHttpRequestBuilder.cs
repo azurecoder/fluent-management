@@ -16,6 +16,7 @@ namespace Elastacloud.AzureManagement.Fluent
         private string _method;
         private string _contentType;
         private string _body;
+        private string _accept;
 
         public BasicHttpRequestBuilder()
         {
@@ -53,6 +54,11 @@ namespace Elastacloud.AzureManagement.Fluent
             _body = body;
         }
 
+        public void SetAccept(string accept)
+        {
+            _accept = accept;
+        }
+
         public bool HttpHeaderExists(string key)
         {
             return _headers.ContainsKey(key);
@@ -65,7 +71,7 @@ namespace Elastacloud.AzureManagement.Fluent
             {
                 foreach (var x509Certificate in _certificates)
                 {
-                    request.ClientCertificates.AddRange(_certificates.ToArray());
+                    request.ClientCertificates.Add(x509Certificate);
                 }
             }
 
@@ -79,6 +85,7 @@ namespace Elastacloud.AzureManagement.Fluent
 
             request.Method = _method;
             request.ContentType = _contentType;
+            request.Accept = _accept ?? "application/xml";
             request.ContentLength = 0;
 
             if (!string.IsNullOrEmpty(_body))

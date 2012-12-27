@@ -155,6 +155,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// </summary>
         internal bool? UseCertificate { get; set; }
 
+        /// <summary>
+        /// Used to get and set the accept headers
+        /// </summary>
+        internal string Accept { get; set; }
+
         #endregion
 
         #region Constants
@@ -182,7 +187,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             SitAndWait = new ManualResetEvent(false);
             BaseRequestUri = BaseUri;
-            AdditionalHeaders = new Dictionary<string, string> {{"x-ms-version", "2011-10-01"}};
+            //AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2011-10-01" } };
+            AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2012-03-01" } };
         }
 
         #region ICommand Members
@@ -205,6 +211,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                    Certificate = Certificate,
                                                    AdditionalHeaders = AdditionalHeaders,
                                                    ContentType = ContentType,
+                                                   Accept = Accept,
                                                    RequestWithoutCertificate =
                                                        !(UseCertificate.HasValue && UseCertificate.Value)
                                                };

@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using Elastacloud.AzureManagement.Fluent.Helpers;
+
 namespace Elastacloud.AzureManagement.Fluent.Types
 {
     public class Constants
@@ -25,8 +27,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         public const string CcprojExtension = ".ccproj";
         public const string CsdefExtension = ".csdef";
         public const string CspkgExtension = ".cspkg";
-        public const string LocationNorthEurope = "North Europe";
-        public const string LocationWestEurope = "West Europe";
 
         public const string PluginsRemoteAccessEnabled = "Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled";
 
@@ -40,5 +40,74 @@ namespace Elastacloud.AzureManagement.Fluent.Types
             "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration";
 
         public const string PluginsRemoteForwarderEnabled = "Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled";
+
+        #region Mobile Services
+
+        public const string MobileServicesSchemaVersion = "2012-05.1.0";
+        public const string MobileServicesSchemaLocation = LocationConstants.WestUS;
+        public const string MobileServicesVersion = "2012-05-21.1.0";
+        public const string MobileServicesName = "ZumoMobileService";
+
+
+        public const string MobileServicesType = "Microsoft.WindowsAzure.MobileServices.MobileService";
+        public const string MobileServicesSqlServerType = "Microsoft.WindowsAzure.SQLAzure.Server";
+        public const string MobileServicesSqlDatabaseType = "Microsoft.WindowsAzure.SQLAzure.DataBase";
+
+        public const string MobileServicesCreateNewTemplate = "{{" +
+                       "\"SchemaVersion\": \"{0}\", " +
+                       "\"Location\": \"{1}\", " +
+                       "\"ExternalResources\": {{}}, " +
+                       "\"InternalResources\": {{ " +
+                       "\"ZumoMobileService\": {{ " +
+                       "\"ProvisioningParameters\": {{ " +
+                       "\"Name\": \"{4}\", " +
+                       "\"Location\": \"{5}\" " +
+                       "}}, " +
+                       "\"ProvisioningConfigParameters\": {{ " +
+                       "\"Server\": {{ " +
+                       "\"StringConcat\": [ " +
+                       "{{ " +
+                       "\"ResourceReference\": \"{6}.Name\" " +
+                       " }}, " +
+                       "\".database.windows.net\"" +
+                       "] " +
+                       "}}, " +
+                       "\"Database\": {{ " +
+                       "\"ResourceReference\": \"{7}.Name\"" +
+                       "}}, " +
+                       "\"AdministratorLogin\": \"{8}\", " +
+                       "\"AdministratorLoginPassword\": \"{9}\" " +
+                       "}}, " +
+                       "\"Version\": \"{10}\", " +
+                       "\"Name\": \"{11}\", " +
+                       "\"Type\": \"{12}\" }}, " +
+                       "\"{6}\": {{ " +
+                       "\"ProvisioningParameters\": {{ " +
+                       "\"AdministratorLogin\": \"{8}\", " +
+                       "\"AdministratorLoginPassword\": \"{9}\", " +
+                       "\"Location\": \"{5}\" " +
+                       "}}, " +
+                       "\"ProvisioningConfigParameters\": {{ " +
+                       "\"FirewallRules\": [ {{" +
+                       "\"Name\": \"AllowAllWindowsAzureIps\", " +
+                       "\"StartIPAddress\": \"0.0.0.0\", " +
+                       "\"EndIPAddress\": \"0.0.0.0\" }}]}}," +
+                       "\"Version\": \"1.0\", " +
+                       "\"Name\": \"{6}\", " +
+                       "\"Type\": \"Microsoft.WindowsAzure.SQLAzure.Server\" }}," +
+                       "\"{7}\": {{ " +
+                       "\"ProvisioningParameters\": {{ " +
+                       "\"Name\": \"{4}_db\", " +
+                       "\"Edition\": \"WEB\", " +
+                       "\"MaxSizeInGB\": \"1\", " +
+                       "\"DBServer\": {{ " +
+                       "\"ResourceReference\": \"{6}.Name\" }}," +
+                       "\"CollationName\": \"SQL_Latin1_General_CP1_CI_AS\" }}," +
+                       "\"Version\": \"1.0\"," +
+                       "\"Name\": \"{7}\", " +
+                       "\"Type\": \"Microsoft.WindowsAzure.SQLAzure.DataBase\" }}" +
+                       "}} ";
+
+        #endregion
     }
 }
