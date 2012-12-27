@@ -66,6 +66,12 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                 System.Console.WriteLine("Update permission: {0}", table.UpdatePermission);
                 System.Console.WriteLine("==================================================");
             }
+
+            var logs = client.Logs;
+            System.Console.WriteLine("There are {0} log entries", logs.Count);
+            System.Console.WriteLine("There are {0} error log entries", logs.Where(a => a.Type == LogLevelType.Error));
+            System.Console.WriteLine("There are {0} warning log entries", logs.Where(a => a.Type == LogLevelType.Warning));
+            System.Console.WriteLine("There are {0} information log entries", logs.Where(a => a.Type == LogLevelType.Information));
         }
 
         #endregion

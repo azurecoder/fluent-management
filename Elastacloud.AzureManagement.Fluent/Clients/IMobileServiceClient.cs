@@ -141,5 +141,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The client secret for twitter access
         /// </summary>
         string TwitterClientSecret { get; set; }
+        /// <summary>
+        /// The mobile service log entry entries
+        /// </summary>
+        List<MobileServiceLogEntry> Logs { get; } 
     }
 }

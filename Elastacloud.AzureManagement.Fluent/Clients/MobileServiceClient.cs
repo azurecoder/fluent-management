@@ -19,6 +19,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     /// </summary>
     public class MobileServiceClient : IMobileServiceClient
     {
+        private readonly List<MobileServiceLogEntry> _logs = new List<MobileServiceLogEntry>();
+
         /// <summary>
         /// Used to construct a mobile service client
         /// </summary>
@@ -295,6 +297,37 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The client secret for twitter access
         /// </summary>
         public string TwitterClientSecret { get; set; }
+
+        /// <summary>
+        /// The mobile service log entry entries
+        /// </summary>
+        public List<MobileServiceLogEntry> Logs
+        {
+            get
+            {
+                // TODO: speak to mobile services team as date filtering not returning any results for 
+                // $filter ge datetime'xTyZ' so had to discard
+                var minTime = DateTime.MinValue;
+                var logItem = _logs.OrderBy(entry => entry.TimeCreated).FirstOrDefault();
+                // if there is no log item then this is the first time that this call has been made - or there are no logs!!
+                if (logItem != null)
+                    minTime = logItem.TimeCreated;
+                // execute the logs command
+                var command = new GetMobileServiceLogsCommand(MobileServiceName)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                // convert the JSON response and append the log increment
+                var results = (JObject)JsonConvert.DeserializeObject(command.JsonResult);
+                var logs = results["results"].ToObject<List<MobileServiceLogEntry>>();
+                var incrementalLogs = logs.Where(entry => entry.TimeCreated > minTime).ToList();
+                _logs.AddRange(incrementalLogs);
+
+                return _logs;
+            }
+        }
 
         #endregion
 

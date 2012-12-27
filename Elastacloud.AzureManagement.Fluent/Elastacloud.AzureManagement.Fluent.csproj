@@ -83,6 +83,7 @@
     <Compile Include="Commands\CommandNameMap.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\MobileServices\GetMobileServiceLogsCommand.cs" />
     <Compile Include="Commands\MobileServices\GetMobileServiceSettingsCommand.cs" />
     <Compile Include="Commands\MobileServices\UpdateMobileServiceSettingsCommand.cs" />
     <Compile Include="Commands\MobileServices\ListMobileServiceTablesCommand.cs" />
@@ -164,6 +165,8 @@
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\Exceptions\FluentManagementException.cs" />
     <Compile Include="Types\Mobile Services\AuthAccountType.cs" />
+    <Compile Include="Types\Mobile Services\LogLevelType.cs" />
+    <Compile Include="Types\Mobile Services\MobileServiceLogEntry.cs" />
     <Compile Include="Types\Mobile Services\WindowsAuthProvider.cs" />
     <Compile Include="Types\Mobile Services\CrudOperation.cs" />
     <Compile Include="Types\Mobile Services\MobileServicesAuthProvider.cs" />
