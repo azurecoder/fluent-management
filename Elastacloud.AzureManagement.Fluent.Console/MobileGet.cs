@@ -28,6 +28,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
         public void Execute()
         {
             var client = new MobileServiceClient(_subscriptionId, _certificate, _mobileServiceName);
+            client.RegenerateKeys();
             if(!client.Tables.Exists(a => a.TableName == "Speakers"))
                 client.AddTable("Speakers");
             client.AddTableScript(CrudOperation.Insert, "Speakers", Resources.insert_js, Types.MobileServices.Roles.Public);

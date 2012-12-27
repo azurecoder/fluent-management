@@ -174,6 +174,19 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             GetMobileServiceTables();
         }
 
+        /// <summary>
+        /// Regenerates both the master and the application keys
+        /// </summary>
+        public void RegenerateKeys()
+        {
+            EnsureMobileServicesName();
+            var command = new RegenerateMobileServiceKeyCommand(MobileServiceName){SubscriptionId = SubscriptionId, Certificate = ManagementCertificate};
+            command.Execute();
+            command = new RegenerateMobileServiceKeyCommand(MobileServiceName, KeyType.Master) { SubscriptionId = SubscriptionId, Certificate = ManagementCertificate };
+            command.Execute();
+            Refresh();
+        }
+
         #region Properties 
 
         /// <summary>

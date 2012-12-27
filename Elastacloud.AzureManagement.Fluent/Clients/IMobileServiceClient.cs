@@ -44,6 +44,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         void Refresh();
         /// <summary>
+        /// Regenerates both the master and the application keys
+        /// </summary>
+        void RegenerateKeys();
+        /// <summary>
         /// The mobile service account key
         /// </summary>
         string ApplicationKey { get; }
@@ -144,6 +148,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// The mobile service log entry entries
         /// </summary>
-        List<MobileServiceLogEntry> Logs { get; } 
+        List<MobileServiceLogEntry> Logs { get; }
+        
     }
 }
