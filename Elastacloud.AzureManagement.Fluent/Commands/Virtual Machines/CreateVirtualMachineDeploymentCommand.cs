@@ -65,7 +65,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// Creates a deployment payload for a predefined template 
         /// </summary>
         /// <returns>A string xml representation</returns>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             Deployment deployment = null;
             switch (VirtualMachineType)

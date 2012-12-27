@@ -42,7 +42,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.SqlAzure
         public string AdministratorPassword { get; set; }
         public string SqlAzureServerName { get; set; }
 
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             XNamespace ns = SqlAzureSchema;
             var doc = new XDocument(

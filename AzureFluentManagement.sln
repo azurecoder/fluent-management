@@ -5,14 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Tests", "Elastacloud.AzureManagement.Fluent.Tests\Elastacloud.AzureManagement.Fluent.Tests.csproj", "{B494A1C5-3612-43AE-BC60-942FCFB2AE7C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{74FDD7B1-2589-465D-A982-EAAFA1FEB933}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Console", "Elastacloud.AzureManagement.Fluent.Console\Elastacloud.AzureManagement.Fluent.Console.csproj", "{99A2E617-E69B-4482-802D-BE90F64F5B14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{610607A7-81E6-449C-903A-CBE4CF5E2493}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Console", "Elastacloud.AzureManagement.Fluent.Console\Elastacloud.AzureManagement.Fluent.Console.csproj", "{99A2E617-E69B-4482-802D-BE90F64F5B14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

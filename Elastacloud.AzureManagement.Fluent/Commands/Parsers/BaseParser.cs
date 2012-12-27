@@ -43,6 +43,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// </summary>
         internal abstract string RootElement { get; }
 
+
         /// <summary>
         /// Overriden in derived classes with the schema value of the operation and response
         /// </summary>
@@ -97,6 +98,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         #region Root Verbs
 
         /// <summary>
+        /// The root element for the mobile services table list
+        /// </summary>
+        public const string ListMobileServiceTablesParser = "Tables";
+        /// <summary>
         /// The element for the AddNewSqlAzureServerParser response
         /// </summary>
         public const string AddNewSqlAzureServerParser = "ServerName";
@@ -146,6 +151,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// </summary>
         public const string GetMobileServiceDetailsParser = "ServiceResource";
         /// <summary>
+        /// Gets the details for the mobile services application
+        /// </summary>
+        public const string GetMobileServiceTablePermissionsParser = "Permissions";
+        /// <summary>
         /// Gets the mobile services resource parser 
         /// </summary>
         public const string GetMobileServiceResourcesParser = "Application";
@@ -158,6 +167,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The generic windows azure parser response address
         /// </summary>
         public const string WindowsAzureSchema = "http://schemas.microsoft.com/windowsazure";
+        /// <summary>
+        /// The schema used by WAMS
+        /// </summary>
+        public const string MobileServicesSchema = "http://schemas.microsoft.com/windowsazure/mobileservices";
         /// <summary>
         /// The Service Management schema address
         /// </summary>

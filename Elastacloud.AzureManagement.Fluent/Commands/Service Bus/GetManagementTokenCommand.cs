@@ -43,7 +43,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.ServiceBus
         /// <summary>
         /// Creates a post body which contains meta information to access the management service with the appropriate credentials
         /// </summary>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             string postBody = "grant_type=client_credentials";
             postBody += "&client_id=SBManagementClient";

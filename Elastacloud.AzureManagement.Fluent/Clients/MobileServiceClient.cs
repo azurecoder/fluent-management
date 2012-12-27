@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Elastacloud.AzureManagement.Fluent.Commands.MobileServices;
@@ -7,6 +8,9 @@ using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.MobileServices;
+using Newtonsoft.Json;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -53,6 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             MobileServiceName = serviceName;
             SqlAzureUsername = sqlUsername;
             SqlAzurePassword = sqlPassword;
+            EnsureMobileServicesName();
             MobileServiceCommand command = new CreateMobileServiceCommand(serviceName, null)
                               {
                                   SubscriptionId = SubscriptionId,
@@ -67,68 +72,98 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Adds a table to mobile services
         /// </summary>
         /// <param name="tableName">the name of the table</param>
-        public void AddTable(string tableName)
+        /// <param name="defaultPermission">Sets the default permission for the table scripts</param>
+        public void AddTable(string tableName, Types.MobileServices.Roles defaultPermission = Types.MobileServices.Roles.Application)
         {
-            throw new NotImplementedException();
+            if(String.IsNullOrEmpty(tableName))
+                throw new FluentManagementException("unable to add table with an empty name", "CreateMobileServicesTableCommand");
+            var dictionary = new Dictionary<string, string>(5);
+            dictionary[CrudOperation.Insert.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
+            dictionary[CrudOperation.Update.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
+            dictionary[CrudOperation.Delete.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
+            dictionary[CrudOperation.Read.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
+            dictionary["name"] = tableName;
+            EnsureMobileServicesName();
+            var config = JsonConvert.SerializeObject(dictionary);
+            var command = new CreateMobileServiceTableCommand(MobileServiceName, tableName, config)
+                              {
+                                  SubscriptionId = SubscriptionId,
+                                  Certificate = ManagementCertificate
+                              };
+            command.Execute();
         }
 
         /// <summary>
         /// Adds a script for a crud operation to the table
         /// </summary>
         /// <param name="operationType">The type of operation</param>
-        /// <param name="script"></param>
-        public void AddTableString(CrudOperation operationType, string script)
+        /// <param name="tableName">The name of the WAMS table</param>
+        /// <param name="script">The script to add</param>
+        /// <param name="permission">The permissions of the script to upload</param>
+        public void AddTableScript(CrudOperation operationType, string tableName, string script, Types.MobileServices.Roles permission)
+        {
+            if (String.IsNullOrEmpty(tableName))
+                throw new FluentManagementException("unable to add table with an empty name", "CreateMobileServicesTableScriptCommand");
+            EnsureMobileServicesName();
+            Refresh();
+            // then create the script
+            var command = new CreateMobileServiceTableScriptCommand(MobileServiceName, tableName, operationType, script)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            // update the script with the new permissions
+            var dictionary = new Dictionary<string, string>();
+            var table = Tables.FirstOrDefault(a => a.TableName == tableName);
+            // TODO: speak to MSFT about this - the cmdlets have a bug and all of the permissions need to be added for them to update more than a single one
+            dictionary.Add(CrudOperation.Insert.ToString().ToLower(), table.InsertPermission.ToString());
+            dictionary.Add(CrudOperation.Update.ToString().ToLower(), table.UpdatePermission.ToString());
+            dictionary.Add(CrudOperation.Read.ToString().ToLower(), table.ReadPermission.ToString());
+            dictionary.Add(CrudOperation.Delete.ToString().ToLower(), table.DeletePermission.ToString());
+            dictionary[operationType.ToString().ToLower()] = permission.ToString().ToLower();
+                                
+            // updates the script table service permissions
+            var config = JsonConvert.SerializeObject(dictionary);
+            var updateCommand = new UpdateMobileServiceTablePermissionsCommand(MobileServiceName, tableName, config)
+                              {
+                                  SubscriptionId = SubscriptionId,
+                                  Certificate = ManagementCertificate
+                              };
+            updateCommand.Execute();
+        }
+
+        /// <summary>
+        /// Adds a scheduled job to WAMS
+        /// </summary>
+        /// <param name="name">The name of the script</param>
+        /// <param name="script">The actual script</param>
+        /// <param name="intervalInMinutes">The interval in minutes</param>
+        public void AddSchedulerScript(string name, string script, int intervalInMinutes)
         {
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// Adds or replace the Microsoft account credentials for the mobile service
+        /// Updates any of the settable prooperties of the mobile service
         /// </summary>
-        public void AddOrReplaceMicrosoftAccountCredentials(string appKey, string appSecret)
+        public void Update()
         {
-            throw new NotImplementedException();
+            UpdateLiveNotifications();
+            UpdateAuth();
+            UpdateService();
         }
-
+        
         /// <summary>
-        /// Adds or replaces the google account credentials for the mobile service
+        /// Refreshes the state of the client
         /// </summary>
-        public void AddOrReplaceGoogleAccountCredentials(string appKey, string appSecret)
+        public void Refresh()
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds or replaces facebook credentials for the mobile service
-        /// </summary>
-        public void AddOrReplaceFacebookCredentials(string appKey, string appSecret)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds or replaces Yahoo credentials for the mobile service
-        /// </summary>
-        public void AddOrReplaceYahooCredentials(string appKey, string appSecret)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Turns the dynamic schema on or off
-        /// </summary>
-        /// <param name="schemaOn">A bool denoting whether the schema is on or off</param>
-        public void UpdateDynamicSchema(bool schemaOn)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Adds or replaces WPNS/WNS for the mobile service
-        /// </summary>
-        public void AddOrReplaceWindowsPushNotificationCredentials(string clientSecret, string packageSid)
-        {
-            throw new NotImplementedException();
+            if (MobileServiceName == null) return;
+            GetAllSettings();
+            GetMobileServiceDetails();
+            GetMobileServiceResources();
+            GetMobileServiceTables();
         }
 
         #region Properties 
@@ -200,6 +235,61 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public State MobileServiceState { get; private set; }
 
+        /// <summary>
+        /// Gets a list of mobile services tables
+        /// </summary>
+        public List<MobileServiceTable> Tables { get; private set; }
+
+        /// <summary>
+        /// Gets or sets whether the dynamic schema is enabled or not
+        /// </summary>
+        public bool DynamicSchemaEnabled { get; set; }
+
+        /// <summary>
+        /// The client secret for live id access
+        /// </summary>
+        public string MicrosoftAccountClientSecret { get; set; }
+
+        /// <summary>
+        /// The client id for live id access
+        /// </summary>
+        public string MicrosoftAccountClientId { get; set; }
+
+        /// <summary>
+        /// The package sid for wns 
+        /// </summary>
+        public string MicrosoftAccountPackageSID { get; set; }
+
+        /// <summary>
+        /// The client id for facebook access
+        /// </summary>
+        public string FacebookClientId { get; set; }
+
+        /// <summary>
+        /// The client secret for facebook access
+        /// </summary>
+        public string FacebookClientSecret { get; set; }
+
+        /// <summary>
+        /// The client id for google access
+        /// </summary>
+        public string GoogleClientId { get; set; }
+
+        /// <summary>
+        /// The client secret for google access
+        /// </summary>
+        public string GoogleClientSecret { get; set; }
+
+        /// <summary>
+        /// The client id for twitter access
+        /// </summary>
+        public string TwitterClientId { get; set; }
+
+        /// <summary>
+        /// The client secret for twitter access
+        /// </summary>
+        public string TwitterClientSecret { get; set; }
+
         #endregion
 
         #endregion
@@ -213,14 +303,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <returns>A base64 string of the properties for configuring the Db with the mobile service</returns>
         private void BuildBase64Config(ref MobileServiceCommand command)
         {
-            // make sure that the database details are intact
-            //if (String.IsNullOrEmpty(SqlAzureDbName) || String.IsNullOrEmpty(SqlAzureServerName) ||
-            //    String.IsNullOrEmpty(SqlAzureUsername) || String.IsNullOrEmpty(SqlAzurePassword))
-            //{
-            //    throw new FluentManagementException("database details are not present - cannot build fluent management mobile service", command.ToString());
-            //}
             var jjson = GetCreateNewServiceSpecification();
-            var json = Newtonsoft.Json.JsonConvert.DeserializeObject(jjson);
+            var json = JsonConvert.DeserializeObject(jjson);
 
             command.Config = Convert.ToBase64String(Encoding.UTF8.GetBytes(json.ToString()));
         }
@@ -239,15 +323,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets the details of the mobile service on startup
         /// </summary>
-        /// <param name="name">the name of the service</param>
-        private void GetMobileServiceDetails(string name)
+        private void GetMobileServiceDetails()
         {
             //execute the details command 
-            var details = new GetMobileServiceDetailsCommand(name)
-                              {
-                                  SubscriptionId = SubscriptionId,
-                                  Certificate = ManagementCertificate
-                              };
+            var details = new GetMobileServiceDetailsCommand(MobileServiceName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
             details.Execute();
             //set all of the details in the client
             ApplicationKey = details.ApplicationKey;
@@ -255,24 +338,23 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             Location = details.Location;
             MasterKey = details.MasterKey;
         }
+        
         /// <summary>
-        /// Refreshes the state of the client
+        /// Ensures that the mobile services name has a value
         /// </summary>
-        private void Refresh()
+        private void EnsureMobileServicesName()
         {
-            if (MobileServiceName == null) return;
-            GetMobileServiceDetails(MobileServiceName);
-            GetMobileServiceResources(MobileServiceName);
+            if(String.IsNullOrEmpty(MobileServiceName))
+                throw new FluentManagementException("No mobile services name present", "GetMobileServiceResourcesCommand");
         }
 
         /// <summary>
         /// Gets and populates all of the state of the resources 
         /// </summary>
-        /// <param name="mobileServiceName">The name of the mobile service</param>
-        private void GetMobileServiceResources(string mobileServiceName)
+        private void GetMobileServiceResources()
         {
             //execute the details command 
-            var details = new GetMobileServiceResourcesCommand(mobileServiceName)
+            var details = new GetMobileServiceResourcesCommand(MobileServiceName)
             {
                 SubscriptionId = SubscriptionId,
                 Certificate = ManagementCertificate
@@ -285,6 +367,193 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             MobileServiceDbName = details.MobileServiceDatabaseName;
             Description = details.Description;
             MobileServiceState = details.State;
+        }
+
+        /// <summary>
+        /// Gets a list of all of the mobile services tables
+        /// </summary>
+        private void GetMobileServiceTables()
+        {
+            var command = new ListMobileServiceTablesCommand(MobileServiceName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            Tables = command.Tables;
+            foreach (var table in Tables)
+            {
+                var permissionsCommand = new GetMobileServiceTablePermissionCommand(MobileServiceName, table.TableName)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                permissionsCommand.Execute();
+                table.InsertPermission = permissionsCommand.InsertPermission;
+                table.ReadPermission = permissionsCommand.ReadPermission;
+                table.UpdatePermission = permissionsCommand.UpdatePermission;
+                table.DeletePermission = permissionsCommand.DeletePermission;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of mobile auth provider settings and populates 
+        /// </summary>
+        private void GetMobileAuthenticationProviderSettings()
+        {
+            // execute the command 
+            var command = new GetMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesAuthSettings)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            // get all the mobile providers returned 
+            var mobileProviders = (List<MobileServicesAuthProvider>)JsonConvert.DeserializeObject(command.JsonResult, typeof(List<MobileServicesAuthProvider>));
+            foreach (var mobileServicesAuthProvider in mobileProviders)
+            {
+                switch (mobileServicesAuthProvider.Provider)
+                {
+                    case Constants.GoogleProvider:
+                        GoogleClientId = mobileServicesAuthProvider.AppId;
+                        GoogleClientSecret = mobileServicesAuthProvider.Secret;
+                        break;
+                    case Constants.FacebookProvider:
+                        FacebookClientId = mobileServicesAuthProvider.AppId;
+                        FacebookClientSecret = mobileServicesAuthProvider.Secret;
+                        break;
+                    case Constants.TwitterProvider:
+                        TwitterClientId = mobileServicesAuthProvider.AppId;
+                        TwitterClientSecret = mobileServicesAuthProvider.Secret;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all of the Windows settings for notifications and other things
+        /// </summary>
+        private void GetLiveNotificationSettings()
+        {
+            // execute the command 
+            var command = new GetMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesLiveSettings)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            // get all the mobile providers returned 
+            var windows = (WindowsAuthProvider)JsonConvert.DeserializeObject(command.JsonResult, typeof(WindowsAuthProvider));
+            MicrosoftAccountClientId = windows.ClientId;
+            MicrosoftAccountClientSecret = windows.ClientSecret;
+            MicrosoftAccountPackageSID = windows.PackageSid;
+        }
+
+        /// <summary>
+        /// Gets all of the Windows settings for notifications and other things
+        /// </summary>
+        private void GetServiceSettings()
+        {
+            // execute the command 
+            var command = new GetMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesServiceSettings)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            // get all the mobile providers returned 
+            
+            var settings = (JObject)JsonConvert.DeserializeObject(command.JsonResult);
+            DynamicSchemaEnabled = (bool)settings.GetValue(Constants.DynamicSchemaEnabled).ToObject(typeof(bool));
+        }
+
+        /// <summary>
+        /// Gets an aggregate of all of the mobile services settings
+        /// </summary>
+        private void GetAllSettings()
+        {
+            GetServiceSettings();
+            GetLiveNotificationSettings();
+            GetMobileAuthenticationProviderSettings();
+        }
+
+        #endregion
+
+        #region Updates
+
+        /// <summary>
+        /// Used to update the authentication for the mobile service
+        /// </summary>
+        private void UpdateAuth()
+        {
+            // setup the providers
+            var providers = new List<MobileServicesAuthProvider>();
+            var googleProvider = new MobileServicesAuthProvider(Constants.GoogleProvider, GoogleClientId, GoogleClientSecret);
+            var facebookProvider = new MobileServicesAuthProvider(Constants.FacebookProvider, FacebookClientId, FacebookClientSecret);
+            var twitterProvider = new MobileServicesAuthProvider(Constants.TwitterProvider, TwitterClientId, TwitterClientSecret);
+            //check whether they are empty or not
+            if (!(String.IsNullOrEmpty(GoogleClientId) && String.IsNullOrEmpty(GoogleClientSecret)))
+            {
+                providers.Add(googleProvider);
+            }
+            if (!(String.IsNullOrEmpty(TwitterClientId) && String.IsNullOrEmpty(TwitterClientSecret)))
+            {
+                providers.Add(twitterProvider);
+            }
+            if (!(String.IsNullOrEmpty(FacebookClientId) && String.IsNullOrEmpty(FacebookClientSecret)))
+            {
+                providers.Add(facebookProvider);
+            }
+            // execute the command
+            var converted = JsonConvert.SerializeObject(providers);
+            var command = new UpdateMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesAuthSettings, converted)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+        }
+
+        /// <summary>
+        /// Used to update the service settings currently dynamic schema only
+        /// </summary>
+        private void UpdateService()
+        {
+            // we'll always have a value for this 
+            var dictionary = new Dictionary<string, string>();
+            dictionary[Constants.DynamicSchemaEnabled] = DynamicSchemaEnabled.ToString().ToLower();
+            var converted = JsonConvert.SerializeObject(dictionary);
+            // execute this command
+            // TODO: speak to MSFT the current verb is PATCH it would be good to understand where this is going
+            var command = new UpdateMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesServiceSettings, converted, "PATCH")
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+        }
+
+        /// <summary>
+        /// Used to update everything to do with a Microsoft Account including WNS
+        /// </summary>
+        private void UpdateLiveNotifications()
+        {
+            // set this up 
+            int count = 3;
+            if (String.IsNullOrEmpty(MicrosoftAccountClientId)) count--;
+            if (String.IsNullOrEmpty(MicrosoftAccountClientSecret)) count--;
+            if (String.IsNullOrEmpty(MicrosoftAccountPackageSID)) count--;
+            // if we only have a single value we're interested
+            // permutations are client id + secret OR client id + package sid
+            if (count < 2) return;
+            var converted = JsonConvert.SerializeObject(new WindowsAuthProvider(MicrosoftAccountPackageSID, MicrosoftAccountClientId, MicrosoftAccountClientSecret));
+            // execute the command
+            var command = new UpdateMobileServiceSettingsCommand(MobileServiceName, Constants.MobileServicesLiveSettings, converted)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
         }
 
         #endregion

@@ -29,7 +29,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             OperationId = "hostedservices";
         }
 
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             /*<?xml version="1.0" encoding="utf-8"?>
                 <CreateHostedService xmlns="http://schemas.microsoft.com/windowsazure">

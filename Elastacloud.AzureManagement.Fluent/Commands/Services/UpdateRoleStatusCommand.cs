@@ -44,7 +44,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// The Xml payload that is created and sent to the Fabric with the create deployment parameters
         /// </summary>
         /// <returns>A string Xml document representation</returns>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             XNamespace ns = "http://schemas.microsoft.com/windowsazure";
             var doc = new XDocument(

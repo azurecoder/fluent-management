@@ -55,7 +55,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// Creates an Xml payload for the 
         /// </summary>
         /// <returns>The Xml string</returns>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             /*<?xml version="1.0" encoding="utf-8"?>
                 <ChangeConfiguration xmlns="http://schemas.microsoft.com/windowsazure">

@@ -46,7 +46,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// <summary>
         /// Creates an empty Xml payload since the service command itself does not expect a response - overriden in a derived class which does
         /// </summary>
-        protected virtual string CreateXmlPayload()
+        protected virtual string CreatePayload()
         {
             return null;
         }
@@ -187,6 +187,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             SitAndWait = new ManualResetEvent(false);
             BaseRequestUri = BaseUri;
+            ContentType = "application/xml";
             //AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2011-10-01" } };
             AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2012-03-01" } };
         }
@@ -207,7 +208,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                    ServiceType = ServiceType,
                                                    OperationId = OperationId,
                                                    SubscriptionId = SubscriptionId,
-                                                   Body = CreateXmlPayload(),
+                                                   Body = CreatePayload(),
                                                    Certificate = Certificate,
                                                    AdditionalHeaders = AdditionalHeaders,
                                                    ContentType = ContentType,

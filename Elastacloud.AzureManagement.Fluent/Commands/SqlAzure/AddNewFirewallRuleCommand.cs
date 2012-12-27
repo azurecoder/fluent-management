@@ -48,7 +48,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.SqlAzure
 
         #endregion
 
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             XNamespace ns = SqlAzureSchema;
             var doc = new XDocument(

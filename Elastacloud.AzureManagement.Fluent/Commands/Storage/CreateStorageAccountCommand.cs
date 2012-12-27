@@ -30,7 +30,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
             OperationId = "storageservices";
         }
 
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             /* <?xml version="1.0" encoding="utf-8"?>
                 <CreateStorageServiceInput xmlns="http://schemas.microsoft.com/windowsazure">

@@ -53,7 +53,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Certificates
         /// <summary>
         /// The creation of the XML payload necessary to make the request
         /// </summary>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             XNamespace ns = "http://schemas.microsoft.com/windowsazure";
             var doc = new XDocument(

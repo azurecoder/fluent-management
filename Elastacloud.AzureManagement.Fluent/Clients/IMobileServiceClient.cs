@@ -1,4 +1,5 @@
-﻿using Elastacloud.AzureManagement.Fluent.Types.MobileServices;
+﻿using System.Collections.Generic;
+using Elastacloud.AzureManagement.Fluent.Types.MobileServices;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -11,42 +12,37 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="sqlUsername">the name of the sql user</param>
         /// <param name="sqlPassword">The sql password</param>
         void CreateMobileServiceWithNewDb(string serviceName, string sqlUsername, string sqlPassword);
+
         /// <summary>
         /// Adds a table to mobile services
         /// </summary>
         /// <param name="tableName">the name of the table</param>
-        void AddTable(string tableName);
+        /// <param name="defaultPermission">Sets the default permission for the table scripts</param>
+        void AddTable(string tableName, Types.MobileServices.Roles defaultPermission);
+
         /// <summary>
         /// Adds a script for a crud operation to the table
         /// </summary>
         /// <param name="operationType">The type of operation</param>
-        /// <param name="script"></param>
-        void AddTableString(CrudOperation operationType, string script);
+        /// <param name="tableName">The name of the WAMS table</param>
+        /// <param name="script">The script to upload</param>
+        /// <param name="permission">What the permissions of the script are</param>
+        void AddTableScript(CrudOperation operationType, string tableName, string script, Types.MobileServices.Roles permission);
         /// <summary>
-        /// Adds or replace the Microsoft account credentials for the mobile service
+        /// Adds a scheduled job to WAMS
         /// </summary>
-        void AddOrReplaceMicrosoftAccountCredentials(string appKey, string appSecret);
+        /// <param name="name">The name of the script</param>
+        /// <param name="script">The actual script</param>
+        /// <param name="intervalInMinutes">The interval in minutes</param>
+        void AddSchedulerScript(string name, string script, int intervalInMinutes);
         /// <summary>
-        /// Adds or replaces the google account credentials for the mobile service
+        /// Updates any of the settable prooperties of the mobile service
         /// </summary>
-        void AddOrReplaceGoogleAccountCredentials(string appKey, string appSecret);
+        void Update();
         /// <summary>
-        /// Adds or replaces facebook credentials for the mobile service
+        /// Refreshes the details of the mobile service
         /// </summary>
-        void AddOrReplaceFacebookCredentials(string appKey, string appSecret);
-        /// <summary>
-        /// Adds or replaces Yahoo credentials for the mobile service
-        /// </summary>
-        void AddOrReplaceYahooCredentials(string appKey, string appSecret);
-        /// <summary>
-        /// Turns the dynamic schema on or off
-        /// </summary>
-        /// <param name="schemaOn">A bool denoting whether the schema is on or off</param>
-        void UpdateDynamicSchema(bool schemaOn);
-        /// <summary>
-        /// Adds or replaces WPNS/WNS for the mobile service
-        /// </summary>
-        void AddOrReplaceWindowsPushNotificationCredentials(string clientSecret, string packageSid);
+        void Refresh();
         /// <summary>
         /// The mobile service account key
         /// </summary>
@@ -101,5 +97,49 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Gets the state of the mobile service
         /// </summary>
         State MobileServiceState { get; }
+        /// <summary>
+        /// Gets a list of mobile services tables
+        /// </summary>
+        List<MobileServiceTable> Tables { get; }
+        /// <summary>
+        /// Gets or sets whether the dynamic schema is enabled or not
+        /// </summary>
+        bool DynamicSchemaEnabled { get; set; }
+        /// <summary>
+        /// The client secret for live id access
+        /// </summary>
+        string MicrosoftAccountClientSecret { get; set; }
+        /// <summary>
+        /// The client id for live id access
+        /// </summary>
+        string MicrosoftAccountClientId { get; set; }
+        /// <summary>
+        /// The package sid for wns 
+        /// </summary>
+        string MicrosoftAccountPackageSID { get; set; }
+        /// <summary>
+        /// The client id for facebook access
+        /// </summary>
+        string FacebookClientId { get; set; }
+        /// <summary>
+        /// The client secret for facebook access
+        /// </summary>
+        string FacebookClientSecret { get; set; }
+        /// <summary>
+        /// The client id for google access
+        /// </summary>
+        string GoogleClientId { get; set; }
+        /// <summary>
+        /// The client secret for google access
+        /// </summary>
+        string GoogleClientSecret { get; set; }
+        /// <summary>
+        /// The client id for twitter access
+        /// </summary>
+        string TwitterClientId { get; set; }
+        /// <summary>
+        /// The client secret for twitter access
+        /// </summary>
+        string TwitterClientSecret { get; set; }
     }
 }

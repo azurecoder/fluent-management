@@ -35,7 +35,10 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// An XNamespace which container the generic windows azure schema
         /// </summary>
         public static XNamespace NsWindowsAzure = XNamespace.Get(BaseParser.WindowsAzureSchema);
-
+        /// <summary>
+        /// The Windows Azure Mobile Services namespace
+        /// </summary>
+        public static XNamespace NsWindowsAzureMobileServices = XNamespace.Get(BaseParser.MobileServicesSchema);
         /// <summary>
         /// An XNamespace which container the service management schema
         /// </summary>

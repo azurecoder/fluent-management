@@ -42,17 +42,30 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         public const string PluginsRemoteForwarderEnabled = "Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled";
 
         #region Mobile Services
-
+        // the mobile services constants
         public const string MobileServicesSchemaVersion = "2012-05.1.0";
         public const string MobileServicesSchemaLocation = LocationConstants.WestUS;
         public const string MobileServicesVersion = "2012-05-21.1.0";
         public const string MobileServicesName = "ZumoMobileService";
 
-
+        // the mobile services type templates
         public const string MobileServicesType = "Microsoft.WindowsAzure.MobileServices.MobileService";
         public const string MobileServicesSqlServerType = "Microsoft.WindowsAzure.SQLAzure.Server";
         public const string MobileServicesSqlDatabaseType = "Microsoft.WindowsAzure.SQLAzure.DataBase";
 
+        // for settings commands
+        public const string MobileServicesAuthSettings = "authsettings";
+        public const string MobileServicesApnsSettings = "apns/settings";
+        public const string MobileServicesLiveSettings = "livesettings";
+        public const string MobileServicesServiceSettings = "settings";
+
+        // settings for mobile services
+        public const string GoogleProvider = "google";
+        public const string FacebookProvider = "facebook";
+        public const string TwitterProvider = "twitter";
+        public const string DynamicSchemaEnabled = "dynamicSchemaEnabled";
+        
+        // the mobile services create template
         public const string MobileServicesCreateNewTemplate = "{{" +
                        "\"SchemaVersion\": \"{0}\", " +
                        "\"Location\": \"{1}\", " +

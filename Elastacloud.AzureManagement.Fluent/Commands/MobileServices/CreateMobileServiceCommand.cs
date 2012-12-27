@@ -43,7 +43,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.MobileServices
         ///   </Application>
         /// </summary>
         /// <returns>A string Xml document representation</returns>
-        protected override string CreateXmlPayload()
+        protected override string CreatePayload()
         {
             XNamespace ns = Namespaces.NsWindowsAzure;
             var doc = new XDocument(

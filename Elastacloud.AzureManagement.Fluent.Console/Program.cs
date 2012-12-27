@@ -9,8 +9,8 @@ namespace Elastacloud.AzureManagement.Fluent.Console
         private static X509Certificate2 _certificate;
         static void Main(string[] args)
         {
-            System.Console.WriteLine("Creating service");
-            System.Console.WriteLine("================");
+            System.Console.WriteLine("Mobile service");
+            System.Console.WriteLine("==============");
 
             var publishsettings = @"C:\Users\Richard\Desktop\Engagements\AllAccounts.publishsettings";
             var settings = PublishSettingsExtractor.GetFromFile(publishsettings);
