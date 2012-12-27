@@ -13,9 +13,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("==============");
 
             var publishsettings = @"C:\Users\Richard\Desktop\Engagements\AllAccounts.publishsettings";
-            var settings = PublishSettingsExtractor.GetFromFile(publishsettings);
-
-            _certificate = settings.GetCertificateFromFile();
+            var settings = new PublishSettingsExtractor(publishsettings);
+            
+            _certificate = settings.AddPublishSettingsToPersonalMachineStore();
             var executor = ParseTokens(args);
             executor.Execute();
             System.Console.WriteLine();

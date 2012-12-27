@@ -28,9 +28,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
         public void Execute()
         {
             var client = new MobileServiceClient(_subscriptionId, _certificate, _mobileServiceName);
-            if(!client.Tables.Exists(a => a.TableName == "Channels"))
-                client.AddTable("Channels");
-            client.AddTableScript(CrudOperation.Insert, "Channels", Resources.insert_js, Types.MobileServices.Roles.Public);
+            if(!client.Tables.Exists(a => a.TableName == "Speakers"))
+                client.AddTable("Speakers");
+            client.AddTableScript(CrudOperation.Insert, "Speakers", Resources.insert_js, Types.MobileServices.Roles.Public);
             client.FacebookClientId = "test";
             client.FacebookClientSecret = "test";
             client.GoogleClientId = "test";

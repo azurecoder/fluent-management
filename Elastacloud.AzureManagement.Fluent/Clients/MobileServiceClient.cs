@@ -77,11 +77,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             if(String.IsNullOrEmpty(tableName))
                 throw new FluentManagementException("unable to add table with an empty name", "CreateMobileServicesTableCommand");
-            var dictionary = new Dictionary<string, string>(5);
-            dictionary[CrudOperation.Insert.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
-            dictionary[CrudOperation.Update.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
-            dictionary[CrudOperation.Delete.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
-            dictionary[CrudOperation.Read.ToString().ToLower()] = defaultPermission.ToString().ToLower(); 
+            var permission = defaultPermission.ToString().ToLower();
+            var dictionary = BuildCrudDictionary(new List<string> {permission, permission, permission, permission});
             dictionary["name"] = tableName;
             EnsureMobileServicesName();
             var config = JsonConvert.SerializeObject(dictionary);
@@ -114,13 +111,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             command.Execute();
             // update the script with the new permissions
-            var dictionary = new Dictionary<string, string>();
             var table = Tables.FirstOrDefault(a => a.TableName == tableName);
+            var values = new List<string> { table.InsertPermission.ToString(), table.UpdatePermission.ToString(), table.ReadPermission.ToString(), table.DeletePermission.ToString()};
             // TODO: speak to MSFT about this - the cmdlets have a bug and all of the permissions need to be added for them to update more than a single one
-            dictionary.Add(CrudOperation.Insert.ToString().ToLower(), table.InsertPermission.ToString());
-            dictionary.Add(CrudOperation.Update.ToString().ToLower(), table.UpdatePermission.ToString());
-            dictionary.Add(CrudOperation.Read.ToString().ToLower(), table.ReadPermission.ToString());
-            dictionary.Add(CrudOperation.Delete.ToString().ToLower(), table.DeletePermission.ToString());
+
+            var dictionary = BuildCrudDictionary(values);
             dictionary[operationType.ToString().ToLower()] = permission.ToString().ToLower();
                                 
             // updates the script table service permissions
@@ -131,6 +126,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                   Certificate = ManagementCertificate
                               };
             updateCommand.Execute();
+        }
+
+        private Dictionary<string, string> BuildCrudDictionary(IList<string> values)
+        {
+            return new Dictionary<string, string>
+                                 {
+                                     {CrudOperation.Insert.ToString().ToLower(), values[0]},
+                                     {CrudOperation.Update.ToString().ToLower(), values[1]},
+                                     {CrudOperation.Read.ToString().ToLower(), values[2]},
+                                     {CrudOperation.Delete.ToString().ToLower(), values[3]}
+                                 };
         }
 
         /// <summary>
