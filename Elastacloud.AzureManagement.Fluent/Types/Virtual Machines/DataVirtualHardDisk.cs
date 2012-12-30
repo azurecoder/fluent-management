@@ -62,16 +62,14 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <param name="diskName">the name of the disk</param>
         /// <param name="diskLabel">the label of the disk</param>
         /// <returns></returns>
-        public static DataVirtualHardDisk GetDefaultDataDisk(string storageAccountName, int size = 30,
-                                                             int logicalUnitNumber = 0, string diskName = null,
-                                                             string diskLabel = null)
+        public static DataVirtualHardDisk GetDefaultDataDisk(string storageAccountName, int size = 30, int logicalUnitNumber = 0, string diskName = null, string diskLabel = null)
         {
             var namer = new RandomAccountName();
             return new DataVirtualHardDisk
                        {
                            LogicalDiskSizeInGB = size,
                            LogicalUnitNumber = logicalUnitNumber,
-                           HostCaching = HostCaching.ReadOnly,
+                           HostCaching = HostCaching.ReadWrite,
                            DiskLabel = diskLabel,
                            DiskName = diskName,
                            MediaLink =

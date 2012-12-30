@@ -12,6 +12,7 @@ using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 using Deployment = Elastacloud.AzureManagement.Fluent.Types.VirtualMachines.Deployment;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
@@ -19,26 +20,23 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
     /// <summary>
     /// Creates a deployment for a virtual machine and allows some preconfigured defaults from the image gallery 
     /// </summary>
-    internal class CreateVirtualMachineDeploymentCommand : ServiceCommand
+    internal class CreateWindowsVirtualMachineDeploymentCommand : ServiceCommand
     {
         // https://management.core.windows.net/<subscription-id>/services/hostedservices/<service-name>/deployments/
         /// <summary>
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
-        /// <param name="serviceName">the name of the cloud service</param>
-        /// <param name="template">the image template of the virtual machine</param>
-        /// <param name="storageAccountForVhd">the storage account used to store the virtual machine images of data and os</param>
-        /// <param name="size">the required size of the virtual machine</param>
-        internal CreateVirtualMachineDeploymentCommand(string serviceName, string storageAccountForVhd, VirtualMachineTemplates template, VmSize size = VmSize.Small)
+        internal CreateWindowsVirtualMachineDeploymentCommand(WindowsVirtualMachineProperties properties)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
             ServiceType = "services";
-            HttpCommand = serviceName + "/deployments";
-            VirtualMachineType = template;
-            CloudServiceName = serviceName;
-            VhdStorageAccount = storageAccountForVhd;
-            Size = size;
+            HttpCommand = properties.CloudServiceName + "/deployments";
+            VirtualMachineType = properties.VirtualMachineType;
+            CloudServiceName = properties.CloudServiceName;
+            VhdStorageAccount = properties.StorageAccountName;
+            Size = properties.VmSize;
+            Properties = properties;
         }
 
         /// <summary>
@@ -60,6 +58,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// The size of the virtual machine
         /// </summary>
         public VmSize Size { get; set; }
+        /// <summary>
+        /// The full virtual machine properties of the windows instance the needs to be deployed
+        /// </summary>
+        public WindowsVirtualMachineProperties Properties { get; set; }
 
         /// <summary>
         /// Creates a deployment payload for a predefined template 
@@ -67,15 +69,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <returns>A string xml representation</returns>
         protected override string CreatePayload()
         {
-            Deployment deployment = null;
-            switch (VirtualMachineType)
-            {
-                case VirtualMachineTemplates.SqlServer2012:
-                    deployment = Deployment.GetDefaultSqlServer2012Deployment(CloudServiceName, VhdStorageAccount);
-                    break;
-            }
+            var deployment = Deployment.GetAdHocWindowsTemplateDeployment(Properties);
             var document = new XDocument(deployment.GetXmlTree());
             return document.ToStringFullXmlDeclarationWithReplace();
+        }
+
+        /// <summary>
+        /// returns the name of the command
+        /// </summary>
+        public override string ToString()
+        {
+            return "CreateWindowsVirtualMachineDeploymentCommand";
         }
     }
 }

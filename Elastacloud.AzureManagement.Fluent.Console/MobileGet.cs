@@ -27,8 +27,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
+            System.Console.WriteLine("Update mobile service");
+            System.Console.WriteLine("=====================");
             var client = new MobileServiceClient(_subscriptionId, _certificate, _mobileServiceName);
-            client.Restart();
             if(!client.Tables.Exists(a => a.TableName == "Speakers"))
                 client.AddTable("Speakers");
             client.AddTableScript(CrudOperation.Insert, "Speakers", Resources.insert_js, Types.MobileServices.Roles.Public);
@@ -73,6 +74,13 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("There are {0} error log entries", logs.Where(a => a.Type == LogLevelType.Error));
             System.Console.WriteLine("There are {0} warning log entries", logs.Where(a => a.Type == LogLevelType.Warning));
             System.Console.WriteLine("There are {0} information log entries", logs.Where(a => a.Type == LogLevelType.Information));
+            client.RegenerateKeys();
+            client.Restart();
+        }
+
+        public void ParseTokens(string[] args)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -11,6 +11,7 @@ using System;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
@@ -86,6 +87,60 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         }
 
         #endregion
+
+        public static PersistentVMRole AddAdhocWindowsRoleTemplate(WindowsVirtualMachineProperties properties)
+        {
+            // build the default endpoints 
+            var inputEndpoints = new InputEndpoints();
+            inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
+            foreach (var endpoint in properties.PublicEndpoints)
+            {
+                // just in case they've add RDP again
+                if (endpoint.Value != 1433)
+                {
+                    inputEndpoints.AddEndpoint(new InputEndpoint()
+                        {
+                            EndpointName = endpoint.Key,
+                            LocalPort = endpoint.Value,
+                            // currently we'll only support TCP
+                            Protocol = Protocol.TCP
+                        });
+                }
+
+            }
+            // add the endpoints collections to a network configuration set
+            var network = new NetworkConfigurationSet
+            {
+                InputEndpoints = inputEndpoints
+            };
+            // build the windows configuration set
+            var windows = new WindowsConfigurationSet
+            {
+                AdminPassword = properties.AdministratorPassword ?? "ElastaPassword101",
+                ResetPasswordOnFirstLogon = true
+            };
+            OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetWindowsOSImageFromTemplate(properties);
+            var disks = new DataVirtualHardDisks();
+            for (int i = 0; i < properties.DataDisks.Count; i++)
+            {
+                var label = properties.DataDisks[i].DiskLabel ?? "DataDisk" + i;
+                var name = properties.DataDisks[i].DiskName ?? "DataDisk" + i;
+                var size = properties.DataDisks[i].LogicalDiskSizeInGB < 30
+                                                                  ? 30
+                                                                  : properties.DataDisks[i].LogicalDiskSizeInGB;
+                var disk = DataVirtualHardDisk.GetDefaultDataDisk(properties.StorageAccountName, size, i, name, label);
+                disks.HardDiskCollection.Add(disk);
+            }
+            return new PersistentVMRole
+            {
+                NetworkConfigurationSet = network,
+                OperatingSystemConfigurationSet = windows,
+                RoleSize = properties.VmSize,
+                RoleName = properties.RoleName,
+                HardDisks = disks,
+                OSHardDisk = osDisk
+            };
+        }
 
         /// <summary>
         /// Used to direct the user to the image for the default Sql Server 2012 image

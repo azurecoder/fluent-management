@@ -23,12 +23,12 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines
     {
         internal VirtualMachineManager(string subscriptionId)
         {
-            Properties = new VirtualMachineProperties {SubscriptionId = subscriptionId};
+            Properties = new WindowsVirtualMachineProperties {SubscriptionId = subscriptionId};
         }
         /// <summary>
         /// The properties of the virtual machine
         /// </summary>
-        public VirtualMachineProperties Properties { get; set; }
+        public WindowsVirtualMachineProperties Properties { get; set; }
 
         #region Implementation of ICertificateActivity
 
@@ -144,9 +144,7 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines
         /// </summary>
         void IVirtualMachineDeployment.Deploy()
         {
-            var command = new CreateVirtualMachineDeploymentCommand(Properties.CloudServiceName,
-                                                                    Properties.StorageAccountName,
-                                                                    Properties.VirtualMachineType, Properties.VmSize)
+            var command = new CreateWindowsVirtualMachineDeploymentCommand(Properties)
                               {
                                   SubscriptionId = Properties.SubscriptionId,
                                   Certificate = Properties.Certificate

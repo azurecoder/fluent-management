@@ -8,15 +8,13 @@
  ************************************************************************************************************/
 namespace Elastacloud.AzureManagement.Fluent.Helpers
 {
-    public class LocationConstants
+    public class VmConstants
     {
-        public const string NorthEurope = "North Europe";
-        public const string WesternEurope = "Western Europe";
-        public const string SouthCentralUS = "South Central US";
-        public const string NorthCentralUS = "North Central US";
-        public const string WestUS = "West US";
-        public const string EastUS = "East US";
-        public const string EastAsia = "East Asia";
-        public const string SouthEastAsia = "South East Asia";
+        public const string VmTemplateBiztalk = "2cdc6229df6344129ee553dd3499f0d3__BizTalk-Server-2013-Beta";
+        public const string VmTemplateWin2K8SP1DataCentreServerDecember2012 = "a699494373c04fc0bc8f2bb1389d6106__Win2K8R2SP1-Datacenter-201212.01-en.us-30GB.vhd";
+        public const string VmTemplateWin2012DataCentreServerDecember2012 = "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-Datacenter-201212.01-en.us-30GB.vhd";
+        public const string VmTemplateWin2K8SP1DataCentreServerOctober2012 = "MSFT__Win2K8R2SP1-Datacenter-201210.01-en.us-30GB.vhd";
+        public const string VmTemplateSqlServer2012Eval = "MSFT__Sql-Server-11EVAL-11.0.2215.0-08022012-en-us-30GB.vhd";
+        public const string VmTemplateWin2012DataCentreServerOctober2012 = "MSFT__Windows-Server-2012-Datacenter-201210.01-en.us-30GB.vhd";
     }
 }

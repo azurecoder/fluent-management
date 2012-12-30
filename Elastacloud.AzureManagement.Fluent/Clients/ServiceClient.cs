@@ -84,7 +84,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="description">The description of the cloud service</param>
         public void CreateNewCloudService(string location, string description = "Fluent Management created cloud service")
         {
-            var hostedServiceCreate = new CreateHostedServiceCommand(Name, description, location)
+            var hostedServiceCreate = new CreateCloudServiceCommand(Name, description, location)
             {
                 Certificate = ManagementCertificate,
                 SubscriptionId = SubscriptionId

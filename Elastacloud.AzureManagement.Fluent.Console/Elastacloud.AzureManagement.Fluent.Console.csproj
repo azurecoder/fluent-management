@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="VmCreate.cs" />
     <Compile Include="IExecute.cs" />
     <Compile Include="MobileCreate.cs" />
     <Compile Include="MobileGet.cs" />

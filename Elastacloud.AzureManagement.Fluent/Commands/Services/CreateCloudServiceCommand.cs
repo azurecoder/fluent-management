@@ -17,9 +17,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
     /// <summary>
     /// Used to create a hosted service within a given subscription
     /// </summary>
-    internal class CreateHostedServiceCommand : ServiceCommand
+    internal class CreateCloudServiceCommand : ServiceCommand
     {
-        internal CreateHostedServiceCommand(string name, string description, string location = "North Europe")
+        internal CreateCloudServiceCommand(string name, string description, string location = "North Europe")
         {
             Name = name;
             Description = description;

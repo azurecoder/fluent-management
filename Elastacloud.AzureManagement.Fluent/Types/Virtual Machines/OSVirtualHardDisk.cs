@@ -9,7 +9,10 @@
 
 using System;
 using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
@@ -54,8 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <param name="diskName">The name of the C: drive </param>
         /// <param name="diskLabel">The drive volume label for C:</param>
         /// <returns>An OSVirtualHardDisk instance</returns>
-        public static OSVirtualHardDisk GetSqlServerOSImage(string storageAccountName, string diskName = null,
-                                                            string diskLabel = null)
+        public static OSVirtualHardDisk GetSqlServerOSImage(string storageAccountName, string diskName = null, string diskLabel = null)
         {
             /*<OSVirtualHardDisk>
                         <MediaLink>http://elastacacheweb.blob.core.windows.net/vhds/elastasql.vhd</MediaLink>
@@ -66,12 +68,52 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                        {
                            DiskLabel = diskLabel,
                            DiskName = diskName,
-                           MediaLink =
-                               String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", storageAccountName,
-                                             namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
+                           MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", storageAccountName, namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
                            SourceImageName = "MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd",
                            HostCaching = HostCaching.ReadWrite,
                        };
+        }
+
+        /// <summary>
+        /// This gets the host OS image of Windows Server Data Centre and SQL Server 2012
+        /// </summary>
+        /// <param name="properties">The path to the media space in blob storage where the host vhd will be placed</param>
+        /// <returns>An OSVirtualHardDisk instance</returns>
+        public static OSVirtualHardDisk GetWindowsOSImageFromTemplate(WindowsVirtualMachineProperties properties)
+        {
+            /*<OSVirtualHardDisk>
+                        <MediaLink>http://elastacacheweb.blob.core.windows.net/vhds/elastasql.vhd</MediaLink>
+                        <SourceImageName>MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd</SourceImageName>
+              </OSVirtualHardDisk>*/
+            string templateDetails = null;
+            switch (properties.VirtualMachineType)
+            {
+                case VirtualMachineTemplates.BiztalkServer2012:
+                    templateDetails = VmConstants.VmTemplateBiztalk;
+                    break;
+                case VirtualMachineTemplates.SqlServer2012:
+                    templateDetails = VmConstants.VmTemplateSqlServer2012Eval;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2008R2SP1:
+                    templateDetails = VmConstants.VmTemplateWin2K8SP1DataCentreServerDecember2012;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2012:
+                    templateDetails = VmConstants.VmTemplateWin2012DataCentreServerDecember2012;
+                    break;
+            }
+            if(templateDetails == null && properties.CustomTemplateName == null)
+                throw new FluentManagementException("no template specified cannot proceed", "CreateWindowsVirtualMachineDeploymentCommand");
+
+            var namer = new RandomAccountName();
+            return new OSVirtualHardDisk
+            {
+                DiskLabel = "OsDisk",
+                DiskName = "OsDisk",
+                MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", properties.StorageAccountName, namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
+
+                SourceImageName = templateDetails,
+                HostCaching = HostCaching.ReadWrite,
+            };
         }
 
         #endregion

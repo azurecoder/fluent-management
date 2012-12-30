@@ -21,7 +21,7 @@ namespace Elastacloud.AzureManagement.Fluent.Tests.HttpStandard.Services
         {
             _mockQueryManager = new Mock<IQueryManager>();
             ServiceCommand.CurrentQueryManager = _mockQueryManager.Object;
-            _command = new CreateHostedServiceCommand("bob", "bill");
+            _command = new CreateCloudServiceCommand("bob", "bill");
         }
 
         [Test]

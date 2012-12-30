@@ -25,6 +25,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
+            System.Console.WriteLine("Create mobile service");
+            System.Console.WriteLine("=====================");
+
             var client = new MobileServiceClient(_subscriptionId, _certificate);
             client.CreateMobileServiceWithNewDb(_mobileServiceName, "supersqluser", "Testable123");
 
@@ -38,6 +41,11 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("Sql Azure Db name: {0}", client.SqlAzureDbName);
             System.Console.WriteLine("Sql Azure server name: {0}", client.SqlAzureServerName);
             System.Console.WriteLine("Mobile service state: {0}", client.MobileServiceState.ToString());
+        }
+
+        public void ParseTokens(string[] args)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -106,7 +106,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             // TODO: Place and error router here 
 
             // if we have an error it's probably best to release this
-            SitAndWait.Set();
+            //SitAndWait.Set();
             // rethrow this otherwise we'll lose this 
             throw exception;
         }
@@ -114,21 +114,44 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         #endregion
 
         #region internal Properties
-
+        /// <summary>
+        /// The name of the service being used - used to denote either a deployment name of cloud service name normally
+        /// </summary>
         internal string Name { get; set; }
+        /// <summary>
+        /// A description of the service
+        /// </summary>
         internal string Description { get; set; }
+        /// <summary>
+        /// Where the service is location-wise driven from <c href="LocationConstants.cs"></c>
+        /// </summary>
         internal string Location { get; set; }
 
+        /// <summary>
+        /// The type of HttpVerb defaults to POST
+        /// </summary>
         internal string HttpVerb
         {
             get { return _httpVerb; }
             set { _httpVerb = value; }
         }
 
+        /// <summary>
+        /// the extra bit on the end of the request which would normally include a querystring or resource type
+        /// </summary>
         internal string HttpCommand { get; set; }
+        /// <summary>
+        /// Used to denote the type of service -should be set to service for all service commands
+        /// </summary>
         internal string ServiceType { get; set; }
+        /// <summary>
+        /// What the operation will be done on - normally on the "hostedservice" for services
+        /// </summary>
         internal string OperationId { get; set; }
 
+        /// <summary>
+        /// the subscription id being used in Guid form
+        /// </summary>
         internal string SubscriptionId { get { return _subscriptionId; }
             set
             {
@@ -139,10 +162,25 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                 _subscriptionId = value;
             }
         }
+        /// <summary>
+        /// The Management certificate used for the request
+        /// </summary>
         internal X509Certificate2 Certificate { get; set; }
+        /// <summary>
+        /// The request asynchronously this is set with the response id
+        /// </summary>
         internal string MsftAsyncResponseId { get; set; }
+        /// <summary>
+        /// Used when the request is done async to block the current activity
+        /// </summary>
         internal ManualResetEvent SitAndWait { get; set; }
+        /// <summary>
+        /// Any additional headers that are added to the request are added to this collection
+        /// </summary>
         internal Dictionary<string, string> AdditionalHeaders { get; set; }
+        /// <summary>
+        /// The base uri that is used in the request
+        /// </summary>
         internal string BaseRequestUri { get; set; }
 
         /// <summary>
@@ -164,6 +202,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 
         #region Constants
 
+        /// <summary>
+        /// The core management Uri
+        /// </summary>
         internal const string BaseUri = "https://management.core.windows.net";
 
         #endregion

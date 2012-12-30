@@ -11,6 +11,7 @@ using System;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
@@ -38,31 +39,31 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         public RoleList RoleList { get; set; }
 
         /// <summary>
-        /// Used to get a single deployment containing the SQL Server 2012 image
+        /// Gets an ad-hoc deployment for a Windows templated VM instance
         /// </summary>
-        /// <returns>A complete deployment of the SQL Server 2012 image</returns>
-        public static Deployment GetDefaultSqlServer2012Deployment(string cloudServiceName, string storageAccount,
-                                                                   VmSize vmSize = VmSize.Small)
+        /// <param name="properties">The VM properties touse for the deployment</param>
+        /// <returns>A valid deployment for the command</returns>
+        public static Deployment GetAdHocWindowsTemplateDeployment(WindowsVirtualMachineProperties properties)
         {
-            return AddPersistentVMRole(cloudServiceName, PersistentVMRole.GetDefaultSqlServer2012VMRole(vmSize, storageAccount));
+            return AddPersistentVMRole(properties, PersistentVMRole.AddAdhocWindowsRoleTemplate(properties));
         }
 
         /// <summary>
         /// Used to create a deployment and add any persistent vm role to the deployment
         /// </summary>
+        /// <param name="properties"></param>
         /// <param name="role">The PersistentVMRole</param>
-        /// <param name="cloudServiceName">The Name of the cloud service which the role is present in</param>
         /// <returns>The Deployment that is being used</returns>
-        private static Deployment AddPersistentVMRole(string cloudServiceName, PersistentVMRole role)
+        private static Deployment AddPersistentVMRole(WindowsVirtualMachineProperties properties, PersistentVMRole role)
         {
             var namer = new RandomAccountName();
             var deployment = new Deployment
                                  {
-                                     Name = cloudServiceName,
+                                     Name = properties.DeploymentName,
 //                                     Label = Convert.ToBase64String(Encoding.UTF8.GetBytes(cloudServiceName))
-                                     Label = cloudServiceName
+                                     Label = properties.DeploymentName
                                  };
-            role.RoleName = namer.GetPureRandomValue();
+            role.RoleName = role.RoleName ?? namer.GetPureRandomValue();
             var roleList = new RoleList();
             roleList.Roles.Add(role);
             deployment.RoleList = roleList;

@@ -17,6 +17,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// The SQL Server 2012 image
         /// </summary>
-        SqlServer2012
+        SqlServer2012,
+        WindowsServer2008R2SP1,
+        WindowsServer2012,
+        BiztalkServer2012
     }
 }

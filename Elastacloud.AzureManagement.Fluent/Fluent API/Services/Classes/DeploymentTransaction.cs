@@ -130,7 +130,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
             if (!_manager.UseExistingHostedService)
             {
-                var hostedServiceCreate = new CreateHostedServiceCommand(_manager.HostedServiceName, _manager.Description ?? "Deployed by Fluent Management", _manager.Location)
+                var hostedServiceCreate = new CreateCloudServiceCommand(_manager.HostedServiceName, _manager.Description ?? "Deployed by Fluent Management", _manager.Location)
                                               {
                                                   Certificate = _manager.ManagementCertificate,
                                                   SubscriptionId = _manager.SubscriptionId
