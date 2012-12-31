@@ -145,6 +145,8 @@
     <Compile Include="Commands\Storage\CreateStorageAccountCommand.cs" />
     <Compile Include="Commands\Subscriptions\GetSubscriberLocationsCommand.cs" />
     <Compile Include="Commands\Subscriptions\GetSubscriptionCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\StopVirtualMachineCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
     <Compile Include="Fluent API\LinqToAzure\Executors\CloudServiceExecutor.cs" />

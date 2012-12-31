@@ -11,6 +11,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     {
         // the name of the cloud service to look up 
         private string _cloudServiceName;
+
+        /// <summary>
+        /// Constructs a VirtualMachineClient and will get the details of a virtual machine given a cloud service
+        /// </summary>
+        /// <param name="subscriptionId">the subscription id </param>
+        /// <param name="certificate">A management certificate for the subscription</param>
+        /// <param name="cloudServiceName">A cloud service which is in the subscription and contains the virtual machine</param>
         public VirtualMachineClient(string subscriptionId, X509Certificate2 certificate, string cloudServiceName = null)
         {
             SubscriptionId = subscriptionId;
@@ -18,6 +25,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // given a cloud service we want to be able to work out whether this contain a persistent vm role 
             _cloudServiceName = cloudServiceName;
         }
+
+        /// <summary>
+        /// Constructs a VirtualMachinenClient
+        /// </summary>
+        /// <param name="properties">A valid VirtualMachineProperties object</param>
+        public VirtualMachineClient(WindowsVirtualMachineProperties properties)
+        {
+            Properties = properties;
+        }
+
+        public WindowsVirtualMachineProperties Properties { get; set; }
 
         /// <summary>
         /// the management certificate used to connect to the virtual machine
@@ -63,7 +81,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             startCommand.Execute();
             // create a new client and return this so that properties can be populated automatically
-            return this;
+            return new VirtualMachineClient(properties);
         }
 
         /// <summary>
@@ -80,7 +98,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Restart()
         {
-            throw new NotImplementedException();
+            // start the role up -- this could take a while the previous two operations are fairly lightweight
+            // and the provisioning doesn't occur until the role starts not when it is created
+            var restartCommand = new RestartVirtualMachineCommand(Properties)
+            {
+                SubscriptionId = Properties.SubscriptionId,
+                Certificate = Properties.Certificate
+            };
+            restartCommand.Execute();
         }
 
         /// <summary>
@@ -88,7 +113,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
-            throw new NotImplementedException();
+            // start the role up -- this could take a while the previous two operations are fairly lightweight
+            // and the provisioning doesn't occur until the role starts not when it is created
+            var stopCommand = new StopVirtualMachineCommand(Properties)
+            {
+                SubscriptionId = Properties.SubscriptionId,
+                Certificate = Properties.Certificate
+            };
+            stopCommand.Execute();
         }
 
         #endregion
