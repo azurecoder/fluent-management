@@ -52,6 +52,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The protocol that is used when setting the inbound port rule on the firewall can be TCP or UDP
         /// </summary>
         public Protocol Protocol { get; set; }
+        /// <summary>
+        /// The virtual Ip address
+        /// </summary>
+        public string Vip { get; set; }
 
         #region Templates
 

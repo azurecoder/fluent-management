@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
@@ -35,5 +36,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Stops the virtual machine instance
         /// </summary>
         void Stop();
+        /// <summary>
+        /// Gets thye configuration for the virtual machine
+        /// </summary>
+        PersistentVMRole VirtualMachine { get; }
     }
 }

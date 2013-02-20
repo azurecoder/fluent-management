@@ -16,11 +16,11 @@ namespace Elastacloud.AzureManagement.Fluent.Console
          private readonly X509Certificate2 _certificate;
          private readonly string _mobileServiceName;
 
-        public MobileGet(string subscriptionId, X509Certificate2 certificate, string mobileServiceName)
+        public MobileGet(ApplicationFactory factory)
         {
-            _subscriptionId = subscriptionId;
-            _certificate = certificate;
-            _mobileServiceName = mobileServiceName;
+            _subscriptionId = factory.SubscriptionId;
+            _certificate = factory.ManagementCertificate;
+            _mobileServiceName = factory.CloudServiceName;
         }
 
         #region Implementation of IExecute

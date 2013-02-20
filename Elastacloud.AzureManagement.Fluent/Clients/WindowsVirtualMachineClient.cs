@@ -1,24 +1,34 @@
-﻿using System;
+﻿/************************************************************************************************************
+ * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
+ * modify and distribute providing the terms of the license are followed. From the root of the source the   *
+ * license can be found in /Resources/license.txt                                                           * 
+ *                                                                                                          *
+ * Web at: www.elastacloud.com                                                                              *
+ * Email: info@elastacloud.com                                                                              *
+ ************************************************************************************************************/
+using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
-    public class VirtualMachineClient : IVirtualMachineClient
+    public class WindowsVirtualMachineClient : IVirtualMachineClient
     {
         // the name of the cloud service to look up 
         private string _cloudServiceName;
 
         /// <summary>
-        /// Constructs a VirtualMachineClient and will get the details of a virtual machine given a cloud service
+        /// Constructs a WindowsVirtualMachineClient and will get the details of a virtual machine given a cloud service
         /// </summary>
         /// <param name="subscriptionId">the subscription id </param>
         /// <param name="certificate">A management certificate for the subscription</param>
         /// <param name="cloudServiceName">A cloud service which is in the subscription and contains the virtual machine</param>
-        public VirtualMachineClient(string subscriptionId, X509Certificate2 certificate, string cloudServiceName = null)
+        public WindowsVirtualMachineClient(string subscriptionId, X509Certificate2 certificate, string cloudServiceName = null)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
@@ -30,7 +40,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Constructs a VirtualMachinenClient
         /// </summary>
         /// <param name="properties">A valid VirtualMachineProperties object</param>
-        public VirtualMachineClient(WindowsVirtualMachineProperties properties)
+        public WindowsVirtualMachineClient(WindowsVirtualMachineProperties properties)
         {
             Properties = properties;
         }
@@ -81,7 +91,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             startCommand.Execute();
             // create a new client and return this so that properties can be populated automatically
-            return new VirtualMachineClient(properties);
+            return new WindowsVirtualMachineClient(properties);
         }
 
         /// <summary>
@@ -121,6 +131,41 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = Properties.Certificate
             };
             stopCommand.Execute();
+        }
+
+        /// <summary>
+        /// Gets thye configuration for the virtual machine
+        /// </summary>
+        public PersistentVMRole VirtualMachine
+        {
+            // this should really be an async process
+            get
+            {
+                var command = new GetWindowsVirtualMachineContextCommand(Properties)
+                {
+                    SubscriptionId = Properties.SubscriptionId,
+                    Certificate = Properties.Certificate
+                };
+                command.Execute();
+                return command.PersistentVm;
+            }
+        }
+
+        /// <summary>
+        /// download rdp file for the windows vm
+        /// </summary>
+        public void SaveRemoteDesktopFile(string filePath)
+        {
+            var command = new DownloadWindowsRemoteDesktopCommand(Properties)
+            {
+                SubscriptionId = Properties.SubscriptionId,
+                Certificate = Properties.Certificate
+            };
+            command.Execute();
+            using (var stream = File.Create(filePath))
+            {
+                stream.Write(command.FileBytes, 0, command.FileLength);
+            }
         }
 
         #endregion

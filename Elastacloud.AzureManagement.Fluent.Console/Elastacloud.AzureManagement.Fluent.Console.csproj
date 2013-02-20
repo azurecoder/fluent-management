@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationFactory.cs" />
     <Compile Include="VmCreate.cs" />
     <Compile Include="IExecute.cs" />
     <Compile Include="MobileCreate.cs" />
@@ -52,9 +53,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="VmGet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent\Elastacloud.AzureManagement.Fluent.csproj">

@@ -1,57 +1,27 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Elastacloud.AzureManagement.Fluent.Clients;
-using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
+﻿using System;
+using Elastacloud.AzureManagement.Fluent.Console.Properties;
+using System.Linq;
 
+// e.g. vm create subscription_id publish_settings_file cloud_service_name role_name password
 namespace Elastacloud.AzureManagement.Fluent.Console
 {
     class Program
     {
-        private static X509Certificate2 _certificate;
         static void Main(string[] args)
         {
-            var publishsettings = @"C:\Users\Richard\Desktop\Engagements\AllAccounts.publishsettings";
-            var settings = new PublishSettingsExtractor(publishsettings);
-            
-            _certificate = settings.AddPublishSettingsToPersonalMachineStore();
             var executor = ParseTokens(args);
             executor.Execute();
             System.Console.WriteLine();
-            System.Console.WriteLine("Press any key to exit");
+            System.Console.WriteLine(Resources.Program_Main_Press_any_key_to_exit);
             System.Console.Read();
         }
 
         public static IExecute ParseTokens(string[] args)
         {
-            // turn this into an enum as this app gets more comprehensive
-            bool mobile = false, create = false, vm = true;
-            switch (args[0])
-            {
-                case "mobile":
-                    mobile = true;
-                    break;
-                case "vm":
-                    vm = true;
-                    break;
-            }
-            switch (args[1])
-            {
-                case "create":
-                    create = true;
-                    break;
-                case "read":
-                    create = false;
-                    break;
-            }
-            if (mobile)
-            {
-                if(create)
-                    return new MobileCreate(args[2], _certificate, args[3]);
-                else
-                {
-                    return new MobileGet(args[2], _certificate, args[3]);
-                }
-            }
-            return new VmCreate(args[2], _certificate, args[3]);
+            if(args.Count() != 8)
+                throw new ApplicationException("unable to complete request ensure that the requisite number of parameters are used");
+            var factory = new ApplicationFactory(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+            return factory.GetExecutor();
         }
     }
 }

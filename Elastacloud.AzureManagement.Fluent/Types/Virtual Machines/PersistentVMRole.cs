@@ -61,6 +61,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// Gets or sets the OS virtual hard disk 
         /// </summary>
         public OSVirtualHardDisk OSHardDisk { get; set; }
+        /// <summary>
+        /// The IP address used by the VM
+        /// </summary>
+        public string IPAddress { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 

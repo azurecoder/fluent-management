@@ -15,15 +15,11 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 {
     public class VmCreate : IExecute
     {
-        private readonly string _subscriptionId;
-        private readonly X509Certificate2 _certificate;
-        private readonly string _cloudServiceName;
+        private readonly ApplicationFactory _applicationFactory;
 
-        public VmCreate(string subscriptionId, X509Certificate2 certificate, string cloudServiceName)
+        public VmCreate(ApplicationFactory factory)
         {
-            _subscriptionId = subscriptionId;
-            _certificate = certificate;
-            _cloudServiceName = cloudServiceName;
+            _applicationFactory = factory;
         }
 
         #region Implementation of IExecute
@@ -32,20 +28,20 @@ namespace Elastacloud.AzureManagement.Fluent.Console
         {
             var properties = new WindowsVirtualMachineProperties()
                                  {
-                                     AdministratorPassword = "Password123",
-                                     RoleName = "fluentmanagementvm",
-                                     Certificate = _certificate,
+                                     AdministratorPassword = _applicationFactory.Password,
+                                     RoleName = _applicationFactory.RoleName,
+                                     Certificate = _applicationFactory.ManagementCertificate,
                                      Location = LocationConstants.NorthEurope,
                                      UseExistingCloudService = true,
-                                     SubscriptionId = _subscriptionId,
-                                     CloudServiceName = _cloudServiceName,
+                                     SubscriptionId = _applicationFactory.SubscriptionId,
+                                     CloudServiceName = _applicationFactory.CloudServiceName,
                                      PublicEndpoints = new Dictionary<string, int>(){{"web",80}},
                                      VirtualMachineType = VirtualMachineTemplates.WindowsServer2012,
                                      VmSize = VmSize.Small,
                                      StorageAccountName = "elastastorage",
                                      DataDisks = new List<DataVirtualHardDisk>(){new DataVirtualHardDisk(){LogicalDiskSizeInGB = 100}}
                                  };
-            var client = new VirtualMachineClient(_subscriptionId, _certificate);
+            var client = new WindowsVirtualMachineClient(_applicationFactory.SubscriptionId, _applicationFactory.ManagementCertificate);
             var newClient = client.CreateNewVirtualMachineFromTemplateGallery(properties);
         }
 

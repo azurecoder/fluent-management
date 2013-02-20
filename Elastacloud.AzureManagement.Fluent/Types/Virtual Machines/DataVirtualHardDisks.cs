@@ -23,7 +23,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// </summary>
         public DataVirtualHardDisks()
         {
-            HardDiskCollection = new List<VirtualHardDisk>();
+            HardDiskCollection = new List<DataVirtualHardDisk>();
         }
 
         #region Implementation of ICustomXmlSerializer
@@ -44,6 +44,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <summary>
         /// Gets or sets the collection of virtual hard disks
         /// </summary>
-        public List<VirtualHardDisk> HardDiskCollection { get; set; }
+        public List<DataVirtualHardDisk> HardDiskCollection { get; set; }
     }
 }
