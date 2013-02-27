@@ -8,9 +8,13 @@
  ************************************************************************************************************/
 using System;
 using System.IO;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
@@ -21,6 +25,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     {
         // the name of the cloud service to look up 
         private string _cloudServiceName;
+        // The Vm role which is being used to hold the state of the windows virtual machine
+        private PersistentVMRole _vmRole;
 
         /// <summary>
         /// Constructs a WindowsVirtualMachineClient and will get the details of a virtual machine given a cloud service
@@ -44,7 +50,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             Properties = properties;
         }
-
+        /// <summary>
+        /// The virtual machine properties necessary to get any of the details for the virtual machine
+        /// </summary>
         public WindowsVirtualMachineProperties Properties { get; set; }
 
         /// <summary>
@@ -98,9 +106,95 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Deletes the virtual machine that has context with the client
         /// </summary>
         /// <param name="removeDisks">True if the underlying disks in blob storage should be removed</param>
-        public void DeleteVirtualMachine(bool removeDisks)
+        /// <param name="removeCloudService">Removes the cloud service container</param>
+        /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
+        public void DeleteVirtualMachine(bool removeDisks = true, bool removeCloudService = true, bool removeStorageAccount = true)
         {
-            throw new System.NotImplementedException();
+            // first delete the virtual machine command
+            var deleteVirtualMachine = new DeleteVirtualMachineCommand(Properties)
+                                           {
+                                               SubscriptionId = Properties.SubscriptionId,
+                                               Certificate = Properties.Certificate
+                                           };
+            try
+            {
+                deleteVirtualMachine.Execute();
+            }
+            catch (Exception ex)
+            {
+                // should be a 400 here if this is the case then there is only a single role in the deployment - quicker to do it this way!
+                var deleteVirtualMachineDeployment = new DeleteVirtualMachineDeploymentCommand(Properties)
+                                                         {
+                                                             SubscriptionId = Properties.SubscriptionId,
+                                                             Certificate = Properties.Certificate
+                                                         };
+                deleteVirtualMachineDeployment.Execute();
+            }
+            // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
+            if (removeDisks)
+            {
+                string diskName = _vmRole.OSHardDisk.DiskName;
+                DeleteNamedVirtualMachineDisk(diskName);    
+            }
+
+            if (removeCloudService)
+            {
+                // delete the cloud service here
+                var deleteCloudService = new DeleteHostedServiceCommand(Properties.CloudServiceName)
+                                             {
+                                                 SubscriptionId = Properties.SubscriptionId,
+                                                 Certificate = Properties.Certificate
+                                             };
+                deleteCloudService.Execute();
+            }
+
+            if (removeStorageAccount)
+            {
+                string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
+                var blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount,
+                                                ManagementCertificate);
+                blobClient.DeleteBlob(StorageFileName);
+            }
+
+
+            // TODO: Build the command to remove all of the associated data disks
+            //if (_vmRole.HardDisks.HardDiskCollection != null)
+            //{
+            //    foreach (var hardDisk in _vmRole.HardDisks.HardDiskCollection)
+            //    {
+
+            //    }
+            //}
+
+        }
+
+        /// <summary>
+        /// Deletes a vm disk if a name is known
+        /// </summary>
+        /// <param name="name">The name of the vm disk</param>
+        public void DeleteNamedVirtualMachineDisk(string name)
+        {
+            bool diskErased = false; 
+            int count = 0;
+            // keep this going until we delete the disk or time out!
+            while (count < 20 && !diskErased)
+            {
+                try
+                {
+                    var deleteVirtualMachineDisk = new DeleteVirtualMachineDiskCommand(name)
+                                                       {
+                                                           SubscriptionId = Properties.SubscriptionId,
+                                                           Certificate = Properties.Certificate
+                                                       };
+                    deleteVirtualMachineDisk.Execute();
+                    diskErased = true;
+                }
+                catch (Exception)
+                {
+                    count++;
+                }
+                Thread.Sleep(3000);
+            }
         }
 
         /// <summary>
@@ -141,15 +235,28 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // this should really be an async process
             get
             {
+                if (_vmRole != null)
+                    return _vmRole;
+
                 var command = new GetWindowsVirtualMachineContextCommand(Properties)
                 {
                     SubscriptionId = Properties.SubscriptionId,
                     Certificate = Properties.Certificate
                 };
                 command.Execute();
-                return command.PersistentVm;
+                return (_vmRole = command.PersistentVm);
             }
         }
+
+        /// <summary>
+        /// Gets the container that the storage blob resides in 
+        /// </summary>
+        public string StorageContainerName { get; private set; }
+
+        /// <summary>
+        /// The name of the blob which is stored for the vm
+        /// </summary>
+        public string StorageFileName { get; private set; }
 
         /// <summary>
         /// download rdp file for the windows vm
@@ -178,6 +285,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if(properties.Certificate == null || String.IsNullOrEmpty(properties.SubscriptionId) || String.IsNullOrEmpty(properties.CloudServiceName) ||
                 String.IsNullOrEmpty(properties.StorageAccountName) || String.IsNullOrEmpty(properties.Location))
                 throw new FluentManagementException("Either certificate, subscription id cloud service name or storage account name not present in properties", "CreateWindowsVirtualMachineDeploymentCommand");
+        }
+
+        /// <summary>
+        /// Returns the name of the blob and container 
+        /// </summary>
+        /// <param name="blobAddress"></param>
+        private string ParseBlobDetails(string blobAddress)
+        {
+            var helper = new UrlHelper(blobAddress);
+            StorageContainerName = helper.Path;
+            StorageFileName = helper.File;
+            return helper.HostSubDomain;
         }
     }
 }

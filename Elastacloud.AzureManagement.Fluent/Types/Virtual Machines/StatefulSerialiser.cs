@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
-/************************************************************************************************************
+﻿/************************************************************************************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -14,6 +6,10 @@ using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
+using System;
+using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {

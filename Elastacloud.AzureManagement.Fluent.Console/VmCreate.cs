@@ -36,7 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                      SubscriptionId = _applicationFactory.SubscriptionId,
                                      CloudServiceName = _applicationFactory.CloudServiceName,
                                      PublicEndpoints = new Dictionary<string, int>(){{"web",80}},
-                                     VirtualMachineType = VirtualMachineTemplates.WindowsServer2012,
+                                     VirtualMachineType = VirtualMachineTemplates.WindowsServer2008R2SP1,
                                      VmSize = VmSize.Small,
                                      StorageAccountName = "elastastorage",
                                      DataDisks = new List<DataVirtualHardDisk>(){new DataVirtualHardDisk(){LogicalDiskSizeInGB = 100}}

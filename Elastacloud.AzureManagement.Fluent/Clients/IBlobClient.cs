@@ -31,6 +31,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         /// <param name="blobName">The name of a valid blob</param>
         void DeleteBlob(string blobName);
+        /// <summary>
+        /// Gets the blob account key
+        /// </summary>
+        string GetAccountKey();
 
         /// <summary>
         /// Deletes a blob container

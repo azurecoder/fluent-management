@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>vm read bc5cafb3-e135-45ca-bc31-1387d15069fb "C:\Users\Richard\Desktop\Engagements\AllAccounts.publishsettings" rubytest rubytest rubytest Microsoft123</StartArguments>
+    <StartArguments>vm delete fe5717d5-c56d-4fc2-b408-b7e178244bf5 "C:\Users\Richard\Desktop\Engagements\AllAccounts.publishsettings" richtest5 richtest5 richtest5 Microsoft123</StartArguments>
   </PropertyGroup>
 </Project>

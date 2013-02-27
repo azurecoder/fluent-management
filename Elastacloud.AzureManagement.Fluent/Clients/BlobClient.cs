@@ -6,7 +6,10 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
+
+using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
+using Elastacloud.AzureManagement.Fluent.Commands.Storage;
 using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
@@ -23,6 +26,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             AccountKey = accountKey;
             ContainerName = containerName;
         }
+
+        /// <summary>
+        /// This is the BlobClient and is used to create the account without the key and get the key automatically
+        /// </summary>
+        public BlobClient(string subscriptionId, string containerName, string accountName, X509Certificate2 certificate)
+            : this(subscriptionId, containerName, accountName, string.Empty)
+        {
+            ManagementCertificate = certificate;
+        }
+
+        protected X509Certificate2 ManagementCertificate { get; set; }
 
         #region Implementation of IBlobClient
 
@@ -67,6 +81,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 AccountKey = AccountKey
             };
             deleteblob.Execute();
+        }
+
+        /// <summary>
+        /// Gets the blob account key
+        /// </summary>
+        public string GetAccountKey()
+        {
+            var getStorageAccountKeysCommand = new GetStorageAccountKeysCommand(AccountName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            getStorageAccountKeysCommand.Execute();
+            return (AccountKey = getStorageAccountKeysCommand.PrimaryStorageKey);
         }
 
         /// <summary>

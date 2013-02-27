@@ -28,6 +28,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         private string _httpVerb = "POST";
         private static IQueryManager _queryManager;
         private string _subscriptionId;
+        private WebException _exception;
 
         #endregion
 
@@ -106,9 +107,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             // TODO: Place and error router here 
 
             // if we have an error it's probably best to release this
-            //SitAndWait.Set();
+            _exception = exception;
+            SitAndWait.Set();
             // rethrow this otherwise we'll lose this 
-            throw exception;
         }
 
         #endregion
@@ -241,6 +242,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// </summary>
         public virtual void Execute()
         {
+            _exception = null;
             var serviceManagementRequest = new ServiceManagementRequest
                                                {
                                                    BaseUri = BaseRequestUri,
@@ -261,6 +263,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             CurrentQueryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
             // wait for up to 30 minutes - if a deployment takes longer than that ... it's probably HPC!
             SitAndWait.WaitOne(200000);
+            if (_exception != null)
+                throw _exception;
         }
 
         #endregion
