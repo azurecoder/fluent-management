@@ -130,13 +130,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                                          };
                 deleteVirtualMachineDeployment.Execute();
             }
+            // create the blob client
+            string diskName = _vmRole.OSHardDisk.DiskName;
+            string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
+
+            IBlobClient blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount, ManagementCertificate);
             // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
             if (removeDisks)
             {
-                string diskName = _vmRole.OSHardDisk.DiskName;
-                DeleteNamedVirtualMachineDisk(diskName);    
+                // remove the disk association
+                DeleteNamedVirtualMachineDisk(diskName);
+                // remove the physical disk
+                blobClient.DeleteBlob(StorageFileName);
             }
-
+            // remove the cloud services
             if (removeCloudService)
             {
                 // delete the cloud service here
@@ -147,15 +154,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                              };
                 deleteCloudService.Execute();
             }
-
+            // remove the storage account
             if (removeStorageAccount)
             {
-                string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
-                var blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount,
-                                                ManagementCertificate);
-                blobClient.DeleteBlob(StorageFileName);
+                blobClient.DeleteStorageAccount();  
             }
-
 
             // TODO: Build the command to remove all of the associated data disks
             //if (_vmRole.HardDisks.HardDiskCollection != null)
@@ -192,8 +195,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 catch (Exception)
                 {
                     count++;
+                    Thread.Sleep(3000);
                 }
-                Thread.Sleep(3000);
             }
         }
 

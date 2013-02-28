@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Commands.Storage;
@@ -57,6 +58,19 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         }
 
         /// <summary>
+        /// Deletes the current storage account
+        /// </summary>
+        public void DeleteStorageAccount()
+        {
+            var deleteStorage = new DeleteStorageAccountCommand(AccountName)
+                                    {
+                                        SubscriptionId = SubscriptionId,
+                                        Certificate = ManagementCertificate
+                                    };
+            deleteStorage.Execute();
+        }
+
+        /// <summary>
         /// Creates a blob container given a valid container name
         /// </summary>
         public void CreatBlobContainer()
@@ -75,6 +89,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="blobName">The name of a valid blob</param>
         public void DeleteBlob(string blobName)
         {
+            LoadKeyIfNotExists();
             var deleteblob = new DeleteBlobCommand(ContainerName, blobName)
             {
                 AccountName = AccountName,
@@ -145,5 +160,16 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public string SubscriptionId { get; private set; }
 
         #endregion
+
+        /// <summary>
+        /// loads the account key if it is not present
+        /// </summary>
+        private void LoadKeyIfNotExists()
+        {
+            if (!String.IsNullOrEmpty(AccountKey))
+            {
+                GetAccountKey();
+            }
+        }
     }
 }

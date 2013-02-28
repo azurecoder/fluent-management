@@ -22,6 +22,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         string CreateAndUploadBlob(string blobName, string filenamePath);
 
         /// <summary>
+        /// Deletes the current storage account
+        /// </summary>
+        void DeleteStorageAccount();
+
+        /// <summary>
         /// Creates a blob container given a valid container name
         /// </summary>
         void CreatBlobContainer();
