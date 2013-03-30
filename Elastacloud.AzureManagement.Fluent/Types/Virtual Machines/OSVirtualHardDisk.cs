@@ -104,6 +104,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             if(templateDetails == null && properties.CustomTemplateName == null)
                 throw new FluentManagementException("no template specified cannot proceed", "CreateWindowsVirtualMachineDeploymentCommand");
 
+            if (properties.CustomTemplateName != null)
+                templateDetails = properties.CustomTemplateName;
+
             var namer = new RandomAccountName();
             return new OSVirtualHardDisk
             {

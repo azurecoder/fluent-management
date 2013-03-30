@@ -69,7 +69,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             {
                 networkConfigurationSet = new NetworkConfigurationSet();
                 networkConfigurationSet.InputEndpoints= new InputEndpoints();
-                var endpoints = configurationSet.Descendants(Namespace + "InputEndpoints");
+                var endpoints = configurationSet.Descendants(Namespace + "InputEndpoint");
                 foreach (var endpoint in endpoints)
                 {
                     var inputEndpoint = new InputEndpoint

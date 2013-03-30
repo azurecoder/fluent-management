@@ -62,7 +62,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         private X509Certificate2 GetCertificateFromPublishSettings(string publishSettings)
         {
+
             var settings = new PublishSettingsExtractor(publishSettings);
+            
             return settings.AddPublishSettingsToPersonalMachineStore();
         }
     }

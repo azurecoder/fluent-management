@@ -50,6 +50,16 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             _endpoints.Add(endpoint);
         }
 
+        public InputEndpoint this[int index]
+        {
+            get
+            {
+                if(index < 0 || index >= _endpoints.Count)
+                    throw new ArgumentOutOfRangeException("endpoint index out of range");
+                return _endpoints[index];
+            }
+        }
+
         #region Implementation of ICustomXmlSerializer
 
         /// <summary>

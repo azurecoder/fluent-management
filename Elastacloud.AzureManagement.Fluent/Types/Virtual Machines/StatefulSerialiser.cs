@@ -37,8 +37,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 
         protected T GetEnumValue<T>(XElement element)
         {
-            if (element != null)
-                return (T)Enum.Parse(typeof(T), element.Value);
+            try
+            {
+                if (element != null)
+                    return (T) Enum.Parse(typeof (T), element.Value);
+            }
+            catch
+            {
+                // this is all over the place - temporary fix as with all the other fixes!
+                if (element != null)
+                    return (T)Enum.Parse(typeof(T), element.Value.ToUpper());
+            }
             return default(T);
         }
 

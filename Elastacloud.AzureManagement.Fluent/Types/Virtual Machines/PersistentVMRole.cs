@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
@@ -97,20 +98,19 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             // build the default endpoints 
             var inputEndpoints = new InputEndpoints();
             inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
-            foreach (var endpoint in properties.PublicEndpoints)
+            if (properties.PublicEndpoints != null)
             {
-                // just in case they've add RDP again
-                if (endpoint.Value != 1433)
+                foreach (var endpoint in properties.PublicEndpoints.Where(endpoint => endpoint.Value != 1433))
                 {
                     inputEndpoints.AddEndpoint(new InputEndpoint()
-                        {
-                            EndpointName = endpoint.Key,
-                            LocalPort = endpoint.Value,
-                            // currently we'll only support TCP
-                            Protocol = Protocol.TCP
-                        });
+                                                   {
+                                                       EndpointName = endpoint.Key,
+                                                       LocalPort = endpoint.Value,
+                                                       Port = endpoint.Value,
+                                                       // currently we'll only support TCP
+                                                       Protocol = Protocol.TCP
+                                                   });
                 }
-
             }
             // add the endpoints collections to a network configuration set
             var network = new NetworkConfigurationSet
@@ -125,15 +125,19 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             };
             OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetWindowsOSImageFromTemplate(properties);
             var disks = new DataVirtualHardDisks();
-            for (int i = 0; i < properties.DataDisks.Count; i++)
+            if (properties.DataDisks != null)
             {
-                var label = properties.DataDisks[i].DiskLabel ?? "DataDisk" + i;
-                var name = properties.DataDisks[i].DiskName ?? "DataDisk" + i;
-                var size = properties.DataDisks[i].LogicalDiskSizeInGB < 30
-                                                                  ? 30
-                                                                  : properties.DataDisks[i].LogicalDiskSizeInGB;
-                var disk = DataVirtualHardDisk.GetDefaultDataDisk(properties.StorageAccountName, size, i, name, label);
-                disks.HardDiskCollection.Add(disk);
+                for (int i = 0; i < properties.DataDisks.Count; i++)
+                {
+                    var label = properties.DataDisks[i].DiskLabel ?? "DataDisk" + i;
+                    var name = properties.DataDisks[i].DiskName ?? "DataDisk" + i;
+                    var size = properties.DataDisks[i].LogicalDiskSizeInGB < 30
+                                   ? 30
+                                   : properties.DataDisks[i].LogicalDiskSizeInGB;
+                    var disk = DataVirtualHardDisk.GetDefaultDataDisk(properties.StorageAccountName, size, i, name,
+                                                                      label);
+                    disks.HardDiskCollection.Add(disk);
+                }
             }
             return new PersistentVMRole
             {
