@@ -97,21 +97,16 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         {
             // build the default endpoints 
             var inputEndpoints = new InputEndpoints();
-            inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
             if (properties.PublicEndpoints != null)
             {
-                foreach (var endpoint in properties.PublicEndpoints.Where(endpoint => endpoint.Value != 1433))
+                foreach (var endpoint in properties.PublicEndpoints)
                 {
-                    inputEndpoints.AddEndpoint(new InputEndpoint()
-                                                   {
-                                                       EndpointName = endpoint.Key,
-                                                       LocalPort = endpoint.Value,
-                                                       Port = endpoint.Value,
-                                                       // currently we'll only support TCP
-                                                       Protocol = Protocol.TCP
-                                                   });
+                    inputEndpoints.AddEndpoint(endpoint);
                 }
             }
+            if (!properties.PublicEndpoints.Any(endpoint => endpoint.Port == 1433))
+                inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
+
             // add the endpoints collections to a network configuration set
             var network = new NetworkConfigurationSet
             {
