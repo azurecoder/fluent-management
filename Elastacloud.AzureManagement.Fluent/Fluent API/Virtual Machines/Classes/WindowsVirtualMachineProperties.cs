@@ -65,7 +65,7 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
         /// <summary>
         /// A list of public endpoints for the virtual machine
         /// </summary>
-        public Dictionary<string, int> PublicEndpoints { get; set; }
+        public List<InputEndpoint> PublicEndpoints { get; set; }
         /// <summary>
         /// A custom template available for the subscription used to override the Azure default template
         /// </summary>

@@ -120,7 +120,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 deleteVirtualMachine.Execute();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // should be a 400 here if this is the case then there is only a single role in the deployment - quicker to do it this way!
                 var deleteVirtualMachineDeployment = new DeleteVirtualMachineDeploymentCommand(Properties)

@@ -35,7 +35,13 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                      UseExistingCloudService = true,
                                      SubscriptionId = _applicationFactory.SubscriptionId,
                                      CloudServiceName = _applicationFactory.CloudServiceName,
-                                     PublicEndpoints = new Dictionary<string, int>(){{"web",80}},
+                                     PublicEndpoints = new List<InputEndpoint>(new[] {new InputEndpoint() 
+                                     { 
+                                         EndpointName = "web", 
+                                         LocalPort = 80,
+                                         Port = 80,
+                                         Protocol = Protocol.TCP
+                                     }}),
                                      VirtualMachineType = VirtualMachineTemplates.WindowsServer2008R2SP1,
                                      VmSize = VmSize.Small,
                                      StorageAccountName = "elastastorage",

@@ -8,6 +8,9 @@
  ************************************************************************************************************/
 namespace Elastacloud.AzureManagement.Fluent.Helpers
 {
+    /// <summary>
+    /// Contains the various locations of the Windows Azure Data Centres
+    /// </summary>
     public class LocationConstants
     {
         public const string NorthEurope = "North Europe";
