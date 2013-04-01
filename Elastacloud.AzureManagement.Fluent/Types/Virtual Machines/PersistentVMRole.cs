@@ -104,7 +104,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     inputEndpoints.AddEndpoint(endpoint);
                 }
             }
-            if (!properties.PublicEndpoints.Any(endpoint => endpoint.Port == 1433))
+            if (!properties.PublicEndpoints.Any(endpoint => endpoint.Port == 3389))
                 inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
 
             // add the endpoints collections to a network configuration set
