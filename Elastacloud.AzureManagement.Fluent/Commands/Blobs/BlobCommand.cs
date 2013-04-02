@@ -58,7 +58,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         protected BlobCommand()
         {
-            DateHeader = DateTime.UtcNow.ToString("R", CultureInfo.InvariantCulture);
+            DateHeader = DateTime.Now.ToString("R", CultureInfo.InvariantCulture);
         }
 
         /// <summary>

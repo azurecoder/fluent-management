@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -97,14 +98,15 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         {
             // build the default endpoints 
             var inputEndpoints = new InputEndpoints();
-            if (properties.PublicEndpoints != null)
+            if(properties.PublicEndpoints == null)
+                properties.PublicEndpoints = new List<InputEndpoint>();
+
+            foreach (var endpoint in properties.PublicEndpoints)
             {
-                foreach (var endpoint in properties.PublicEndpoints)
-                {
-                    inputEndpoints.AddEndpoint(endpoint);
-                }
+                inputEndpoints.AddEndpoint(endpoint);
             }
-            if (!properties.PublicEndpoints.Any(endpoint => endpoint.Port == 3389))
+
+            if (properties.PublicEndpoints.All(endpoint => endpoint.Port != 3389))
                 inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
 
             // add the endpoints collections to a network configuration set

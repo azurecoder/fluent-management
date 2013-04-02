@@ -166,7 +166,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         private void LoadKeyIfNotExists()
         {
-            if (!String.IsNullOrEmpty(AccountKey))
+            if (String.IsNullOrEmpty(AccountKey))
             {
                 GetAccountKey();
             }

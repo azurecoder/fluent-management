@@ -99,6 +99,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             startCommand.Execute();
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
+            Properties = properties;
             var vm = VirtualMachine;
             // create a new client and return this so that properties can be populated automatically
             return new WindowsVirtualMachineClient(properties);
