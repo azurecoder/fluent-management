@@ -98,6 +98,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = properties.Certificate
             };
             startCommand.Execute();
+            // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
+            var vm = VirtualMachine;
             // create a new client and return this so that properties can be populated automatically
             return new WindowsVirtualMachineClient(properties);
         }
@@ -110,6 +112,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
         public void DeleteVirtualMachine(bool removeDisks = true, bool removeCloudService = true, bool removeStorageAccount = true)
         {
+            // set this if it hasn't been set yet
+            PersistentVMRole vm = null;
+            if (_vmRole == null)
+                vm = VirtualMachine;
+
             // first delete the virtual machine command
             var deleteVirtualMachine = new DeleteVirtualMachineCommand(Properties)
                                            {
