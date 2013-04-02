@@ -187,7 +187,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             bool diskErased = false; 
             int count = 0;
             // keep this going until we delete the disk or time out!
-            while (count < 20 && !diskErased)
+            while (count < 100 && !diskErased)
             {
                 try
                 {
