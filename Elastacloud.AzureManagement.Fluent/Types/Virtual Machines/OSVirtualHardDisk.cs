@@ -95,10 +95,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     templateDetails = VmConstants.VmTemplateSqlServer2012Eval;
                     break;
                 case VirtualMachineTemplates.WindowsServer2008R2SP1:
-                    templateDetails = VmConstants.VmTemplateWin2K8SP1DataCentreServerDecember2012;
+                    templateDetails = VmConstants.VmTemplateWin2K8SP1DataCentreServer;
                     break;
                 case VirtualMachineTemplates.WindowsServer2012:
-                    templateDetails = VmConstants.VmTemplateWin2012DataCentreServerDecember2012;
+                    templateDetails = VmConstants.VmTemplateWin2012DataCentreServer;
                     break;
             }
             if(templateDetails == null && properties.CustomTemplateName == null)

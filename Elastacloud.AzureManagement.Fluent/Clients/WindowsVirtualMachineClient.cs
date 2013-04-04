@@ -142,7 +142,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             string diskName = _vmRole.OSHardDisk.DiskName;
             string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
 
-            IBlobClient blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount, ManagementCertificate);
+            IBlobClient blobClient = new BlobClient(Properties.SubscriptionId, StorageContainerName, storageAccount, Properties.Certificate);
             // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
             if (removeDisks)
             {

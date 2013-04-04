@@ -10,11 +10,9 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
 {
     public class VmConstants
     {
-        public const string VmTemplateBiztalk = "2cdc6229df6344129ee553dd3499f0d3__BizTalk-Server-2013-Beta";
-        public const string VmTemplateWin2K8SP1DataCentreServerDecember2012 = "a699494373c04fc0bc8f2bb1389d6106__Win2K8R2SP1-Datacenter-201212.01-en.us-30GB.vhd";
-        public const string VmTemplateWin2012DataCentreServerDecember2012 = "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-Datacenter-201212.01-en.us-30GB.vhd";
-        public const string VmTemplateWin2K8SP1DataCentreServerOctober2012 = "MSFT__Win2K8R2SP1-Datacenter-201210.01-en.us-30GB.vhd";
-        public const string VmTemplateSqlServer2012Eval = "MSFT__Sql-Server-11EVAL-11.0.2215.0-08022012-en-us-30GB.vhd";
-        public const string VmTemplateWin2012DataCentreServerOctober2012 = "MSFT__Windows-Server-2012-Datacenter-201210.01-en.us-30GB.vhd";
+        public const string VmTemplateBiztalk = "2cdc6229df6344129ee553dd3499f0d3__BizTalk-Server-2013-Beta-February-2013";
+        public const string VmTemplateWin2K8SP1DataCentreServer = "a699494373c04fc0bc8f2bb1389d6106__Win2K8R2SP1-Datacenter-201301.01-en.us-30GB.vhd";
+        public const string VmTemplateWin2012DataCentreServer = "a699494373c04fc0bc8f2bb1389d6106__Windows-Server-2012-Datacenter-201301.01-en.us-30GB.vhd";
+        public const string VmTemplateSqlServer2012Eval = "fb83b3509582419d99629ce476bcb5c8__Microsoft-SQL-Server-2012-Evaluation-CY13Feb-SQL11-SP1-CU2-11.0.3339.0";
     }
 }
