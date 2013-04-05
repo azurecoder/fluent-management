@@ -131,8 +131,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     var size = properties.DataDisks[i].LogicalDiskSizeInGB < 30
                                    ? 30
                                    : properties.DataDisks[i].LogicalDiskSizeInGB;
-                    var disk = DataVirtualHardDisk.GetDefaultDataDisk(properties.StorageAccountName, size, i, name,
-                                                                      label);
+                    var disk = DataVirtualHardDisk.GetDefaultDataDisk(properties.StorageAccountName, size, i, name, label);
                     disks.HardDiskCollection.Add(disk);
                 }
             }

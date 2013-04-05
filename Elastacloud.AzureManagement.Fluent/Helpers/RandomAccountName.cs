@@ -61,7 +61,6 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             {
                 seed = GenerateSeed(name);
             }
-            
             var random = new Random(seed);
             for (int i = 0; i < lengthLeftOver; i++)
             {

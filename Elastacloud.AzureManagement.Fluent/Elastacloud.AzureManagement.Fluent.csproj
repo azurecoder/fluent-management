@@ -86,6 +86,7 @@
     <Compile Include="Commands\Blobs\DeleteBlobContainerCommand.cs" />
     <Compile Include="Commands\Certificates\AddServiceCertificateCommand.cs" />
     <Compile Include="Commands\CommandNameMap.cs" />
+    <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\MobileServices\RestartMobileServiceCommand.cs" />
@@ -146,7 +147,7 @@
     <Compile Include="Commands\Subscriptions\GetSubscriberLocationsCommand.cs" />
     <Compile Include="Commands\Subscriptions\GetSubscriptionCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDeploymentCommand.cs" />
-    <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDataDiskCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DownloadWindowsRemoteDesktopCommand.cs" />
     <Compile Include="Commands\Virtual Machines\GetWindowsVirtualMachineContextCommand.cs" />

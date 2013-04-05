@@ -69,12 +69,12 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                        {
                            LogicalDiskSizeInGB = size,
                            LogicalUnitNumber = logicalUnitNumber,
-                           HostCaching = HostCaching.ReadWrite,
+                           HostCaching = HostCaching.None,
                            DiskLabel = diskLabel,
                            DiskName = diskName,
                            MediaLink =
                                String.Format("http://{0}.blob.core.windows.net/vhds/{1}-{2}.vhd", storageAccountName,
-                                             namer.GetNameFromInitString("data"), DateTime.Now.ToString("ddmmyy")),
+                                             namer.GetNameFromInitString(diskName), DateTime.Now.ToString("ddmmyy")),
                        };
         }
     }

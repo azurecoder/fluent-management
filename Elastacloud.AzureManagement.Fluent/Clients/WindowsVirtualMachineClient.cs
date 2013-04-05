@@ -118,6 +118,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (_vmRole == null)
                 vm = VirtualMachine;
 
+            // create the blob client
+            string diskName = _vmRole.OSHardDisk.DiskName;
+            string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
+            // create the blob client
+            IBlobClient blobClient = new BlobClient(Properties.SubscriptionId, StorageContainerName, storageAccount, Properties.Certificate);
+           
             // first delete the virtual machine command
             var deleteVirtualMachine = new DeleteVirtualMachineCommand(Properties)
                                            {
@@ -138,16 +144,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                                          };
                 deleteVirtualMachineDeployment.Execute();
             }
-            // create the blob client
-            string diskName = _vmRole.OSHardDisk.DiskName;
-            string storageAccount = ParseBlobDetails(_vmRole.OSHardDisk.MediaLink);
-
-            IBlobClient blobClient = new BlobClient(Properties.SubscriptionId, StorageContainerName, storageAccount, Properties.Certificate);
+            
             // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
+            // remove the disk association
+            DeleteNamedVirtualMachineDisk(diskName);
+            // remove the data disks
+            DeleteDataDisks(removeDisks ? blobClient : null);
             if (removeDisks)
-            {
-                // remove the disk association
-                DeleteNamedVirtualMachineDisk(diskName);
+            {               
                 // remove the physical disk
                 blobClient.DeleteBlob(StorageFileName);
             }
@@ -167,16 +171,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 blobClient.DeleteStorageAccount();  
             }
-
-            // TODO: Build the command to remove all of the associated data disks
-            //if (_vmRole.HardDisks.HardDiskCollection != null)
-            //{
-            //    foreach (var hardDisk in _vmRole.HardDisks.HardDiskCollection)
-            //    {
-
-            //    }
-            //}
-
         }
 
         /// <summary>
@@ -205,6 +199,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     count++;
                     Thread.Sleep(3000);
                 }
+            }
+        }
+
+        private void DeleteDataDisks(IBlobClient client)
+        {
+            // delete the data disks in the reverse order
+            if (_vmRole.HardDisks.HardDiskCollection == null) return;
+            for (int i = _vmRole.HardDisks.HardDiskCollection.Count - 1; i >= 0; i--)
+            {
+                var dataDiskCommand = new DeleteVirtualMachineDiskCommand(_vmRole.HardDisks.HardDiskCollection[i].DiskName)
+                                          {
+                                              SubscriptionId = Properties.SubscriptionId,
+                                              Certificate = Properties.Certificate
+                                          };
+                dataDiskCommand.Execute();
+
+                int pos = _vmRole.HardDisks.HardDiskCollection[i].MediaLink.LastIndexOf('/');
+                string diskFile = _vmRole.HardDisks.HardDiskCollection[i].MediaLink.Substring(pos + 1);
+                if(client != null)
+                    client.DeleteBlob(diskFile);
             }
         }
 
