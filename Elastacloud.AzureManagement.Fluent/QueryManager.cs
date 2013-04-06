@@ -58,6 +58,7 @@ namespace Elastacloud.AzureManagement.Fluent
             void SetContentType(string contentType);
             void SetBody(string body);
             void SetAccept(string accept);
+            void ReplaceOrAddHeader(string key, string value);
             bool HttpHeaderExists(string key);
             HttpWebRequest Create();
         }
@@ -131,8 +132,7 @@ namespace Elastacloud.AzureManagement.Fluent
             if (serviceManagementRequest.Certificate != null)
                 Builder.AddCertificate(serviceManagementRequest.Certificate);//request.ClientCertificates.Add(serviceManagementRequest.Certificate);
             foreach (var item in serviceManagementRequest.AdditionalHeaders)
-                if (!Builder.HttpHeaderExists(item.Key))
-                    Builder.AddHeader(item.Key, item.Value);//request.Headers.Add(item.Key, item.Value);
+               Builder.ReplaceOrAddHeader(item.Key, item.Value);
             Builder.SetMethod(serviceManagementRequest.HttpVerb ?? "GET");//request.Method = serviceManagementRequest.HttpVerb ?? "GET";
             Builder.SetContentType(serviceManagementRequest.ContentType ?? "application/xml");//request.ContentType = serviceManagementRequest.ContentType ?? "application/xml";
             Builder.SetBody(serviceManagementRequest.Body);

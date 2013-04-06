@@ -169,7 +169,8 @@ namespace Elastacloud.AzureManagement.Fluent.SqlAzure.Classes
                                            "User created with login " + item.Key);
                 }
 
-                ExecuteScripts(dbConnection);
+                if (_manager.SqlScripts.Count > 0)
+                    ExecuteScripts(dbConnection);
 
                 if (masterConnection.State == ConnectionState.Open)
                     masterConnection.Close();

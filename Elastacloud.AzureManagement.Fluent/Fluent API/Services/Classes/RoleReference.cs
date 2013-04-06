@@ -28,6 +28,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
         IRoleActivity IRoleReference.ForRole(string name)
         {
+            if (_manager.CscfgFileInstance == null)
+                _manager.CscfgFileInstance = CscfgFile.GetInstance(_manager.LocalPackagePathName);
             var cscfg = CscfgFile.GetAdHocInstance(_manager.CscfgFileInstance.NewVersion);
             int count = cscfg.GetInstanceCountForRole(name);
            

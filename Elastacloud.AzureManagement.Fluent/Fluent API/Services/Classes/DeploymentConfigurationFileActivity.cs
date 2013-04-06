@@ -26,7 +26,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 
         IDeploymentConfigurationStorageActivity IDeploymentConfigurationFileActivity.WithPackageConfigDirectory(string directoryName)
         {
-            int cspkgCount = 0;
+            int cspkgCount = 0, cscfgCount = 0;
             Manager.DeploymentFolder = directoryName;
 
             if (!Directory.Exists(directoryName))
@@ -39,6 +39,13 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                         throw new ApplicationException("Only a single .cspkg file can be present in the deployment folder");
                     Manager.LocalPackagePathName = fileName;
                     cspkgCount++;
+                }
+                if (Path.GetExtension(fileName) == Constants.CscfgExtension)
+                {
+                    if (cscfgCount > 1)
+                        throw new ApplicationException("Only a single .cscfg file can be present in the deployment folder");
+                    Manager.CscfgFileInstance = CscfgFile.GetInstance(fileName);
+                    cscfgCount++;
                 }
             }
 

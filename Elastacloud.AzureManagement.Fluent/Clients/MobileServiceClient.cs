@@ -41,8 +41,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             ManagementCertificate = certificate;
             MobileServiceSqlName = "ZumoSqlServer_" + Guid.NewGuid().ToString("n");
             MobileServiceDbName = "ZumoSqlDatabase_" + Guid.NewGuid().ToString("n");
+
+            if (mobileServiceName == null) return;
             MobileServiceName = mobileServiceName;
-            Refresh();
+            try
+            {
+                Refresh();
+            }
+            catch (Exception)
+            {
+                throw new FluentManagementException("mobile service does not exist!","MobileServiceClient");
+            }
         }
 
         /// <summary>
@@ -136,6 +145,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                   Certificate = ManagementCertificate
                               };
             updateCommand.Execute();
+            Refresh();
         }
 
         private Dictionary<string, string> BuildCrudDictionary(IList<string> values)

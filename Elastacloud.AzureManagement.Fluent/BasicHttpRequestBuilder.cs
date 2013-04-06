@@ -59,6 +59,13 @@ namespace Elastacloud.AzureManagement.Fluent
             _accept = accept;
         }
 
+        public void ReplaceOrAddHeader(string key, string value)
+        {
+            if (HttpHeaderExists(key))
+                _headers.Remove(key);
+            _headers.Add(key, value);
+        }
+
         public bool HttpHeaderExists(string key)
         {
             return _headers.ContainsKey(key);

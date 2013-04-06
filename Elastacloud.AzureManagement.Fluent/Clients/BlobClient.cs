@@ -48,10 +48,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="filenamePath">The name of the file to read an copy to blob storage</param>
         public string CreateAndUploadBlob(string blobName, string filenamePath)
         {
+            LoadKeyIfNotExists();
             var blobCommand = new CreateAndUploadBlobCommand(ContainerName, blobName, filenamePath)
             {
-                AccountKey = AccountName,
-                AccountName = AccountKey
+                AccountKey = AccountKey,
+                AccountName = AccountName
             };
             blobCommand.Execute();
             return blobCommand.DeploymentPath;
@@ -75,10 +76,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void CreatBlobContainer()
         {
+            LoadKeyIfNotExists();
             var blobContainer = new CreateBlobContainerCommand(ContainerName)
             {
-                AccountKey = AccountName,
-                AccountName = AccountKey
+                AccountKey = AccountKey,
+                AccountName = AccountName
             };
             blobContainer.Execute();
         }
@@ -119,8 +121,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             var blobContainer = new DeleteBlobContainerCommand(ContainerName)
             {
-                AccountKey = AccountName,
-                AccountName = AccountKey
+                AccountKey = AccountKey,
+                AccountName = AccountName
             };
             blobContainer.Execute();
         }

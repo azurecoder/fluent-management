@@ -585,7 +585,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         /// <summary>
         /// Sets the endpoint for the package instead of doing an upload
         /// </summary>
-        IHostedServiceActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint, string cscfgFilePath = null)
+        IHostedServiceActivity IBuildActivity.SetCspkgEndpoint(string uriEndpoint, string cscfgFilePath)
         {
             if((uriEndpoint.StartsWith("http://") || uriEndpoint.StartsWith("https://")) && cscfgFilePath == null)
                 throw new ApplicationException("please define a valid .cscfg file");
