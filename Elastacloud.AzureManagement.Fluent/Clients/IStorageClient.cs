@@ -22,6 +22,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         void CreateNewStorageAccount(string name, string location = "North Europe");
         /// <summary>
+        /// Create the storage account if an account by the same name doesn't exist
+        /// </summary>
+        void CreateStorageAccountIfNotExists(string name, string location = "North Europe");
+        /// <summary>
         /// Deletes a storage account if it exists
         /// </summary>
         void DeleteStorageAccount(string name);

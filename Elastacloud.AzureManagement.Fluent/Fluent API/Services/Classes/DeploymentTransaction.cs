@@ -45,7 +45,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         public DeploymentTransaction(DeploymentManager manager)
         {
             _manager = manager;
-            _blobClient = new BlobClient(_manager.SubscriptionId, Constants.DefaultBlobContainerName, _manager.StorageAccountName, _manager.StorageAccountKey);
+            _blobClient = new BlobClient(_manager.SubscriptionId, Constants.DefaultBlobContainerName, 
+                _manager.StorageAccountName, _manager.ManagementCertificate);
         }
 
         #region Implementation of IServiceTransaction

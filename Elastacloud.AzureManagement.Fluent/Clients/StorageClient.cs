@@ -41,6 +41,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             create.Execute();
         }
 
+        /// <summary>
+        /// Create the storage account if an account by the same name doesn't exist
+        /// </summary>
+        public void CreateStorageAccountIfNotExists(string name, string location = "North Europe")
+        {
+            if (GetStorageAccountList().All(a => a.Name != name))
+            {
+                CreateNewStorageAccount(name, location);
+            }
+        }
+
         public void DeleteStorageAccount(string name)
         {
             var delete = new DeleteStorageAccountCommand(name)
