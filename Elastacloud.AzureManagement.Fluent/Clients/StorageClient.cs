@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Elastacloud.AzureManagement.Fluent.Commands.Storage;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
@@ -30,7 +31,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         protected X509Certificate2 ManagementCertificate { get; set; }
         protected string SubscriptionId { get; set; }
 
-        public void CreateNewStorageAccount(string name, string location = "North Europe")
+				public void CreateNewStorageAccount(string name, string location = LocationConstants.NorthEurope)
         {
             // issue the create storage account command 
             var create = new CreateStorageAccountCommand(name, "Created with Fluent Management", location)
@@ -44,7 +45,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Create the storage account if an account by the same name doesn't exist
         /// </summary>
-        public void CreateStorageAccountIfNotExists(string name, string location = "North Europe")
+				public void CreateStorageAccountIfNotExists(string name, string location = LocationConstants.NorthEurope)
         {
             if (GetStorageAccountList().All(a => a.Name != name))
             {

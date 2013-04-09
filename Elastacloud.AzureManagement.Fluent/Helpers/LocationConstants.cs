@@ -8,18 +8,18 @@
  ************************************************************************************************************/
 namespace Elastacloud.AzureManagement.Fluent.Helpers
 {
-    /// <summary>
-    /// Contains the various locations of the Windows Azure Data Centres
-    /// </summary>
-    public class LocationConstants
-    {
-        public const string NorthEurope = "North Europe";
-        public const string WesternEurope = "West Europe";
-        public const string SouthCentralUS = "South Central US";
-        public const string NorthCentralUS = "North Central US";
-        public const string WestUS = "West US";
-        public const string EastUS = "East US";
-        public const string EastAsia = "East Asia";
-        public const string SouthEastAsia = "South East Asia";
-    }
+	/// <summary>
+	/// Contains the various locations of the Windows Azure Data Centres
+	/// </summary>
+	public static class LocationConstants
+	{
+		public const string NorthEurope = "North Europe";
+		public const string WesternEurope = "West Europe";
+		public const string SouthCentralUS = "South Central US";
+		public const string NorthCentralUS = "North Central US";
+		public const string WestUS = "West US";
+		public const string EastUS = "East US";
+		public const string EastAsia = "East Asia";
+		public const string SouthEastAsia = "South East Asia";
+	}
 }

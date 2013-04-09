@@ -20,7 +20,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
     /// </summary>
     internal class CreateStorageAccountCommand : ServiceCommand
     {
-        internal CreateStorageAccountCommand(string name, string description, string location = "North Europe")
+			internal CreateStorageAccountCommand(string name, string description, string location = LocationConstants.NorthEurope)
         {
             Name = name.ToLower();
             Description = description;
