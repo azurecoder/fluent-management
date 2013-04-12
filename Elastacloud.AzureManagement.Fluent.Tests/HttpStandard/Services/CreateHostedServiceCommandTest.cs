@@ -98,7 +98,7 @@ namespace Elastacloud.AzureManagement.Fluent.Tests.HttpStandard.Services
 
             _mockQueryManager.Verify(
                 t =>
-                t.MakeASyncRequest(It.Is<ServiceManagementRequest>(tRequest => new XmlTestHelper(tRequest.Body).CheckXmlValue(Namespaces.NsWindowsAzure, "Location", "North Europe")), It.IsAny<ServiceManager.AsyncResponseParser>(),
+								t.MakeASyncRequest(It.Is<ServiceManagementRequest>(tRequest => new XmlTestHelper(tRequest.Body).CheckXmlValue(Namespaces.NsWindowsAzure, "Location", LocationConstants.NorthEurope)), It.IsAny<ServiceManager.AsyncResponseParser>(),
                                    It.IsAny<ServiceManager.AsyncResponseException>()), Times.Once());
         }
 
