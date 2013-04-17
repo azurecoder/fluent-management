@@ -56,5 +56,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the blob which is stored for the vm
         /// </summary>
         string StorageFileName { get; }
+        /// <summary>
+        /// Returns the properties of the associated virtual machine
+        /// </summary>
+        WindowsVirtualMachineProperties Properties { get; set; }
     }
 }

@@ -32,7 +32,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
             OperationId = "hostedservices";
             ServiceType = "services";
             //https://management.core.windows.net/<subscription-id>/services/hostedservices/<service-name>/deployments/<deployment-name>/roles/<role-name>/Operations
-            HttpCommand = string.Format("{0}/deployments/{1}/roles/{2}/Operations", properties.CloudServiceName, properties.DeploymentName, properties.RoleName);
+            HttpCommand = string.Format("{0}/deployments/{1}/roleinstances/{2}/Operations", properties.CloudServiceName, properties.DeploymentName, properties.RoleName);
             Properties = properties;
         }
 
