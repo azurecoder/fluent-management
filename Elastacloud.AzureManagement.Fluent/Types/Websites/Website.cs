@@ -23,5 +23,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// What the Mode is of the website - Free, Shared, Reserved
         /// </summary>
         public ComputeMode ComputeMode { get; set; }
+        /// <summary>
+        /// The current state of the website stopped/started
+        /// </summary>
+        public WebsiteState State { get; set; }
+        /// <summary>
+        /// The current usage of the website e.g. Normal
+        /// </summary>
+        public WebsiteUsage Usage { get; set; }
+        /// <summary>
+        /// Which web location this is in e.g. northeuropewebspace
+        /// </summary>
+        public string Webspace { get; set; }
     }
 }

@@ -64,7 +64,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 // get the compute modefrom the instance 
                 if (element.Element(GetSchema() + "ComputeMode") != null)
                 {
-                    site.ComputeMode = (ComputeMode)Enum.Parse(typeof(ComputeMode), element.Element(GetSchema() + "ComputeMode").Value);
+                    site.ComputeMode = (ComputeMode)Enum.Parse(typeof(ComputeMode), element.Element(GetSchema() + "ComputeMode").Value, true);
                 }
                 // get the name of the site as in xxxx.azurewebsites.net
                 if (element.Element(GetSchema() + "Name") != null)
@@ -75,6 +75,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 if (element.Element(GetSchema() + "Enabled") != null)
                 {
                     site.Enabled = bool.Parse(element.Element(GetSchema() + "Enabled").Value);
+                }
+                // get the underlying webspace that this site is in
+                if (element.Element(GetSchema() + "WebSpace") != null)
+                {
+                    site.Webspace = element.Element(GetSchema() + "WebSpace").Value;
+                }
+                // get the usage of this website
+                if (element.Element(GetSchema() + "UsageState") != null)
+                {
+                    site.Usage = (WebsiteUsage)Enum.Parse(typeof(WebsiteUsage), element.Element(GetSchema() + "UsageState").Value, true);
+                }
+                // get the state of the website
+                if (element.Element(GetSchema() + "State") != null)
+                {
+                    site.State = (WebsiteState)Enum.Parse(typeof(WebsiteState), element.Element(GetSchema() + "State").Value, true);
                 }
                 // get the hostnames using the serialisation namespace
                 // EnabledHostNames [ xmlns:a= ]

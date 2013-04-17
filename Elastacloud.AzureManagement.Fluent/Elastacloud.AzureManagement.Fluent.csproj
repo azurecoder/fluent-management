@@ -308,6 +308,8 @@
     <Compile Include="Types\Virtual Machines\WindowsConfigurationSet.cs" />
     <Compile Include="Types\VmSize.cs" />
     <Compile Include="Types\Websites\ComputeMode.cs" />
+    <Compile Include="Types\Websites\WebsiteUsage.cs" />
+    <Compile Include="Types\Websites\WebsiteState.cs" />
     <Compile Include="Types\Websites\Website.cs" />
   </ItemGroup>
   <ItemGroup>
