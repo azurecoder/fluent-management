@@ -24,26 +24,30 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public List<Website> List()
         {
+            // get the lise of webspaces
+            var websites = new List<Website>();
             var command = new GetWebsiteListCommand()
                               {
                                   SubscriptionId = SubscriptionId,
                                   Certificate = ManagementCertificate
                               };
             command.Execute();
-
+            // use this list to derive a list of websites discarding 404 errors
             var list = command.WebsiteRegions;
-            foreach (string website in list)
+            foreach (string region in list)
             {
-                Console.WriteLine(website);
-                var context = new WebsiteContextRequestCommand(website)
+                Console.WriteLine(region);
+                var context = new WebsiteContextRequestCommand(region)
                                   {
                                       SubscriptionId = SubscriptionId,
                                       Certificate = ManagementCertificate
                                   };
                 context.Execute();
+                if(context.Websites != null)
+                    websites.AddRange(context.Websites);
             }
 
-            return null;
+            return websites;
         }
 
         #endregion

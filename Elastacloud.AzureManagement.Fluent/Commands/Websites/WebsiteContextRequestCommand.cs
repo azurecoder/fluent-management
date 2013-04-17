@@ -46,7 +46,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
         /// </summary>
         protected override void ResponseCallback(HttpWebResponse webResponse)
         {
-            Websites = Parse(webResponse, BaseParser.WebsiteListParser, new WebsiteListParser(null));
+            Websites = Parse(webResponse, BaseParser.WebsiteParser, new WebsiteParser(null));
             SitAndWait.Set();
         }
         /// <summary>

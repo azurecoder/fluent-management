@@ -31,8 +31,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("================");
 
             var client = new WebsiteClient(_subscriptionId, _certificate);
-            client.List();
+            var list = client.List();
 
+            list.ForEach(a => System.Console.WriteLine("Website hosts: " + String.Join(", ", a.Hostname.ToArray())));
         }
 
         public void ParseTokens(string[] args)

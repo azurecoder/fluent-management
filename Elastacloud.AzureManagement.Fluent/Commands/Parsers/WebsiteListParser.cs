@@ -19,7 +19,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
     {
         public WebsiteListParser(XDocument document) : base(document)
         {
-            CommandResponse = new SubscriptionInformation();
+            CommandResponse = new List<string>();
         }
 
         public List<string> Websites { get; private set; }
@@ -41,7 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             if (Websites == null)
                 Websites = new List<string>();
 
-            XElement rootElements = Document.Element(GetSchema() + WebsiteListParser);
+            var rootElements = Document.Element(GetSchema() + WebsiteListParser);
             foreach (var element in rootElements.Elements(GetSchema() + "WebSpace").Where(element => element.Element(GetSchema() + "Name") != null))
             {   
                 Websites.Add(element.Element(GetSchema() + "Name").Value);

@@ -162,6 +162,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The root command for Windows Azure websites
         /// </summary>
         public const string WebsiteListParser = "WebSpaces";
+        /// <summary>
+        /// The root element returned when requesting a particular webspace
+        /// </summary>
+        public const string WebsiteParser = "Sites";
         
         /// <summary>
         /// The schema for the Sql azure manmagement request
