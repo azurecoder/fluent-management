@@ -24,11 +24,6 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <summary>
         /// Contains whether or not the transaction has been successful 
         /// </summary>
-        private bool _started;
-
-        /// <summary>
-        /// Contains whether or not the transaction has been successful 
-        /// </summary>
         private bool _success;
 
         /// <summary>
@@ -56,7 +51,7 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <returns>A dynamic type which represents the return of the particular transaction</returns>
         public dynamic Commit()
         {
-            _success = _started = true;
+            _success = true;
             // TODO: Make this specific so that all of the parameters for a deployment are returned 
             foreach (IServiceTransaction serviceTransaction in _transactionList)
             {

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Watchers;
 
@@ -13,7 +7,6 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
 {
     public class RoleContextManager : IRoleOperation
     {
-        private RoleStatus _status = RoleStatus.Unknown;
         private RoleStatusWatcher _watcher;
         /// <summary>
         /// Used to create a role context
