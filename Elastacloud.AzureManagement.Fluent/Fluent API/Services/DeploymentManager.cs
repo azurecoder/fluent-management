@@ -366,7 +366,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         IServiceCompleteActivity IRoleReference.ReturnWithoutWaitingForRunningRoles()
         {
             IRoleReference roleReference = new RoleReference(this);
-            return roleReference.WaitUntilAllRoleInstancesAreRunning();
+            return roleReference.ReturnWithoutWaitingForRunningRoles();
         }
 
         /// <summary>
