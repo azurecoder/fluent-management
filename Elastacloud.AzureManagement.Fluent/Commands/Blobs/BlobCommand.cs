@@ -15,6 +15,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 {
@@ -164,12 +165,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
             {
                 if (((HttpWebResponse) ex.Response).StatusCode == HttpStatusCode.Conflict)
                 {
-                    Trace.WriteLine("container or blob already exists!");
+                    throw new FluentManagementException("container or blob already exists!", "BlobCommand");
                 }
                 if (((HttpWebResponse) ex.Response).StatusCode == HttpStatusCode.Forbidden)
                 {
-                    Trace.WriteLine("problem with signature!");
+                    throw new FluentManagementException("problem with signature!", "BlobCommand");
                 }
+                throw new FluentManagementException(ex.ToString(), "BlobCommand");
             }
         }
 

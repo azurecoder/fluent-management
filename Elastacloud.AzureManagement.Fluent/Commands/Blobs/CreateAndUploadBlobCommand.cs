@@ -8,6 +8,10 @@
  ************************************************************************************************************/
 
 using System;
+using System.IO;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 {
@@ -29,16 +33,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         public override void Execute()
         {
-            string accessContainer =
-                DeploymentPath =
-                String.Format("http://{0}.blob.core.windows.net/{1}/{2}", AccountName, ContainerName, BlobName);
-            int contentLength;
-            byte[] ms = GetPackageFileBytesAndLength(FileNamePath, out contentLength);
+            string accessContainer = DeploymentPath = String.Format("http://{0}.blob.core.windows.net/{1}/{2}", AccountName, ContainerName, BlobName);
+            string baseUri = String.Format("http://{0}.blob.core.windows.net/", AccountName);
 
-            string canResource = String.Format("/{0}/{1}/{2}", AccountName, ContainerName, BlobName);
+            var client = new CloudBlobClient(new Uri(baseUri), new StorageCredentials(AccountName, AccountKey));
+            var container = client.GetContainerReference(ContainerName);
+            container.CreateIfNotExists();
+            var blob = container.GetBlockBlobReference(BlobName);
+            blob.UploadFromStream(new FileStream(FileNamePath, FileMode.Open, FileAccess.Read));
+            //int contentLength;
+            //byte[] ms = GetPackageFileBytesAndLength(FileNamePath, out contentLength);
 
-            string authHeader = CreateAuthorizationHeader(canResource, "\nx-ms-blob-type:BlockBlob", contentLength);
-            SendWebRequest(accessContainer, authHeader, ms, contentLength);
+            //string canResource = String.Format("/{0}/{1}/{2}", AccountName, ContainerName, BlobName);
+
+            //string authHeader = CreateAuthorizationHeader(canResource, "\nx-ms-blob-type:BlockBlob", contentLength);
+            //SendWebRequest(accessContainer, authHeader, ms, contentLength);
         }
     }
 }

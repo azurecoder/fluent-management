@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -60,7 +61,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             //Track and throw up the X-ms request id (x-ms-request-id)
             MsftAsyncResponseId = webResponse.GetResponseHeader("x-ms-request-id");
-            ElastaLogger.MessageLogger.Trace("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+            Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
             for (;;)
             {
                 var asyncCommand = new GetAsyncStatusCommand
@@ -79,11 +80,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                     case OperationStatus.InProgress:
                         break;
                     case OperationStatus.Failed:
-                        ElastaLogger.MessageLogger.Error("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+                        Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
                         SitAndWait.Set();
                         return;
                     case OperationStatus.Succeeded:
-                        ElastaLogger.MessageLogger.Trace("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+                        Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
                         SitAndWait.Set();
                         return;
                 }
@@ -101,9 +102,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             string message = string.Format("Error with status code: {0} and type: {1}",
                                            ((int) exception.Status).ToString(CultureInfo.InvariantCulture),
                                            exception.Status.ToString());
-            ElastaLogger.MessageLogger.TraceException(message, exception);
+            Trace.TraceError(message, exception);
             // add NLog support for the exception
-            ElastaLogger.MessageLogger.Error(exception.Message);
+            Trace.TraceError(exception.Message);
             // TODO: Place and error router here 
 
             // if we have an error it's probably best to release this

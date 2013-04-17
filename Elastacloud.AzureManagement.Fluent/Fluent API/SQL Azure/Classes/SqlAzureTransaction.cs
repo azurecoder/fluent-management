@@ -14,8 +14,7 @@ using System.Data.SqlClient;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Commands.SqlAzure;
 using Elastacloud.AzureManagement.Fluent.Types;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
+
 
 namespace Elastacloud.AzureManagement.Fluent.SqlAzure.Classes
 {
@@ -103,13 +102,42 @@ namespace Elastacloud.AzureManagement.Fluent.SqlAzure.Classes
         /// <summary>
         /// Executes a set of scripts against a Sql Azure database
         /// </summary>
+        /// TODO: Test this properly!!!!
         private void ExecuteScripts(SqlConnection connection)
         {
-            var server = new Server(new ServerConnection(connection));
             foreach (string script in _manager.SqlScripts)
             {
-                server.ConnectionContext.ExecuteNonQuery(script);
+                ExecuteBatchNonQuery(script, connection);
                 _manager.WriteComplete(EventPoint.SqlAzureScriptsExecutedSuccessfully, "Script executed successfully");
+            }
+        }
+
+        /* courtesy of Blorgbeard! */
+        private void ExecuteBatchNonQuery(string sql, SqlConnection conn)
+        {
+            string sqlBatch = string.Empty;
+            var cmd = new SqlCommand(string.Empty, conn);
+            conn.Open();
+            sql += "\nGO";   // make sure last batch is executed.
+            try
+            {
+                foreach (string line in sql.Split(new string[2] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    if (line.ToUpperInvariant().Trim() == "GO")
+                    {
+                        cmd.CommandText = sqlBatch;
+                        cmd.ExecuteNonQuery();
+                        sqlBatch = string.Empty;
+                    }
+                    else
+                    {
+                        sqlBatch += line + "\n";
+                    }
+                }
+            }
+            finally
+            {
+                conn.Close();
             }
         }
 
