@@ -158,6 +158,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// Gets the mobile services resource parser 
         /// </summary>
         public const string GetMobileServiceResourcesParser = "Application";
+        /// <summary>
+        /// The root command for Windows Azure websites
+        /// </summary>
+        public const string WebsiteListParser = "WebSpaces";
         
         /// <summary>
         /// The schema for the Sql azure manmagement request

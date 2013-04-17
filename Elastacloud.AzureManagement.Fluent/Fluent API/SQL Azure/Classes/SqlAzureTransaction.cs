@@ -150,10 +150,8 @@ namespace Elastacloud.AzureManagement.Fluent.SqlAzure.Classes
                 SqlConnection masterConnection = GetConnection("master");
 
                 // TODO: Replace this with checks to prevent injection attacks
-                ExecuteCommand(masterConnection,
-                               new[] {"CREATE DATABASE " + _manager.SqlAzureDatabaseName + " (EDITION = 'web')"});
-                _manager.WriteComplete(EventPoint.SqlAzureDatabaseCreated,
-                                       "Created database " + _manager.SqlAzureDatabaseName);
+                ExecuteCommand(masterConnection, new[] {"CREATE DATABASE " + _manager.SqlAzureDatabaseName + " (EDITION = 'web')"});
+                _manager.WriteComplete(EventPoint.SqlAzureDatabaseCreated, "Created database " + _manager.SqlAzureDatabaseName);
                 SqlConnection dbConnection = GetConnection(_manager.SqlAzureDatabaseName);
                 foreach (var item in _manager.DbUsers)
                 {
