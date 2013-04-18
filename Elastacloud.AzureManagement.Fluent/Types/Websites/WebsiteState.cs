@@ -14,6 +14,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// <summary>
         /// The website is running
         /// </summary>
-        Started
+        Running
     }
 }

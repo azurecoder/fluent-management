@@ -163,6 +163,8 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Websites\DeleteWebsiteCommand.cs" />
+    <Compile Include="Commands\Websites\WebsiteChangeStateCommand.cs" />
     <Compile Include="Commands\Websites\WebsiteContextRequestCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteListCommand.cs" />
     <Compile Include="Fluent API\LinqToAzure\Executors\CloudServiceExecutor.cs" />

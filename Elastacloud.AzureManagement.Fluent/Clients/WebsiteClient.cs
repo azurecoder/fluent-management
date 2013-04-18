@@ -96,7 +96,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Delete()
         {
-            throw new NotImplementedException();
+            var site = GetWebsiteIfExists();
+            var command = new DeleteWebsiteCommand(site.Webspace, site.Name)
+            {
+                Certificate = ManagementCertificate,
+                SubscriptionId = SubscriptionId
+            };
+            command.Execute();
         }
 
         /// <summary>
@@ -114,7 +120,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Restart()
         {
-            throw new NotImplementedException();
+            var site = GetWebsiteIfExists();
+            var command = new WebsiteChangeStateCommand(site, WebsiteState.Running)
+            {
+                Certificate = ManagementCertificate,
+                SubscriptionId = SubscriptionId
+            };
+            command.Execute();
         }
 
         /// <summary>
@@ -123,12 +135,22 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public void Stop()
         {
             var site = GetWebsiteIfExists();
+            var command = new WebsiteChangeStateCommand(site, WebsiteState.Stopped)
+                              {
+                                  Certificate = ManagementCertificate,
+                                  SubscriptionId = SubscriptionId
+                              };
+            command.Execute();
         }
 
         /// <summary>
         /// The name of the website
         /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// Gets the website properties
+        /// </summary>
+        public Website WebsiteProperties { get; set; }
 
         #endregion
 
@@ -143,7 +165,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // make sure that the site exists
             if (site == null)
                 throw new FluentManagementException("No site found in this subscription with the name" + Name, "WebsiteCliet");
-            return site;
+            return WebsiteProperties = site;
         }
     }
 }
