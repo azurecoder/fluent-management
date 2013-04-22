@@ -16,16 +16,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Creates a website given github credentials
         /// </summary>
-        /// <param name="repositoryName">the name of the repository to create</param>
-        /// <param name="username">The github username used to login</param>
-        /// <param name="password">The github password to login</param>
-        void CreateFromGithub(string repositoryName, string username, string password);
+        /// <param name="githubDetails">the details of the github repo</param>
+        /// <param name="name">the site name </param>
+        /// <param name="location">the site location</param>
+        void CreateFromGithub(GithubDetails githubDetails, string name, string location = LocationConstants.NorthEurope);
         /// <summary>
         /// Creates a default website with nothing deployed
         /// </summary>
-        /// <param name="hostname">The hostname of the website</param>
-        /// <param name="location">the location where the website will be deployed to</param>
-        void Create(string hostname, string location = LocationConstants.NorthEurope);
+        /// <param name="website">the website which will be used</param>
+        void Create(Website website);
         /// <summary>
         /// Deletes a website with the current context
         /// </summary>

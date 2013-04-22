@@ -32,8 +32,22 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// </summary>
         public WebsiteUsage Usage { get; set; }
         /// <summary>
+        /// The params that the website has been set up with 
+        /// </summary>
+        public WebsiteParameters WebsiteParameters { get; set; }
+        /// <summary>
         /// Which web location this is in e.g. northeuropewebspace
         /// </summary>
         public string Webspace { get; set; }
+        /// <summary>
+        /// to set the website in North Europe
+        /// </summary>
+        public const string NorthEuropeWebSpace = "northeuropewebspace";
+        /// <summary>
+        /// To set the website in West Europe
+        /// </summary>
+        public const string WestEuropeWebSpace = "westeuropewebspace";
+
     }
+
 }

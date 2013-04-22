@@ -163,6 +163,7 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Websites\CreateWebsiteCommand.cs" />
     <Compile Include="Commands\Websites\DeleteWebsiteCommand.cs" />
     <Compile Include="Commands\Websites\WebsiteChangeStateCommand.cs" />
     <Compile Include="Commands\Websites\WebsiteContextRequestCommand.cs" />
@@ -310,6 +311,10 @@
     <Compile Include="Types\Virtual Machines\WindowsConfigurationSet.cs" />
     <Compile Include="Types\VmSize.cs" />
     <Compile Include="Types\Websites\ComputeMode.cs" />
+    <Compile Include="Types\Websites\WebsiteAvailabilityState.cs" />
+    <Compile Include="Types\Websites\WorkerSize.cs" />
+    <Compile Include="Types\Websites\WebsiteParameters.cs" />
+    <Compile Include="Types\Websites\GithubDetails.cs" />
     <Compile Include="Types\Websites\WebsiteUsage.cs" />
     <Compile Include="Types\Websites\WebsiteState.cs" />
     <Compile Include="Types\Websites\Website.cs" />

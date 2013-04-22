@@ -73,10 +73,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Creates a website given github credentials
         /// </summary>
-        /// <param name="repositoryName">the name of the repository to create</param>
-        /// <param name="username">The github username used to login</param>
-        /// <param name="password">The github password to login</param>
-        public void CreateFromGithub(string repositoryName, string username, string password)
+        /// <param name="githubDetails">the details of the github repo</param>
+        /// <param name="name">the site name </param>
+        /// <param name="location">the site location</param>
+        public void CreateFromGithub(GithubDetails githubDetails, string name, string location = LocationConstants.NorthEurope)
         {
             throw new NotImplementedException();
         }
@@ -84,11 +84,25 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Creates a default website with nothing deployed
         /// </summary>
-        /// <param name="hostname">The hostname of the website</param>
-        /// <param name="location">the location where the website will be deployed to</param>
-        public void Create(string hostname, string location = LocationConstants.NorthEurope)
+        /// <param name="website">the website which will be created</param>
+        public void Create(Website website)
         {
-            throw new NotImplementedException();
+            website.WebsiteParameters.CurrentNumberOfWorkers = website.WebsiteParameters.CurrentNumberOfWorkers != 0 ? 
+                website.WebsiteParameters.CurrentNumberOfWorkers : 1;
+            website.Enabled = true;
+            website.State = WebsiteState.Running;
+            if (!String.IsNullOrEmpty(website.Webspace))
+            {
+                ValidateWebSpace(website.Webspace);
+            }
+           
+            var command = new CreateWebsiteCommand(website)
+                              {
+                                  SubscriptionId = SubscriptionId,
+                                  Certificate = ManagementCertificate
+                              };
+            command.Execute();
+            WebsiteProperties = website;
         }
 
         /// <summary>
@@ -166,6 +180,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (site == null)
                 throw new FluentManagementException("No site found in this subscription with the name" + Name, "WebsiteCliet");
             return WebsiteProperties = site;
+        }
+
+        private void ValidateWebSpace(string webSpace)
+        {
+            if(webSpace != Website.NorthEuropeWebSpace || webSpace != Website.WestEuropeWebSpace)
+                throw new FluentManagementException("Ensure you use the correct webspace", "WebsiteClient");
         }
     }
 }

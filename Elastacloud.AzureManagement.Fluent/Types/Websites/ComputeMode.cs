@@ -4,6 +4,6 @@
     {
         Free,
         Shared,
-        Reserved
+        Dedicated
     }
 }
