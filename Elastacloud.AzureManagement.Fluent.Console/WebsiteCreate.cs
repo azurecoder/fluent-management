@@ -31,8 +31,8 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             var site = new Website()
                            {
                                ComputeMode = ComputeMode.Dedicated,
-                               true,
-                           }
+                               Name = "fluentwebtest38"
+                           };
             System.Console.WriteLine("Creating website");
             System.Console.WriteLine("================");
 
