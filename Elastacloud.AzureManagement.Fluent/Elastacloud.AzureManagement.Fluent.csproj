@@ -163,6 +163,7 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Websites\GetWebsiteConfigCommand.cs" />
     <Compile Include="Commands\Websites\UpdateWebsiteConfigCommand.cs" />
     <Compile Include="Commands\Websites\CreateWebsiteCommand.cs" />
     <Compile Include="Commands\Websites\DeleteWebsiteCommand.cs" />

@@ -22,13 +22,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
     /// <summary>
     /// Used to create a hosted service within a given subscription
     /// </summary>
-    internal class UpdateWebsiteConfigCommand : ServiceCommand
+    internal class GetWebsiteConfigCommand : ServiceCommand
     {
         public const string WebsitePostfix = ".azurewebsites.net";
         /// <summary>
         /// Constructs a websites list command
         /// </summary>
-        internal UpdateWebsiteConfigCommand(Website website)
+        internal GetWebsiteConfigCommand(Website website)
         {
             HttpVerb = HttpVerbGet;
             ServiceType = "services";
@@ -84,12 +84,36 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             XName aString = a + "string";
 
             var doc = new XDocument(
-                new XDeclaration("1.0", "utf-8", ""),
-                new XElement(xmlns + "SiteConfig", new XAttribute(iNamespace, i),
-                             new XElement(xmlns + "AppSettings"),
-                             new XElement(xmlns + "ConnectionStrings"),
-                             new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers)));
-                            
+                    new XDeclaration("1.0", "utf-8", ""),
+                    new XElement(xmlns + "Site", new XAttribute(iNamespace, i),
+                            new XElement(xmlns + "AdminEnabled", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "AvailabilityState", Website.WebsiteParameters.AvailabilityState),
+                            new XElement(xmlns + "Enabled", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "EnabledHostNames", new XAttribute(iNil, "true"), new XAttribute(aArray, a)),
+                            new XElement(xmlns + "HostNameSslState", new XAttribute(iNil, "true"), new XAttribute(aArray, a)),
+                            new XElement(xmlns + "HostNames", new XAttribute(aArray, a),
+                                new XElement(aString, Website.Name + WebsitePostfix)),
+                            new XElement(xmlns + "Name", Website.Name),
+                            new XElement(xmlns + "Owner", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "RepositorySiteName", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "SSLCertificates", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "SelfLink", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "SiteMode", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "SiteProperties", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "State", new XAttribute(iNil, "true")),
+                            new XElement(xmlns + "UsageState", Website.Usage),
+                            new XElement(xmlns + "WebSpace", Website.Webspace),
+                            new XElement(xmlns + "WebSpaceToCreate",
+                                new XElement(xmlns + "AvailabilityState", Website.WebsiteParameters.AvailabilityState),
+                                new XElement(xmlns + "ComputeMode", Website.ComputeMode),
+                                new XElement(xmlns + "CurrentNumberOfWorkers", Website.WebsiteParameters.CurrentNumberOfWorkers),
+                                new XElement(xmlns + "CurrentWorkerSize", Website.WebsiteParameters.CurrentWorkerSize),
+                                new XElement(xmlns + "Name", Website.Webspace),
+                                new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers),
+                                new XElement(xmlns + "Status", Website.State),
+                                new XElement(xmlns + "WorkerSize", Website.WebsiteParameters.CurrentWorkerSize))));
+
+
             return doc.ToStringFullXmlDeclaration();
         }
     }
