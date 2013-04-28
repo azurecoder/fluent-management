@@ -166,6 +166,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The root element returned when requesting a particular webspace
         /// </summary>
         public const string WebsiteParser = "Sites";
+        /// <summary>
+        /// The config of the sit parser tag
+        /// </summary>
+        public const string WebsiteConfigParser = "SiteConfig";
         
         /// <summary>
         /// The schema for the Sql azure manmagement request

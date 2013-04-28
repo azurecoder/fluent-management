@@ -92,6 +92,7 @@
     <Compile Include="Commands\Blobs\DeleteBlobContainerCommand.cs" />
     <Compile Include="Commands\Certificates\AddServiceCertificateCommand.cs" />
     <Compile Include="Commands\CommandNameMap.cs" />
+    <Compile Include="Commands\Parsers\WebsiteConfigParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
@@ -313,6 +314,7 @@
     <Compile Include="Types\Virtual Machines\WindowsConfigurationSet.cs" />
     <Compile Include="Types\VmSize.cs" />
     <Compile Include="Types\Websites\ComputeMode.cs" />
+    <Compile Include="Types\Websites\WebsiteConfig.cs" />
     <Compile Include="Types\Websites\WebsiteAvailabilityState.cs" />
     <Compile Include="Types\Websites\WorkerSize.cs" />
     <Compile Include="Types\Websites\WebsiteParameters.cs" />

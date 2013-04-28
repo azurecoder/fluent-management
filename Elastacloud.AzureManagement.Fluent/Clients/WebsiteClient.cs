@@ -25,6 +25,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
             Name = siteName;
+            if (siteName != null)
+                WebsiteProperties = GetWebsiteIfExists();
         }
 
         /// <summary>
@@ -108,14 +110,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             website.WebsiteParameters.NumberOfWorkers = website.WebsiteParameters.NumberOfWorkers == 0
                                                             ? website.WebsiteParameters.CurrentNumberOfWorkers
                                                             : website.WebsiteParameters.NumberOfWorkers;
+            WebsiteProperties = GetWebsiteIfExists();
 
-            var command2 = new UpdateWebsiteConfigCommand(website)
+            var command2 = new UpdateWebsiteConfigCommand(WebsiteProperties)
             {
                 SubscriptionId = SubscriptionId,
                 Certificate = ManagementCertificate
             };
             command2.Execute();
-            WebsiteProperties = website;
+            WebsiteProperties = GetWebsiteIfExists();
         }
 
         /// <summary>
@@ -192,6 +195,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // make sure that the site exists
             if (site == null)
                 throw new FluentManagementException("No site found in this subscription with the name" + Name, "WebsiteCliet");
+            // get the website configuration
+            var command = new GetWebsiteConfigCommand(site)
+                              {
+                                  SubscriptionId = SubscriptionId,
+                                  Certificate = ManagementCertificate
+                              };
+            command.Execute();
+            site.Config = command.Config;
             return WebsiteProperties = site;
         }
 
