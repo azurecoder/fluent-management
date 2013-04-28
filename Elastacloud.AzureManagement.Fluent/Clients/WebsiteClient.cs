@@ -90,7 +90,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             website.WebsiteParameters.CurrentNumberOfWorkers = website.WebsiteParameters.CurrentNumberOfWorkers != 0 ? 
                 website.WebsiteParameters.CurrentNumberOfWorkers : 1;
             website.Enabled = true;
-            website.State = WebsiteState.Running;
+            website.State = WebsiteState.Ready;
+            website.Webspace = website.Webspace ?? Website.NorthEuropeWebSpace;
             if (!String.IsNullOrEmpty(website.Webspace))
             {
                 ValidateWebSpace(website.Webspace);
@@ -102,6 +103,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                                   Certificate = ManagementCertificate
                               };
             command.Execute();
+            WebsiteProperties = website;
+
+            website.WebsiteParameters.NumberOfWorkers = website.WebsiteParameters.NumberOfWorkers == 0
+                                                            ? website.WebsiteParameters.CurrentNumberOfWorkers
+                                                            : website.WebsiteParameters.NumberOfWorkers;
+
+            var command2 = new UpdateWebsiteConfigCommand(website)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command2.Execute();
             WebsiteProperties = website;
         }
 
@@ -184,7 +197,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         private void ValidateWebSpace(string webSpace)
         {
-            if(webSpace != Website.NorthEuropeWebSpace || webSpace != Website.WestEuropeWebSpace)
+            if(webSpace != Website.NorthEuropeWebSpace && webSpace != Website.WestEuropeWebSpace)
                 throw new FluentManagementException("Ensure you use the correct webspace", "WebsiteClient");
         }
     }

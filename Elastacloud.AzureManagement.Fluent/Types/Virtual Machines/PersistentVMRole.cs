@@ -145,41 +145,5 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 OSHardDisk = osDisk
             };
         }
-
-        /// <summary>
-        /// Used to direct the user to the image for the default Sql Server 2012 image
-        /// </summary>
-        /// <returns>A persistent VM Role containing the data to execute the image</returns>
-        public static PersistentVMRole GetDefaultSqlServer2012VMRole(VmSize vmSize, string storageAccount)
-        {
-            // build the default endpoints 
-            var inputEndpoints = new InputEndpoints();
-            inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
-            inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultSqlServerSettings());
-            // add the endpoints collections to a network configuration set
-            var network = new NetworkConfigurationSet
-                              {
-                                  InputEndpoints = inputEndpoints
-                              };
-            // build the windows configuration set
-            var windows = new WindowsConfigurationSet
-                              {
-                                  AdminPassword = "ElastaPassword101",
-                                  ResetPasswordOnFirstLogon = true
-                              };
-            OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetSqlServerOSImage(storageAccount);
-            DataVirtualHardDisk dataDisk = DataVirtualHardDisk.GetDefaultDataDisk(storageAccount);
-            var disks = new DataVirtualHardDisks();
-            disks.HardDiskCollection.Add(dataDisk);
-            return new PersistentVMRole
-                       {
-                           NetworkConfigurationSet = network,
-                           OperatingSystemConfigurationSet = windows,
-                           RoleSize = vmSize,
-                           RoleName = "Elastarole",
-                           HardDisks = disks,
-                           OSHardDisk = osDisk
-                       };
-        }
     }
 }

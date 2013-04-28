@@ -88,17 +88,32 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             string templateDetails = null;
             switch (properties.VirtualMachineType)
             {
-                case VirtualMachineTemplates.BiztalkServer2012:
-                    templateDetails = VmConstants.VmTemplateBiztalk;
+                case VirtualMachineTemplates.BiztalkServer2013Enterprise:
+                    templateDetails = VmConstants.VmTemplateBizTalkServer2013Enterprise;
                     break;
-                case VirtualMachineTemplates.SqlServer2012:
-                    templateDetails = VmConstants.VmTemplateSqlServer2012Eval;
+                case VirtualMachineTemplates.BiztalkServer2013Standard:
+                    templateDetails = VmConstants.VmTemplateBizTalkServer2013Standard;
                     break;
-                case VirtualMachineTemplates.WindowsServer2008R2SP1:
-                    templateDetails = VmConstants.VmTemplateWin2K8SP1DataCentreServer;
+                case VirtualMachineTemplates.SqlServer2012Enterprise:
+                    templateDetails = VmConstants.VmTemplateSqlServer2012Enterprise;
                     break;
-                case VirtualMachineTemplates.WindowsServer2012:
-                    templateDetails = VmConstants.VmTemplateWin2012DataCentreServer;
+                case VirtualMachineTemplates.SqlServer2012Standard:
+                    templateDetails = VmConstants.VmTemplateSqlServer2012Standard;
+                    break;
+                case VirtualMachineTemplates.SqlServer2012Web:
+                    templateDetails = VmConstants.VmTemplateSqlServer2012Web;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2008R2SP1_127GB:
+                    templateDetails = VmConstants.VmTemplateWin2K8SP1_DataCentre_127GB;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2008R2SP1_30GB:
+                    templateDetails = VmConstants.VmTemplateWin2K8SP1_DataCentre_30GB;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2012_127GB:
+                    templateDetails = VmConstants.VmTemplateWin2012_DataCentre_127GB;
+                    break;
+                case VirtualMachineTemplates.WindowsServer2012_30GB:
+                    templateDetails = VmConstants.VmTemplateWin2012_DataCentre_30GB;
                     break;
             }
             if(templateDetails == null && properties.CustomTemplateName == null)

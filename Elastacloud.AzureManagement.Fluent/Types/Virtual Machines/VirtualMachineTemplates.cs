@@ -17,9 +17,23 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// The SQL Server 2012 image
         /// </summary>
-        SqlServer2012,
-        WindowsServer2008R2SP1,
-        WindowsServer2012,
-        BiztalkServer2012
+        SqlServer2012Enterprise,
+        SqlServer2012Web,
+        SqlServer2012Standard,
+// ReSharper disable InconsistentNaming
+        WindowsServer2008R2SP1_30GB,
+// ReSharper restore InconsistentNaming
+// ReSharper disable InconsistentNaming
+        WindowsServer2008R2SP1_127GB,
+// ReSharper restore InconsistentNaming
+// ReSharper disable InconsistentNaming
+        WindowsServer2012_30GB,
+// ReSharper restore InconsistentNaming
+// ReSharper disable InconsistentNaming
+        WindowsServer2012_127GB,
+// ReSharper restore InconsistentNaming
+        BiztalkServer2013Standard,
+        BiztalkServer2013Enterprise
+
     }
 }

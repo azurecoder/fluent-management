@@ -57,9 +57,13 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             {
                 return new VmDelete(this);
             }
-            if (Term == "site")
+            if (Term == "site" && Operation == "read")
             {
                 return new WebsiteGet(this);
+            }
+            if (Term == "site" && Operation == "create")
+            {
+                return new WebsiteCreate(this);
             }
             return null;
         }

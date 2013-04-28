@@ -22,21 +22,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
     /// <summary>
     /// Used to create a hosted service within a given subscription
     /// </summary>
-    internal class CreateWebsiteCommand : ServiceCommand
+    internal class UpdateWebsiteConfigCommand : ServiceCommand
     {
         public const string WebsitePostfix = ".azurewebsites.net";
         /// <summary>
         /// Constructs a websites list command
         /// </summary>
-        internal CreateWebsiteCommand(Website website)
+        internal UpdateWebsiteConfigCommand(Website website)
         {
             HttpVerb = HttpVerbGet;
             ServiceType = "services";
             OperationId = "webspaces";
             Website = website;
-            HttpVerb = HttpVerbPost;
+            HttpVerb = HttpVerbPut;
             // keep this in to ensure no 403
-            HttpCommand = String.Format("{0}/sites/", Website.Webspace);
+            HttpCommand = String.Format("{0}/sites/{1}/config", Website.Webspace, Website.Name);
             /* propertiesToInclude=repositoryuri%2Cpublishingpassword%2Cpublishingusername */
         }
 
@@ -109,7 +109,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
                                 new XElement(xmlns + "CurrentNumberOfWorkers", Website.WebsiteParameters.CurrentNumberOfWorkers),
                                 new XElement(xmlns + "CurrentWorkerSize", Website.WebsiteParameters.CurrentWorkerSize),
                                 new XElement(xmlns + "Name", Website.Webspace),
-                                new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.CurrentNumberOfWorkers),
+                                new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers),
                                 new XElement(xmlns + "Status", Website.State),
                                 new XElement(xmlns + "WorkerSize", Website.WebsiteParameters.CurrentWorkerSize))));
 
