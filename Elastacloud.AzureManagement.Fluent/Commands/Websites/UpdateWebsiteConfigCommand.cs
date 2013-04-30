@@ -15,6 +15,7 @@ using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
@@ -83,12 +84,38 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             XName aArray = XNamespace.Xmlns + "a";
             XName aString = a + "string";
 
-            var doc = new XDocument(
-                new XDeclaration("1.0", "utf-8", ""),
-                new XElement(xmlns + "SiteConfig", new XAttribute(iNamespace, i),
-                             new XElement(xmlns + "AppSettings"),
-                             new XElement(xmlns + "ConnectionStrings"),
-                             new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers)));
+            if (Website.Config == null)
+            {
+                throw new FluentManagementException("Website configuration is not currently available", "UpdateWebsiteConfigCommand");
+            }
+
+            // get the compute modefrom the instance 
+            var detailedErrorLoggingEnabled = new XElement(xmlns + "DetailedErrorLoggingEnabled", Website.Config.DetailedErrorLoggingEnabled);
+            // get the compute modefrom the instance 
+            var httpLoggingEnabled = new XElement(xmlns + "HttpLoggingEnabled", Website.Config.HttpLoggingEnabled);
+            // get the compute modefrom the instance 
+            var requestTracingEnabled = new XElement(xmlns + "RequestTracingEnabled", Website.Config.RequestTracingEnabled);
+            // get the compute modefrom the instance 
+            var use32BitWorkerProcess = new XElement(xmlns + "Use32BitWorkerProcess", Website.Config.Use32BitWorkerProcess);
+
+            var doc = new XDocument(new XDeclaration("1.0", "utf-8", ""));
+            var root = new XElement(xmlns + "SiteConfig", new XAttribute(iNamespace, i));
+            // build appsettings
+            var appSettings = new XElement(xmlns + "AppSettings");
+            foreach (var appSetting in Website.Config.AppSettings)
+            {
+                appSettings.Add(new XElement(xmlns + "NameValuePair", new XAttribute("Name", appSetting.Key), new XAttribute("Value", appSetting.Value)));                
+            }
+            // add the number of workers 
+            var worker = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
+            // add the elements to the root node
+            root.Add(appSettings);
+            root.Add(worker);
+            root.Add(detailedErrorLoggingEnabled);
+            root.Add(httpLoggingEnabled);
+            root.Add(requestTracingEnabled);
+            root.Add(use32BitWorkerProcess);
+            doc.Add(root);
                             
             return doc.ToStringFullXmlDeclaration();
         }

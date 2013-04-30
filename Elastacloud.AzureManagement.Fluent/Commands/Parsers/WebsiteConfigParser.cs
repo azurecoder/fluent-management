@@ -67,9 +67,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 Config.DetailedErrorLoggingEnabled = bool.Parse(element.Element(GetSchema() + "DetailedErrorLoggingEnabled").Value);
             }
             // get the compute modefrom the instance 
-            if (element.Element(GetSchema() + "DetailedErrorLoggingEnabled") != null)
+            if (element.Element(GetSchema() + "HttpLoggingEnabled") != null)
             {
-                Config.HttpLoggingEnabled = bool.Parse(element.Element(GetSchema() + "DetailedErrorLoggingEnabled").Value);
+                Config.HttpLoggingEnabled = bool.Parse(element.Element(GetSchema() + "HttpLoggingEnabled").Value);
             }
             // get the compute modefrom the instance 
             if (element.Element(GetSchema() + "RequestTracingEnabled") != null)

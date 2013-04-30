@@ -186,6 +186,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         private Website GetWebsiteIfExists()
         {
+            var websiteParameters = WebsiteProperties.WebsiteParameters; 
+            Name = Name ?? WebsiteProperties.Name;
             if (Name == null)
                 throw new FluentManagementException("No name defined for website", "WebsiteClient");
             // get the list of all sites
@@ -194,7 +196,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var site = siteList.FirstOrDefault(a => a.Name.ToLowerInvariant() == Name.ToLowerInvariant());
             // make sure that the site exists
             if (site == null)
-                throw new FluentManagementException("No site found in this subscription with the name" + Name, "WebsiteCliet");
+                throw new FluentManagementException("No site found in this subscription with the name" + Name, "WebsiteClient");
             // get the website configuration
             var command = new GetWebsiteConfigCommand(site)
                               {
@@ -203,6 +205,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                               };
             command.Execute();
             site.Config = command.Config;
+            site.WebsiteParameters = site.WebsiteParameters ?? websiteParameters;
             return WebsiteProperties = site;
         }
 
