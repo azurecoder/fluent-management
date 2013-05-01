@@ -89,6 +89,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
                 throw new FluentManagementException("Website configuration is not currently available", "UpdateWebsiteConfigCommand");
             }
 
+            var doc = new XDocument(new XDeclaration("1.0", "utf-8", ""));
+            var root = new XElement(xmlns + "SiteConfig", new XAttribute(iNamespace, i), new XAttribute(aArray, a));
+
+            #region boolean properties
+
             // get the compute modefrom the instance 
             var detailedErrorLoggingEnabled = new XElement(xmlns + "DetailedErrorLoggingEnabled", Website.Config.DetailedErrorLoggingEnabled);
             // get the compute modefrom the instance 
@@ -98,19 +103,80 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             // get the compute modefrom the instance 
             var use32BitWorkerProcess = new XElement(xmlns + "Use32BitWorkerProcess", Website.Config.Use32BitWorkerProcess);
 
-            var doc = new XDocument(new XDeclaration("1.0", "utf-8", ""));
-            var root = new XElement(xmlns + "SiteConfig", new XAttribute(iNamespace, i));
+            #endregion
+
+            #region string and int values
+
+            // add the publishing password
+            if (Website.Config.PhpVersion != null)
+            {
+                var netFrameworkVersion = new XElement(xmlns + "NetFrameworkVersion", Website.Config.NetFrameworkVersion);
+                root.Add(netFrameworkVersion);
+            }
+            // add the publishing password
+            if (Website.Config.PhpVersion != null)
+            {
+                var phpVersion = new XElement(xmlns + "PhpVersion", Website.Config.PhpVersion);
+                root.Add(phpVersion);
+            }
+            // add the publishing password
+            if (Website.Config.PublishingPassword != null)
+            {
+                var publishingPassword = new XElement(xmlns + "PublishingPassword", Website.Config.PublishingPassword);
+                root.Add(publishingPassword);
+            }
+            // add the publishing username
+            if (Website.Config.PublishingUsername != null)
+            {
+                var publishingUsername = new XElement(xmlns + "PublishingUsername", Website.Config.PublishingUsername);
+                root.Add(publishingUsername);
+            }
+            // add the number of workers 
+            if (Website.WebsiteParameters.NumberOfWorkers > 0)
+            {
+                var worker = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
+                root.Add(worker);
+            }
+
+            #endregion
+
+            #region collection values
+
             // build appsettings
             var appSettings = new XElement(xmlns + "AppSettings");
             foreach (var appSetting in Website.Config.AppSettings)
             {
                 appSettings.Add(new XElement(xmlns + "NameValuePair", new XAttribute("Name", appSetting.Key), new XAttribute("Value", appSetting.Value)));                
             }
-            // add the number of workers 
-            var worker = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
+            // build metadata
+            var metadatas = new XElement(xmlns + "Metadata");
+            foreach (var metadata in Website.Config.Metadata)
+            {
+                metadatas.Add(new XElement(xmlns + "NameValuePair", new XAttribute("Name", metadata.Key), new XAttribute("Value", metadata.Value)));
+            }
+            // build connection strings
+            var connectionStrings = new XElement(xmlns + "ConnectionStrings");
+            foreach (var connectionString in Website.Config.ConnectionStrings)
+            {
+                connectionStrings.Add(new XElement(xmlns + "ConnStringInfo",
+                                                   new XElement(xmlns + "Name", connectionString.Name),
+                                                   new XElement(xmlns + "ConnectionString", connectionString.ConnectionString),
+                                                   new XElement(xmlns + "Type", connectionString.Type)));
+            }
+            // add the default documents
+            var defaultDocuments = new XElement(xmlns + "DefaultDocuments");
+            foreach (var defaultDocument in Website.Config.DefaultDocuments)
+            {
+                defaultDocuments.Add(new XElement(a + "string", defaultDocument));
+            }
+                
+            #endregion
+
             // add the elements to the root node
             root.Add(appSettings);
-            root.Add(worker);
+            root.Add(connectionStrings);
+            root.Add(defaultDocuments);
+            root.Add(metadatas);
             root.Add(detailedErrorLoggingEnabled);
             root.Add(httpLoggingEnabled);
             root.Add(requestTracingEnabled);

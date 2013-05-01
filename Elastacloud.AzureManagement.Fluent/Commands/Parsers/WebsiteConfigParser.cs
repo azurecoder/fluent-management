@@ -139,11 +139,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             // get the connectionstrings
             if (element.Element(GetSchema() + "ConnectionStrings") != null)
             {
-                Config.ConnectionStrings = new Dictionary<string, string>();
+                Config.ConnectionStrings = new List<ConnStringInfo>();
                 foreach (var nvPair in element.Element(GetSchema() + "ConnectionStrings").
                     Elements(GetSchema() + "ConnStringInfo"))
                 {
-                    Config.ConnectionStrings.Add(nvPair.Element(GetSchema() + "Name").Value, nvPair.Element(GetSchema() + "ConnectionString").Value);
+                    Config.ConnectionStrings.Add(new ConnStringInfo()
+                                                     {
+                                                         Name = nvPair.Element(GetSchema() + "Name").Value,
+                                                         ConnectionString =
+                                                             nvPair.Element(GetSchema() + "ConnectionString").Value,
+                                                         Type = nvPair.Element(GetSchema() + "Type").Value
+                                                     });
                 }
             }
             // get the handler mappings

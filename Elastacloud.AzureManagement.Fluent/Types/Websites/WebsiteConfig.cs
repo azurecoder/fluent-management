@@ -8,7 +8,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
     public class WebsiteConfig
     {
         public Dictionary<string, string> AppSettings { get; set; }
-        public Dictionary<string, string> ConnectionStrings { get; set; }
+        public List<ConnStringInfo> ConnectionStrings { get; set; }
         public Dictionary<string, string> Metadata { get; set; }
         public List<string> DefaultDocuments { get; set; }
         public bool DetailedErrorLoggingEnabled { get; set; }
@@ -21,6 +21,13 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         public string PublishingUsername { get; set; }
         public bool RequestTracingEnabled { get; set; }
         public bool Use32BitWorkerProcess { get; set; }
+    }
+
+    public class ConnStringInfo
+    {
+        public string Name { get; set; }
+        public string ConnectionString { get; set; }
+        public string Type { get; set; }
     }
 
 }
