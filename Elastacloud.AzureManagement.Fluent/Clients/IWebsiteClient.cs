@@ -13,13 +13,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Returns a list of websites
         /// </summary>
         List<Website> List();
+
         /// <summary>
         /// Creates a website given github credentials
         /// </summary>
-        /// <param name="githubDetails">the details of the github repo</param>
-        /// <param name="name">the site name </param>
-        /// <param name="location">the site location</param>
-        void CreateFromGithub(GithubDetails githubDetails, string name, string location = LocationConstants.NorthEurope);
+        /// <param name="website"></param>
+        /// <param name="gitDetails">the details of the github repo</param>
+        void CreateFromGithub(Website website, GitDetails gitDetails);
+        /// <summary>
+        /// As above but using BitBucket instead
+        /// </summary>
+        void CreateFromBitBucket(Website website, GitDetails gitDetails);
         /// <summary>
         /// Creates a default website with nothing deployed
         /// </summary>

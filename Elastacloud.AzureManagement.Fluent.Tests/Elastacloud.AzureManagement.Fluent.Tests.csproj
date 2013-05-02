@@ -65,6 +65,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TestConfigFiles.cs" />
+    <Compile Include="TestGithub.cs" />
     <Compile Include="TestHttpUrlParse.cs" />
     <Compile Include="TestPublishSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

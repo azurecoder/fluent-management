@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Commands.Websites;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
@@ -75,10 +76,37 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Creates a website given github credentials
         /// </summary>
-        /// <param name="githubDetails">the details of the github repo</param>
-        /// <param name="name">the site name </param>
-        /// <param name="location">the site location</param>
-        public void CreateFromGithub(GithubDetails githubDetails, string name, string location = LocationConstants.NorthEurope)
+        /// <param name="website"></param>
+        /// <param name="gitDetails">the details of the github repo</param>
+        public void CreateFromGithub(Website website, GitDetails gitDetails)
+        {
+            // create the new website
+            Create(website);
+
+            // we have the new website properties
+            var githubClient = new GithubClient(new WebsiteRequestHelper())
+                                   {
+                                       Username = gitDetails.Username,
+                                       Password = gitDetails.Password,
+                                   };
+            var repoList = githubClient.GetRepositories();
+            if(!repoList.ContainsKey(gitDetails.RepositoryName))
+                throw new FluentManagementException("git repository not found", "WebsiteClient");
+            // add the service hook in place 
+            bool setServiceHook = githubClient.SetServiceHook(WebsiteProperties.Config.PublishingUsername,
+                                        WebsiteProperties.Config.PublishingPassword,
+                                        repoList[gitDetails.RepositoryName] + "/" + gitDetails.RepositoryName);
+            // TODO: Check here to see whether we need anything other than the service hook
+            if (setServiceHook) return;
+            Delete();
+            throw new FluentManagementException(
+                "website created but unable to set service hook in github rolled back deployment", "WebsiteClient");
+        }
+
+        /// <summary>
+        /// As above but using BitBucket instead
+        /// </summary>
+        public void CreateFromBitBucket(Website website, GitDetails gitDetails)
         {
             throw new NotImplementedException();
         }

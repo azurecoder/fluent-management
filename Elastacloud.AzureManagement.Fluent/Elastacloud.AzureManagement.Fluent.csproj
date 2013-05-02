@@ -74,6 +74,10 @@
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
     <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\GithubClient.cs" />
+    <Compile Include="Clients\Helpers\IWebsiteRequestHelper.cs" />
+    <Compile Include="Clients\Helpers\WebsiteRequestHelper.cs" />
+    <Compile Include="Clients\IGithubClient.cs" />
     <Compile Include="Clients\IMobileServiceClient.cs" />
     <Compile Include="Clients\IVirtualMachineClient.cs" />
     <Compile Include="Clients\IWebsiteClient.cs" />
@@ -318,7 +322,7 @@
     <Compile Include="Types\Websites\WebsiteAvailabilityState.cs" />
     <Compile Include="Types\Websites\WorkerSize.cs" />
     <Compile Include="Types\Websites\WebsiteParameters.cs" />
-    <Compile Include="Types\Websites\GithubDetails.cs" />
+    <Compile Include="Types\Websites\GitDetails.cs" />
     <Compile Include="Types\Websites\WebsiteUsage.cs" />
     <Compile Include="Types\Websites\WebsiteState.cs" />
     <Compile Include="Types\Websites\Website.cs" />
@@ -335,7 +339,6 @@
   <ItemGroup>
     <None Include="Resources\license.txt" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!--<Import Project="$(SolutionDir)\.nuget\nuget.targets" />-->
