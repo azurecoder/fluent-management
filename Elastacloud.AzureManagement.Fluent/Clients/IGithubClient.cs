@@ -30,6 +30,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Sets the service hook to allow the azure remote repo to connect and deploy 
         /// </summary>
-        bool SetServiceHook(string publishingUsername, string publishingPassword, string azureRepoName);
+        bool SetServiceHook(string publishingUsername, string publishingPassword, string azureRepoName, string accountName, string repoName);
+        /// <summary>
+        /// Gets a new oauth token for an application
+        /// </summary>
+        void GetOAuthToken(string accountName, string repoName);
+        /// <summary>
+        /// The Html_uri of the github repo
+        /// </summary>
+        string ScmUri { get; }
+        /// <summary>
+        /// the clone uri for github
+        /// </summary>
+        string CloneUri { get; }
+        /// <summary>
+        /// Gets the oauth token defining access to the application
+        /// </summary>
+        string OAuthToken { get; }
+        /// <summary>
+        /// Gets the API of the repo http://api.github.com/...
+        /// </summary>
+        string RepoApiUri { get; }
     }
 }

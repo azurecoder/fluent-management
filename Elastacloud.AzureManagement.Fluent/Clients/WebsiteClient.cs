@@ -94,9 +94,22 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 throw new FluentManagementException("git repository not found", "WebsiteClient");
             // add the service hook in place 
             bool setServiceHook = githubClient.SetServiceHook(WebsiteProperties.Config.PublishingUsername,
-                                        WebsiteProperties.Config.PublishingPassword,
-                                        repoList[gitDetails.RepositoryName] + "/" + gitDetails.RepositoryName);
-            // TODO: Check here to see whether we need anything other than the service hook
+                                        WebsiteProperties.Config.PublishingPassword, website.Name + ".scm.azurewebsites.net",
+                                        repoList[gitDetails.RepositoryName], gitDetails.RepositoryName);
+            // get all of the auth token values
+            githubClient.GetOAuthToken(repoList[gitDetails.RepositoryName], gitDetails.RepositoryName);
+            // add the metadata from the service hook
+            WebsiteProperties.Config.Metadata.Add("ScmUri", githubClient.ScmUri);
+            WebsiteProperties.Config.Metadata.Add("CloneUri", githubClient.CloneUri);
+            WebsiteProperties.Config.Metadata.Add("RepoApiUri", githubClient.RepoApiUri);
+            WebsiteProperties.Config.Metadata.Add("OAuthToken", githubClient.OAuthToken);
+            // update windows azure
+            var command = new UpdateWebsiteConfigCommand(WebsiteProperties)
+                              {
+                                  SubscriptionId = SubscriptionId,
+                                  Certificate = ManagementCertificate
+                              };
+            command.Execute();
             if (setServiceHook) return;
             Delete();
             throw new FluentManagementException(
@@ -126,13 +139,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 ValidateWebSpace(website.Webspace);
             }
-           
+            // create the website
             var command = new CreateWebsiteCommand(website)
                               {
                                   SubscriptionId = SubscriptionId,
                                   Certificate = ManagementCertificate
                               };
             command.Execute();
+            // create the website repo
+            var repoCommand = new CreateWebsiteRepositoryCommand(website)
+                          {
+                              SubscriptionId = SubscriptionId,
+                              Certificate = ManagementCertificate
+                          };
+            repoCommand.Execute();
             WebsiteProperties = website;
 
             website.WebsiteParameters.NumberOfWorkers = website.WebsiteParameters.NumberOfWorkers == 0
@@ -214,7 +234,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         private Website GetWebsiteIfExists()
         {
-            var websiteParameters = WebsiteProperties.WebsiteParameters; 
+            WebsiteParameters websiteParameters = null;
+            if(WebsiteProperties != null)
+                websiteParameters = WebsiteProperties.WebsiteParameters;
+
             Name = Name ?? WebsiteProperties.Name;
             if (Name == null)
                 throw new FluentManagementException("No name defined for website", "WebsiteClient");

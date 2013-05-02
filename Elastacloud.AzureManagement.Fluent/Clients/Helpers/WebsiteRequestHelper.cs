@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
@@ -19,7 +21,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
             if(!uri.StartsWith("https"))
                 throw new FluentManagementException("only HTTPS is supported", "WebsiteRequestHelper");
 
-            return client.DownloadString(uri);
+            return client.GetStringAsync(uri).Result;
+        }
+
+        /// <summary>
+        /// Used to get a return value from a post request
+        /// </summary>
+        public string PostStringResponse(string username, string password, string uri, string content)
+        {
+            var client = GetWebClient(username, password);
+
+            if (!uri.StartsWith("https"))
+                throw new FluentManagementException("only HTTPS is supported", "WebsiteRequestHelper");
+
+            return client.PostAsync(uri, new StringContent(content)).Result.Content.ReadAsStringAsync().Result;
         }
 
         #endregion
@@ -29,20 +44,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
             var b64EncodedBytes = Encoding.UTF8.GetBytes(username + ":" + password);
             string credentials = Convert.ToBase64String(b64EncodedBytes);
 
-            return "Basic " + credentials;
+            return credentials;
         }
 
-        private WebClient GetWebClient(string username, string password)
+        private HttpClient GetWebClient(string username, string password)
         {
-            var client = new WebClient
-            {
-                Credentials = new NetworkCredential(username, password),
-                UseDefaultCredentials = false
-            };
-            client.Headers.Add("Accept", "application/json");
-            client.Headers.Add("Content-Type", "application/json; charset=utf-8");
-            client.Headers.Add("User-Agent", "Mozilla/5.0");
-            client.Headers.Add("Authorization", GetBasicAuthenticationCredentials(username, password));
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", GetBasicAuthenticationCredentials(username, password));
 
             return client;
         }

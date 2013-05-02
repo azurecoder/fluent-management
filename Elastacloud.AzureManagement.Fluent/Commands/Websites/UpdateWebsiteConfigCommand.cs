@@ -146,13 +146,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             var appSettings = new XElement(xmlns + "AppSettings");
             foreach (var appSetting in Website.Config.AppSettings)
             {
-                appSettings.Add(new XElement(xmlns + "NameValuePair", new XAttribute("Name", appSetting.Key), new XAttribute("Value", appSetting.Value)));                
+                appSettings.Add(new XElement(xmlns + "NameValuePair", new XElement(xmlns + "Name", appSetting.Key), new XElement(xmlns + "Value", appSetting.Value)));                
             }
             // build metadata
             var metadatas = new XElement(xmlns + "Metadata");
             foreach (var metadata in Website.Config.Metadata)
             {
-                metadatas.Add(new XElement(xmlns + "NameValuePair", new XAttribute("Name", metadata.Key), new XAttribute("Value", metadata.Value)));
+                metadatas.Add(new XElement(xmlns + "NameValuePair", new XElement(xmlns + "Name", metadata.Key), new XElement(xmlns + "Value", metadata.Value)));
             }
             // build connection strings
             var connectionStrings = new XElement(xmlns + "ConnectionStrings");

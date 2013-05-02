@@ -27,7 +27,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
-            System.Console.WriteLine("Creating website");
+            System.Console.WriteLine("reading website");
             System.Console.WriteLine("================");
 
             var client = new WebsiteClient(_subscriptionId, _certificate);
@@ -35,7 +35,8 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
             list.ForEach(a => System.Console.WriteLine("Website hosts: " + String.Join(", ", a.Hostname.ToArray())));
 
-            var client2 = new WebsiteClient(_subscriptionId, _certificate, list[0].Name);
+            //var client2 = new WebsiteClient(_subscriptionId, _certificate, list[0].Name);
+            var client2 = new WebsiteClient(_subscriptionId, _certificate, "testfluent39");
             System.Console.WriteLine(client2.WebsiteProperties.Config.DetailedErrorLoggingEnabled);
         }
 

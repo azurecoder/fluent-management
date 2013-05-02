@@ -41,7 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("================");
 
             var client = new WebsiteClient(_subscriptionId, _certificate);
-            client.Create(site);
+            client.CreateFromGithub(site, new GitDetails() { Username = "azurecoder", Password = "changeme", RepositoryName = "test-sample-for-azure-deployments" });
 
         }
 

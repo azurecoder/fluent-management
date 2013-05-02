@@ -14,5 +14,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
         /// Used to get a string response given a uri, username and password
         /// </summary>
         string GetStringResponse(string username, string password, string uri);
+        /// <summary>
+        /// Used to get a return value from a post request
+        /// </summary>
+        string PostStringResponse(string username, string password, string uri, string content);
     }
 }
