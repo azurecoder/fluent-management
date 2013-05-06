@@ -96,6 +96,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             bool setServiceHook = githubClient.SetServiceHook(WebsiteProperties.Config.PublishingUsername,
                                         WebsiteProperties.Config.PublishingPassword, website.Name + ".scm.azurewebsites.net",
                                         repoList[gitDetails.RepositoryName], gitDetails.RepositoryName);
+            
             // get all of the auth token values
             githubClient.GetOAuthToken(repoList[gitDetails.RepositoryName], gitDetails.RepositoryName);
             // add the metadata from the service hook
@@ -103,6 +104,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             WebsiteProperties.Config.Metadata.Add("CloneUri", githubClient.CloneUri);
             WebsiteProperties.Config.Metadata.Add("RepoApiUri", githubClient.RepoApiUri);
             WebsiteProperties.Config.Metadata.Add("OAuthToken", githubClient.OAuthToken);
+            WebsiteProperties.Config.ScmType = ScmType.GitHub;
             // update windows azure
             var command = new UpdateWebsiteConfigCommand(WebsiteProperties)
                               {
@@ -128,7 +130,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Creates a default website with nothing deployed
         /// </summary>
         /// <param name="website">the website which will be created</param>
-        public void Create(Website website)
+        public void Create(Website website, ScmType scm = ScmType.LocalGit)
         {
             website.WebsiteParameters.CurrentNumberOfWorkers = website.WebsiteParameters.CurrentNumberOfWorkers != 0 ? 
                 website.WebsiteParameters.CurrentNumberOfWorkers : 1;
@@ -147,11 +149,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                               };
             command.Execute();
             // create the website repo
+            // do this only if local git is selected
             var repoCommand = new CreateWebsiteRepositoryCommand(website)
-                          {
-                              SubscriptionId = SubscriptionId,
-                              Certificate = ManagementCertificate
-                          };
+                                    {
+                                        SubscriptionId = SubscriptionId,
+                                        Certificate = ManagementCertificate
+                                    };
             repoCommand.Execute();
             WebsiteProperties = website;
 

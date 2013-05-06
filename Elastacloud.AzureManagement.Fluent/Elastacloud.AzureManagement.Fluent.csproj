@@ -320,6 +320,8 @@
     <Compile Include="Types\Virtual Machines\WindowsConfigurationSet.cs" />
     <Compile Include="Types\VmSize.cs" />
     <Compile Include="Types\Websites\ComputeMode.cs" />
+    <Compile Include="Types\Websites\ConnStringInfo.cs" />
+    <Compile Include="Types\Websites\ScmType.cs" />
     <Compile Include="Types\Websites\WebsiteConfig.cs" />
     <Compile Include="Types\Websites\WebsiteAvailabilityState.cs" />
     <Compile Include="Types\Websites\WorkerSize.cs" />

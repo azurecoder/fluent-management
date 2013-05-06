@@ -85,7 +85,12 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             #endregion
 
             #region string and int values
-                
+
+            // gets the source control type
+            if (element.Element(GetSchema() + "ScmType") != null)
+            {
+                Config.ScmType = (ScmType)Enum.Parse(typeof(ScmType), element.Element(GetSchema() + "ScmType").Value);
+            }
             // get the name of the site as in xxxx.azurewebsites.net
             if (element.Element(GetSchema() + "NetFrameworkVersion") != null)
             {

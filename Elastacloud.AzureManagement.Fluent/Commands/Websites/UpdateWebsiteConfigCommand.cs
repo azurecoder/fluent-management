@@ -36,6 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             OperationId = "webspaces";
             Website = website;
             HttpVerb = HttpVerbPut;
+            AdditionalHeaders["Accept-Encoding"] = "gzip, deflate";
             // keep this in to ensure no 403
             HttpCommand = String.Format("{0}/sites/{1}/config", Website.Webspace, Website.Name);
             /* propertiesToInclude=repositoryuri%2Cpublishingpassword%2Cpublishingusername */
@@ -43,36 +44,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
 
         protected Website Website { get; set; }
 
-        /*<Site xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-            <AdminEnabled i:nil="true"/>
-            <AvailabilityState>Normal</AvailabilityState>
-            <Enabled i:nil="true"/>
-            <EnabledHostNames i:nil="true" xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
-            <HostNameSslStates i:nil="true"/>
-                <HostNames xmlns:a="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
-                    <a:string>clitest37.azurewebsites.net</a:string>
-                </HostNames>
-                <Name>clitest37</Name>
-                <Owner i:nil="true"/>
-                <RepositorySiteName i:nil="true"/>
-                <SSLCertificates i:nil="true"/>
-                <SelfLink i:nil="true"/>
-                <SiteMode i:nil="true"/>
-                <SiteProperties i:nil="true"/>
-                <State i:nil="true"/>
-                <UsageState>Normal</UsageState>
-                <WebSpace>northeuropewebspace</WebSpace>
-                <WebSpaceToCreate>
-                    <AvailabilityState>Normal</AvailabilityState>
-                    <ComputeMode>Dedicated</ComputeMode>
-                    <CurrentNumberOfWorkers>1</CurrentNumberOfWorkers>
-                    <CurrentWorkerSize>Small</CurrentWorkerSize>
-                    <Name>northeuropewebspace</Name>
-                    <NumberOfWorkers>1</NumberOfWorkers>
-                    <Status>Ready</Status>
-                    <WorkerSize>Small</WorkerSize>
-                </WebSpaceToCreate>
-            </Site>*/
+       
         protected override string CreatePayload()
         {
             XNamespace xmlns = "http://schemas.microsoft.com/windowsazure";
@@ -107,35 +79,33 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
 
             #region string and int values
 
+            XElement netFrameworkVersion = null, phpVersion = null, publishingPassword = null, publishingUsername = null, numberOfWorkers = null;
+            // this is the type of source control used
+            var scmType = new XElement(xmlns + "ScmType", Website.Config.ScmType);
             // add the publishing password
             if (Website.Config.PhpVersion != null)
             {
-                var netFrameworkVersion = new XElement(xmlns + "NetFrameworkVersion", Website.Config.NetFrameworkVersion);
-                root.Add(netFrameworkVersion);
+                netFrameworkVersion = new XElement(xmlns + "NetFrameworkVersion", Website.Config.NetFrameworkVersion);
             }
             // add the publishing password
             if (Website.Config.PhpVersion != null)
             {
-                var phpVersion = new XElement(xmlns + "PhpVersion", Website.Config.PhpVersion);
-                root.Add(phpVersion);
+                phpVersion = new XElement(xmlns + "PhpVersion", Website.Config.PhpVersion);
             }
             // add the publishing password
             if (Website.Config.PublishingPassword != null)
             {
-                var publishingPassword = new XElement(xmlns + "PublishingPassword", Website.Config.PublishingPassword);
-                root.Add(publishingPassword);
+                publishingPassword = new XElement(xmlns + "PublishingPassword", Website.Config.PublishingPassword);
             }
             // add the publishing username
             if (Website.Config.PublishingUsername != null)
             {
-                var publishingUsername = new XElement(xmlns + "PublishingUsername", Website.Config.PublishingUsername);
-                root.Add(publishingUsername);
+                publishingUsername = new XElement(xmlns + "PublishingUsername", Website.Config.PublishingUsername);
             }
             // add the number of workers 
             if (Website.WebsiteParameters.NumberOfWorkers > 0)
             {
-                var worker = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
-                root.Add(worker);
+                numberOfWorkers = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
             }
 
             #endregion
@@ -176,10 +146,16 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             root.Add(appSettings);
             root.Add(connectionStrings);
             root.Add(defaultDocuments);
-            root.Add(metadatas);
             root.Add(detailedErrorLoggingEnabled);
             root.Add(httpLoggingEnabled);
+            root.Add(metadatas);
+            if (netFrameworkVersion != null) root.Add(netFrameworkVersion);
+            if (numberOfWorkers != null) root.Add(numberOfWorkers);
+            if (phpVersion != null) root.Add(phpVersion);
+            if (publishingPassword != null) root.Add(publishingPassword);
+            if (publishingUsername != null) root.Add(publishingUsername);
             root.Add(requestTracingEnabled);
+            root.Add(scmType);
             root.Add(use32BitWorkerProcess);
             doc.Add(root);
                             

@@ -34,7 +34,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                Name = "fluentwebtest38",
                                WebsiteParameters = new WebsiteParameters()
                                                        {
-                                                           CurrentNumberOfWorkers = 2
+                                                           CurrentNumberOfWorkers = 1
                                                        }
                            };
             System.Console.WriteLine("Creating website");
@@ -42,7 +42,6 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
             var client = new WebsiteClient(_subscriptionId, _certificate);
             client.CreateFromGithub(site, new GitDetails() { Username = "azurecoder", Password = "changeme", RepositoryName = "test-sample-for-azure-deployments" });
-
         }
 
         public void ParseTokens(string[] args)

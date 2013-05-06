@@ -6,20 +6,21 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
-using System.Collections.Generic;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.Websites
 {
     /// <summary>
-    /// The website structure containing details oof the underlying website
+    /// the details needed to bind to a remote github repository
     /// </summary>
-    public class WebsiteParameters
+    public enum ScmType
     {
-        public int CurrentNumberOfWorkers { get; set; }
-        public int NumberOfWorkers { get; set; }
-        public WebsiteState CurrentWorkerState { get; set; }
-        public WorkerSize CurrentWorkerSize { get; set; }
-        public WebsiteAvailabilityState AvailabilityState { get; set; }
+        /// <summary>
+        /// The local scm created by websites
+        /// </summary>
+        LocalGit,
+        /// <summary>
+        /// The remote github repo
+        /// </summary>
+        GitHub,
     }
-
 }

@@ -24,11 +24,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// As above but using BitBucket instead
         /// </summary>
         void CreateFromBitBucket(Website website, GitDetails gitDetails);
+
         /// <summary>
         /// Creates a default website with nothing deployed
         /// </summary>
         /// <param name="website">the website which will be used</param>
-        void Create(Website website);
+        /// <param name="scm">The type of source control repo used</param>
+        void Create(Website website, ScmType scm = ScmType.LocalGit);
         /// <summary>
         /// Deletes a website with the current context
         /// </summary>

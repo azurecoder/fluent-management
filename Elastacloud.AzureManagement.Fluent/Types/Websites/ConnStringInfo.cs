@@ -6,20 +6,24 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
-using System.Collections.Generic;
-
 namespace Elastacloud.AzureManagement.Fluent.Types.Websites
 {
     /// <summary>
-    /// The website structure containing details oof the underlying website
+    /// The connection string info used for each connectionstring 
     /// </summary>
-    public class WebsiteParameters
+    public class ConnStringInfo
     {
-        public int CurrentNumberOfWorkers { get; set; }
-        public int NumberOfWorkers { get; set; }
-        public WebsiteState CurrentWorkerState { get; set; }
-        public WorkerSize CurrentWorkerSize { get; set; }
-        public WebsiteAvailabilityState AvailabilityState { get; set; }
+        /// <summary>
+        /// The name of the connection string
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// The actual connection string
+        /// </summary>
+        public string ConnectionString { get; set; }
+        /// <summary>
+        /// The type of connection string - e.g. SQLAzure
+        /// </summary>
+        public string Type { get; set; }
     }
-
 }

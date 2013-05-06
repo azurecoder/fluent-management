@@ -36,8 +36,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             list.ForEach(a => System.Console.WriteLine("Website hosts: " + String.Join(", ", a.Hostname.ToArray())));
 
             //var client2 = new WebsiteClient(_subscriptionId, _certificate, list[0].Name);
-            var client2 = new WebsiteClient(_subscriptionId, _certificate, "testfluent39");
-            System.Console.WriteLine(client2.WebsiteProperties.Config.DetailedErrorLoggingEnabled);
+            //var client2 = new WebsiteClient(_subscriptionId, _certificate, "testfluent40");
+            var client3 = new WebsiteClient(_subscriptionId, _certificate, "fluentwebtest38");
+            System.Console.WriteLine(client3.WebsiteProperties.Config.DetailedErrorLoggingEnabled);
         }
 
         public void ParseTokens(string[] args)

@@ -8,11 +8,7 @@
  ************************************************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Xml.Linq;
-using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
@@ -27,7 +23,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
         /// <summary>
         /// Constructs a websites list command
         /// </summary>
-        internal CreateWebsiteRepositoryCommand(Website website)
+        internal CreateWebsiteRepositoryCommand(Website website, string uri = null)
         {
             HttpVerb = HttpVerbGet;
             ServiceType = "services";
@@ -38,7 +34,28 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             HttpCommand = String.Format("{0}/sites/{1}/repository", Website.Webspace, Website.Name);
             /* propertiesToInclude=repositoryuri%2Cpublishingpassword%2Cpublishingusername */
         }
-
+        /// <summary>
+        /// The website and all of itsconfig and properties
+        /// </summary>
         protected Website Website { get; set; }
+        /// <summary>
+        /// The uri needed to overload for a remote repository
+        /// </summary>
+        public string Uri { get; set; }
+
+        protected override string CreatePayload()
+        {
+            XNamespace xmlns = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+
+            if (!String.IsNullOrEmpty(Uri))
+            {
+                var doc = new XDocument(
+                    new XDeclaration("1.0", "utf-8", ""),
+                    new XElement(xmlns + "anyURI", Uri));
+                return doc.ToStringFullXmlDeclaration();
+            }
+
+            return base.CreatePayload();
+        }
     }
 }
