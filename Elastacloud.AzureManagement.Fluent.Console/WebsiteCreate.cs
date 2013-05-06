@@ -37,6 +37,11 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                                            CurrentNumberOfWorkers = 1
                                                        }
                            };
+            site.Config.AppSettings.Add("test1", "test2");
+            site.Config.HttpLoggingEnabled = true;
+            site.Config.RequestTracingEnabled = true;
+            site.Config.DetailedErrorLoggingEnabled = true;
+            site.Config.ConnectionStrings.Add(new ConnStringInfo(){Name="test", ConnectionString = "test", Type="SQLAzure"});
             System.Console.WriteLine("Creating website");
             System.Console.WriteLine("================");
 

@@ -37,6 +37,33 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
             return client.PostAsync(uri, new StringContent(content)).Result.Content.ReadAsStringAsync().Result;
         }
 
+        /// <summary>
+        /// Executes a command request and doesn't wait or process the response but checks the status and throws an exception if not acheived
+        /// </summary>
+        /// <param name="uri">the uri requested</param>
+        /// <param name="status">The Http Status response code expected</param>
+        public void ExecuteCommand(string uri, int status)
+        {
+            HttpClient client = null;
+
+            // do this if the uri should be removed and 
+            if (uri.IndexOf(":", 8, System.StringComparison.Ordinal) > 0)
+            {
+                var posSlash = uri.IndexOf("@", 8, StringComparison.Ordinal);
+                string basicAuthCredentials = uri.Substring(8, posSlash - 8);
+                var parts = basicAuthCredentials.Split(':');
+                client = GetWebClient(parts[0], parts[1]);
+                uri = uri.Remove(8, (basicAuthCredentials + "/").Length);
+            }
+            else
+            {
+                client = GetWebClient();
+            }
+            var responseCode = (int)client.GetAsync(uri).Result.StatusCode;
+            if(responseCode != status)
+                throw new FluentManagementException("incorrect response code returned code is: " + responseCode, "WebsiteRequestHelper");
+        }
+
         #endregion
 
         private string GetBasicAuthenticationCredentials(string username, string password)
@@ -49,12 +76,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
 
         private HttpClient GetWebClient(string username, string password)
         {
-            var client = new HttpClient();
+            var client = GetWebClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", GetBasicAuthenticationCredentials(username, password));
 
             return client;
         }
+
+        private HttpClient GetWebClient()
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+
+            return client;
+        }
+        
     }
 }

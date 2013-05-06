@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
@@ -65,20 +66,21 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Sets the service hook to allow the azure remote repo to connect and deploy 
         /// </summary>
-        public bool SetServiceHook(string publishingUsername, string publishingPassword, string azureRepoName, string accountName, string repoName)
+        public string SetServiceHook(string publishingUsername, string publishingPassword, string azureRepoName, string accountName, string repoName)
         {
             if(!Connected)
                 throw new FluentManagementException("unable to proceed check repository before continuing", "GithubClient");
 
             // build the hook uri 
-            string hook = String.Format("https://{0}:{1}/{2}?scmType=GitHub", publishingUsername, publishingPassword, azureRepoName);
+            string hook = String.Format("https://{0}:{1}@{2}/deploy", publishingUsername, publishingPassword, azureRepoName);
             // build the hooks post uri 
             string uri = String.Format("https://api.github.com/repos/{0}/{1}/hooks", accountName, repoName);
             string content =
                 String.Format("{{\"name\": \"web\",\"active\": true,\"events\": [\"push\"],\"config\": {{\"url\": \"{0}\",\"content_type\": \"json\"}}}}", hook);
             string response = _helper.PostStringResponse(Username, Password, uri, content);
-
-            return response != null;
+            if (response == null)
+                return null;
+            return hook;
         }
 
         /// <summary>
@@ -86,6 +88,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void GetOAuthToken(string accountName, string repoName)
         {
+            if (!Connected)
+                throw new FluentManagementException("unable to proceed check repository before continuing", "GithubClient");
+
             const string application =
                 "{\"scopes\": [\"repo\"],\"note\": \"Fluent Management\",\"note_url\": \"https://fluentmanagement.elastacloud.com\"}";
             // make an auth request using a fluent management application key
@@ -122,6 +127,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Gets the API of the repo http://api.github.com/...
         /// </summary>
         public string RepoApiUri { get; private set; }
+
+        /// <summary>
+        /// Tests any service hook
+        /// </summary>
+        public void TestServiceHook(string hook)
+        {
+            _helper.ExecuteCommand(hook, 200);
+        }
+
+        /// <summary>
+        /// Gets the hooks associated with the repo
+        /// </summary>
+        /// <returns>The ids and uri of the hook</returns>
+        public Dictionary<int, string> GetHooks(string repoName)
+        {
+            var response = _helper.GetStringResponse(Username, Password, repoName);
+
+            var jRepos = JArray.Parse(response);
+            return jRepos.ToDictionary(repo => int.Parse(repo["id"].ToString()), repo => repo["uri"].ToString());
+        }
 
         #endregion
 

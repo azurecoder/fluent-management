@@ -93,7 +93,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if(!repoList.ContainsKey(gitDetails.RepositoryName))
                 throw new FluentManagementException("git repository not found", "WebsiteClient");
             // add the service hook in place 
-            bool setServiceHook = githubClient.SetServiceHook(WebsiteProperties.Config.PublishingUsername,
+            string setServiceHook = githubClient.SetServiceHook(WebsiteProperties.Config.PublishingUsername,
                                         WebsiteProperties.Config.PublishingPassword, website.Name + ".scm.azurewebsites.net",
                                         repoList[gitDetails.RepositoryName], gitDetails.RepositoryName);
             
@@ -106,13 +106,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             WebsiteProperties.Config.Metadata.Add("OAuthToken", githubClient.OAuthToken);
             WebsiteProperties.Config.ScmType = ScmType.GitHub;
             // update windows azure
-            var command = new UpdateWebsiteConfigCommand(WebsiteProperties)
-                              {
-                                  SubscriptionId = SubscriptionId,
-                                  Certificate = ManagementCertificate
-                              };
-            command.Execute();
-            if (setServiceHook) return;
+            Update();
+            // call the service hook
+            //githubClient.TestServiceHook(setServiceHook);
+            if (!String.IsNullOrEmpty(setServiceHook)) return;
             Delete();
             throw new FluentManagementException(
                 "website created but unable to set service hook in github rolled back deployment", "WebsiteClient");
@@ -130,6 +127,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Creates a default website with nothing deployed
         /// </summary>
         /// <param name="website">the website which will be created</param>
+        /// <param name="scm"></param>
         public void Create(Website website, ScmType scm = ScmType.LocalGit)
         {
             website.WebsiteParameters.CurrentNumberOfWorkers = website.WebsiteParameters.CurrentNumberOfWorkers != 0 ? 
@@ -189,12 +187,38 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets or sets the number of instances of the website
         /// </summary>
-        public int InstanceCount { get; set; }
+        public int InstanceCount
+        {
+            get
+            {
+                if (WebsiteProperties != null && WebsiteProperties.Config != null)
+                    return WebsiteProperties.Config.NumberOfWorkers;
+                throw new FluentManagementException("unable to determine number of workers - ensure you have a website context", "WebsiteClient");
+            }
+            set
+            {
+                if (WebsiteProperties != null && WebsiteProperties.Config != null)
+                    WebsiteProperties.Config.NumberOfWorkers = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the compute of the site
         /// </summary>
-        public ComputeMode ComputeMode { get; set; }
+        public ComputeMode ComputeMode 
+        { 
+            get
+            {
+                if (WebsiteProperties != null)
+                    return WebsiteProperties.ComputeMode;
+                throw new FluentManagementException("unable to determine compute mode - ensure you have a website context", "WebsiteClient");
+            }
+            set
+            {
+                if (WebsiteProperties != null)
+                    WebsiteProperties.ComputeMode = value;
+            }
+        }
 
         /// <summary>
         /// Restarts the website from a stopped state
@@ -228,6 +252,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the website
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Updates the config with the current compute config
+        /// </summary>
+        public void Update()
+        {
+            var updateCommand = new UpdateWebsiteConfigCommand(WebsiteProperties)
+                                    {
+                                        SubscriptionId = SubscriptionId,
+                                        Certificate = ManagementCertificate
+                                    };
+            updateCommand.Execute();
+        }
+
         /// <summary>
         /// Gets the website properties
         /// </summary>

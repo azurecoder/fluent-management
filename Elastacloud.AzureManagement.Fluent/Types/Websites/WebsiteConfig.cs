@@ -16,6 +16,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
     public class WebsiteConfig
     {
         /// <summary>
+        /// Creates a new instance of website config with empty collections
+        /// </summary>
+        public WebsiteConfig()
+        {
+            AppSettings = new Dictionary<string, string>();
+            ConnectionStrings = new List<ConnStringInfo>();
+            HandlerMappings = new Dictionary<string, string>();
+            Metadata = new Dictionary<string, string>();
+            DefaultDocuments = new List<string>();
+        }
+        /// <summary>
         /// the appsettings that are found in the web.config
         /// </summary>
         public Dictionary<string, string> AppSettings { get; set; }

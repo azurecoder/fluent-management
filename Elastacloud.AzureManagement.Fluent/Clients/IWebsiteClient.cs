@@ -55,5 +55,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the website
         /// </summary>
         string Name { get; set; }
+        /// <summary>
+        /// Updates the config with the current compute config
+        /// </summary>
+        void Update();
     }
 }

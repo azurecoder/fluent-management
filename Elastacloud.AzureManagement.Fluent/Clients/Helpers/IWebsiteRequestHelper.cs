@@ -18,5 +18,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
         /// Used to get a return value from a post request
         /// </summary>
         string PostStringResponse(string username, string password, string uri, string content);
+
+        /// <summary>
+        /// Executes a command request and doesn't wait or process the response but checks the status and throws an exception if not acheived
+        /// </summary>
+        /// <param name="uri">the uri requested</param>
+        /// <param name="status">The Http Status response code expected</param>
+        void ExecuteCommand(string uri, int status);
     }
 }
