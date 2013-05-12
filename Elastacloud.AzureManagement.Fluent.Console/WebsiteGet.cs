@@ -27,6 +27,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
+            var SqlClient = new SqlDatabaseClient(_subscriptionId, _certificate, "lwaug");
+            SqlClient.AddIpsToSqlFirewallFromCloudService("lwaug");
+
+
             System.Console.WriteLine("reading website");
             System.Console.WriteLine("================");
 

@@ -32,17 +32,27 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             rootElements = rootElements.Elements(GetSchema() + "Deployment");
             foreach (XElement deployment in rootElements)
             {
-                    var objDeployment = new Deployment()
-                        {
-                            Name = deployment.Element(GetSchema() + "Name").Value,
-                            Slot = (DeploymentSlot)Enum.Parse(typeof (DeploymentSlot), deployment.Element(GetSchema() + "DeploymentSlot").Value)
-                        };
-                    if (deployment.Elements(GetSchema() + "RoleInstanceList") != null)
+                var objDeployment = new Deployment()
                     {
-                        var instanceListCount =
-                            deployment.Elements(GetSchema() + "RoleInstanceList").Descendants().Count(a => a.Name == GetSchema() + "RoleInstance");
-                        objDeployment.TotalRoleInstanceCount = instanceListCount;
-                    }
+                        Name = deployment.Element(GetSchema() + "Name").Value,
+                        Slot = (DeploymentSlot) Enum.Parse(typeof (DeploymentSlot), deployment.Element(GetSchema() + "DeploymentSlot").Value)
+                    };
+                if (deployment.Elements(GetSchema() + "RoleInstanceList") != null)
+                {
+                    var instanceListCount =
+                        deployment.Elements(GetSchema() + "RoleInstanceList").Descendants().Count(a => a.Name == GetSchema() + "RoleInstance");
+                    objDeployment.TotalRoleInstanceCount = instanceListCount;
+                    var instanceList = deployment.Elements(GetSchema() + "RoleInstanceList")
+                        .Elements(GetSchema() + "RoleInstance")
+                        .Select(xElement => new RoleInstance()
+                        {
+                            Name = (string) xElement.Element(GetSchema() + "InstanceName"), 
+                            IpAddress = (string) xElement.Element(GetSchema() + "IpAddress"), 
+                            Size = (VmSize) Enum.Parse(typeof (VmSize), (string) xElement.Element(GetSchema() + "InstanceSize")),
+                            Status = (RoleInstanceStatus)Enum.Parse(typeof(RoleInstanceStatus), (string)xElement.Element(GetSchema() + "InstanceStatus"))
+                        }).ToList();
+                    objDeployment.RoleInstances = instanceList;
+                }
                 CommandResponse.Add(objDeployment);
             }
         }

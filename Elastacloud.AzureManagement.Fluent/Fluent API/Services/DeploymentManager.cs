@@ -469,7 +469,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             var cloudServices = ((IQueryCloudService)this).GetHostedServiceList();
             foreach (var cloudService in cloudServices)
             {
-                var command = new GetHostedServicePropertiesCommand(cloudService.Name)
+                var command = new GetCloudServicePropertiesCommand(cloudService.Name)
                 {
                     SubscriptionId = SubscriptionId,
                     Certificate = ManagementCertificate

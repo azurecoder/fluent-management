@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
+using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Newtonsoft.Json.Linq;
 

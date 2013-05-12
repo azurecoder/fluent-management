@@ -21,6 +21,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// <summary>
         /// The total role instance belonging to the deployment
         /// </summary>
-        public int TotalRoleInstanceCount { get; set; } 
+        public int TotalRoleInstanceCount { get; set; }
+        /// <summary>
+        /// The roleinstances associated with the deployment
+        /// </summary>
+        public List<RoleInstance> RoleInstances { get; set; }
     }
 }

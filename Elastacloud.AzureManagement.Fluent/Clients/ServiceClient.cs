@@ -9,6 +9,7 @@
 
 using System;
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
