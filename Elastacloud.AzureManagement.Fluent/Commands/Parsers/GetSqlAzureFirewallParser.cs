@@ -36,18 +36,14 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         {
             IEnumerable<XElement> rootElements = Document.Element(GetSchema() + RootElement)
                 .Elements(GetSchema() + "FirewallRule");
-            if (rootElements == null)
-                return;
 
-            foreach (var sqlRule in rootElements.Select(rule => new SqlFirewallRule()
-                {
-                    RuleName = (string) rule.Element(GetSchema() + "RuleName"),
-                    IpAddressHigh = (string) rule.Element(GetSchema() + "IpAddressHigh"),
-                    IpAddressLow = (string) rule.Element(GetSchema() + "IpAddressLow")
-                }))
-            {
-                CommandResponse.Add(sqlRule);
-            }
+            rootElements.ToList().ForEach(rule => CommandResponse.Add(
+                new SqlFirewallRule()
+                    {
+                        RuleName = (string) rule.Element(GetSchema() + "Name"),
+                        IpAddressHigh = (string) rule.Element(GetSchema() + "StartIpAddress"),
+                        IpAddressLow = (string) rule.Element(GetSchema() + "EndIpAddress")
+                    }));
         }
 
         #region Overrides of BaseParser
@@ -59,7 +55,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
 
         protected override XNamespace GetSchema()
         {
-            return XNamespace.Get(WindowsAzureSchema);
+            return XNamespace.Get(SqlAzureSchema);
         }
 
         #endregion

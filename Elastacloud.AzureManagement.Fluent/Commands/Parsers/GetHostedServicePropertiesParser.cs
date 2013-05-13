@@ -35,7 +35,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 var objDeployment = new Deployment()
                     {
                         Name = deployment.Element(GetSchema() + "Name").Value,
-                        Slot = (DeploymentSlot) Enum.Parse(typeof (DeploymentSlot), deployment.Element(GetSchema() + "DeploymentSlot").Value)
+                        Slot = (DeploymentSlot) Enum.Parse(typeof (DeploymentSlot), deployment.Element(GetSchema() + "DeploymentSlot").Value),
                     };
                 if (deployment.Elements(GetSchema() + "RoleInstanceList") != null)
                 {
@@ -49,7 +49,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                             Name = (string) xElement.Element(GetSchema() + "InstanceName"), 
                             IpAddress = (string) xElement.Element(GetSchema() + "IpAddress"), 
                             Size = (VmSize) Enum.Parse(typeof (VmSize), (string) xElement.Element(GetSchema() + "InstanceSize")),
-                            Status = (RoleInstanceStatus)Enum.Parse(typeof(RoleInstanceStatus), (string)xElement.Element(GetSchema() + "InstanceStatus"))
+                            Status = (RoleInstanceStatus)Enum.Parse(typeof(RoleInstanceStatus), (string)xElement.Element(GetSchema() + "InstanceStatus")),
+                            VirtualIpAddress = (string)xElement.Element(GetSchema() + "InstanceEndpoints").Elements(GetSchema() + "InstanceEndpoint").First()
+                                            .Element(GetSchema() + "Vip")
                         }).ToList();
                     objDeployment.RoleInstances = instanceList;
                 }

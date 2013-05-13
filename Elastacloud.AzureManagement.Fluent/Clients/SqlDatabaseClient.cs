@@ -52,7 +52,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 command.Execute();
                 foreach (var rule in command.FirewallRules)
                 {
-                    // TODO: delete the rule using the command
+                    var ruleCommand = new DeleteSqlFirewallRuleCommand(ServerName, rule.RuleName)
+                        {
+                            SubscriptionId = _subscriptionId,
+                            Certificate = _managementCertificate
+                        };
+                    ruleCommand.Execute();
                 }
             }
 
@@ -70,19 +75,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         select service;
             var cloudService = query.First();
             // enumerate the cloud service deployment and add the ips to the database firewall
-            cloudService.Deployments.First().RoleInstances.ForEach(
-                a =>
-                    {
-                        var command = new AddNewFirewallRuleCommand(a.Name, a.IpAddress, a.IpAddress)
-                            {
-                                SubscriptionId = _subscriptionId,
-                                Certificate = _managementCertificate,
-                                SqlAzureServerName = ServerName
-                            };
-                        command.Execute();
-                    } 
-                );
-            
+            var addRuleCommand = new AddNewFirewallRuleCommand(cloudServiceName,
+                                                               cloudService.Deployments.First().RoleInstances.First().VirtualIpAddress,
+                                                               cloudService.Deployments.First().RoleInstances.First().VirtualIpAddress)
+                {
+                    SubscriptionId = _subscriptionId,
+                    Certificate = _managementCertificate
+                };
+            addRuleCommand.ConfigureFirewallCommand(ServerName);
+            addRuleCommand.Execute();
         }
 
         /// <summary>

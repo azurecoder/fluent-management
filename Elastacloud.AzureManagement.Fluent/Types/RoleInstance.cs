@@ -33,5 +33,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// The size of the role instance
         /// </summary>
         public VmSize Size { get; set; }
+        /// <summary>
+        /// The public facing ip
+        /// </summary>
+        public string VirtualIpAddress { get; set; }
     }
 }

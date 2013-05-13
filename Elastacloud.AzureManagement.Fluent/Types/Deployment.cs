@@ -26,5 +26,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// The roleinstances associated with the deployment
         /// </summary>
         public List<RoleInstance> RoleInstances { get; set; }
+        /// <summary>
+        /// The virtual IP address of the deployment
+        /// </summary>
+        public string IpAddress { get; set; }
     }
 }
