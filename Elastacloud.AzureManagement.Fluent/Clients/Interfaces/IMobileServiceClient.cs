@@ -161,6 +161,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// The mobile service log entry entries
         /// </summary>
         List<MobileServiceLogEntry> Logs { get; }
-        
+        /// <summary>
+        /// Deletes a mobile service along with any linked database server
+        /// </summary>
+        void Delete(bool deleteSqlAzureDatabase = true);
     }
 }

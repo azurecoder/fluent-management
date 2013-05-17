@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -90,6 +91,47 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the WASD server
         /// </summary>
         public string ServerName { get; set; }
+
+        /// <summary>
+        /// Gets a count of the number of databases that exist on the server
+        /// </summary>
+        public int DatabaseCount { get; private set; }
+
+        /// <summary>
+        /// Deletes a database and also deletes the server if the database is the last one 
+        /// </summary>
+        public void DeleteDatabase(string name, bool deleteServerIfLastDatabase = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// The login associated with the WASS
+        /// </summary>
+        public string AdministratorServerLogin { get; set; }
+
+        /// <summary>
+        /// The passwords associated with the WASS
+        /// </summary>
+        public string AdministratorServerPassword { get; set; }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Gets a connection to a Sql Database
+        /// </summary>
+        private SqlConnection GetConnection(string dbName)
+        {
+            string connectionString =
+                String.Format(
+                    "server=tcp:{0}.database.windows.net; database={1}; user id={2}@{0}; password={3}; Trusted_Connection=False; Encrypt=True;",
+                    ServerName, dbName, AdministratorServerLogin, AdministratorServerPassword);
+            var connection = new SqlConnection(connectionString);
+            connection.Open();
+            return connection;
+        }
 
         #endregion
     }
