@@ -18,13 +18,16 @@ using Newtonsoft.Json.Linq;
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
     /// <summary>
-    /// Used to connect to the Github repos
+    /// Constructs a SqlDatabase client used to manipulate WASD
     /// </summary>
     public class SqlDatabaseClient : ISqlDatabaseClient
     {
         private readonly string _subscriptionId;
         private readonly X509Certificate2 _managementCertificate;
 
+        /// <summary>
+        /// Constructs a SqlDatabase client used to manipulate WASD
+        /// </summary>
         public SqlDatabaseClient(string subscriptionId, X509Certificate2 managementCertificate, string serverName)
         {
             ServerName = serverName;
@@ -95,14 +98,36 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets a count of the number of databases that exist on the server
         /// </summary>
-        public int DatabaseCount { get; private set; }
+        public int DatabaseCount
+        {
+            get
+            {
+                var connection = GetConnection("master");
+                return ExecuteCountCommand(connection, "SELECT COUNT(*) FROM SYS.DATABASES");
+            }
+        }
 
         /// <summary>
         /// Deletes a database and also deletes the server if the database is the last one 
         /// </summary>
         public void DeleteDatabase(string name, bool deleteServerIfLastDatabase = true)
         {
-            throw new NotImplementedException();
+            CheckLoginCredentials();
+            // get the connection to the server
+            var connection = GetConnection(name);
+            // drop the named database
+            ExecuteCommand(connection, "DROP DATABASE " + name);
+            // TODO: get the count of database that are left on the server
+            if (deleteServerIfLastDatabase && DatabaseCount == 1)
+            {
+                // delete the server
+                var command = new DeleteSqlServerCommand(ServerName)
+                    {
+                        SubscriptionId = _subscriptionId,
+                        Certificate = _managementCertificate
+                    };
+                command.Execute();
+            }
         }
 
         /// <summary>
@@ -131,6 +156,33 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var connection = new SqlConnection(connectionString);
             connection.Open();
             return connection;
+        }
+        /// <summary>
+        /// Checks that the login credentials for the server have been set
+        /// </summary>
+        private void CheckLoginCredentials()
+        {
+            if (String.IsNullOrEmpty(AdministratorServerLogin) || String.IsNullOrEmpty(AdministratorServerPassword))
+            {
+                throw new FluentManagementException("unable to continue login and password not specified", "SqlDatabaseClient");
+            }
+        }
+
+        /// <summary>
+        /// Executes a set of commands against a Sql database
+        /// </summary>
+        private void ExecuteCommand(SqlConnection connection, string sql)
+        {
+            var command = new SqlCommand(sql, connection);
+            command.ExecuteNonQuery();
+        }
+        /// <summary>
+        /// Executes a count command against a table
+        /// </summary>
+        private int ExecuteCountCommand(SqlConnection connection, string sql)
+        {
+            var command = new SqlCommand(sql, connection);
+           return (int) command.ExecuteScalar();
         }
 
         #endregion

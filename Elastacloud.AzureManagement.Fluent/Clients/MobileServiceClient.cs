@@ -386,6 +386,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             // when this succeeds ... we'll delete the db if this is still around
             // TODO: Add the delete database and server by extending the client 
+            if (deleteSqlAzureDatabase)
+            {
+                var client = new SqlDatabaseClient(SubscriptionId, ManagementCertificate, SqlAzureServerName)
+                    {
+                        AdministratorServerLogin = SqlAzureUsername,
+                        AdministratorServerPassword = SqlAzurePassword,
+                    };
+                client.DeleteDatabase(MobileServiceDbName, deleteSqlAzureDatabase);
+            }
         }
 
         #endregion
