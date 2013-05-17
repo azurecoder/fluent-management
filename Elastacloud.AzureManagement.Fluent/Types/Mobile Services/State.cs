@@ -12,6 +12,6 @@
         /// <summary>
         /// occurs when a database is missing
         /// </summary>
-        Unhealthy
+        UnHealthy
     }
 }
