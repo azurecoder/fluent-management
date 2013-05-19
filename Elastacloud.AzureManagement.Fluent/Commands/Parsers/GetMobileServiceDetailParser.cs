@@ -44,7 +44,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             dictionary["ApplicationUrl"] = serviceResource.Element(GetSchema() + "ApplicationUrl").Value;
             dictionary["MasterKey"] = serviceResource.Element(GetSchema() + "MasterKey").Value;
             dictionary["Location"] = serviceResource.Element(GetSchema() + "Region").Value;
-            dictionary["WebSpace"] = serviceResource.Element(GetSchema() + "WebSpace").Value;
+            dictionary["WebSpace"] = serviceResource.Element(GetSchema() + "Webspace").Value;
             CommandResponse = dictionary;
         }
        

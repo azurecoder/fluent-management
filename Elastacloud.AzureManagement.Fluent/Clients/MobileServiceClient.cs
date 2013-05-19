@@ -378,13 +378,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Delete(bool deleteSqlAzureDatabase = true)
         {
-            // first we'll delete the mobile service 
-            var command = new DeleteMobileServiceCommand(MobileServiceName)
-                {
-                    SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
-                };
-            command.Execute();
             // when this succeeds ... we'll delete the db if this is still around
             // TODO: Add the delete database and server by extending the client 
             if (deleteSqlAzureDatabase)
@@ -396,6 +389,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     };
                 client.DeleteDatabase(SqlAzureDbName, deleteSqlAzureDatabase);
             }
+            // first we'll delete the mobile service 
+            var command = new DeleteMobileServiceCommand(MobileServiceName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
         }
 
         /// <summary>

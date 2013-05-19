@@ -71,9 +71,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 Properties.Name = rootElements.Element(GetSchema() + "Name").Value;
             }
             // test to see whether the sitehas been enabled
-            if (rootElements.Element(GetSchema() + "numberOfInstances") != null)
+            if (rootElements.Element(GetSchema() + "NumberOfInstances") != null)
             {
-                Properties.InstanceCount = int.Parse(rootElements.Element(GetSchema() + "numberOfInstances").Value);
+                Properties.InstanceCount = int.Parse(rootElements.Element(GetSchema() + "NumberOfInstances").Value);
             }
 
             CommandResponse = Properties;
