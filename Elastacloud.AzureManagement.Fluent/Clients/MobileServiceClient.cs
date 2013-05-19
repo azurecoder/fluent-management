@@ -51,7 +51,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             catch (Exception)
             {
-                throw new FluentManagementException("mobile service does not exist!","MobileServiceClient");
+                throw new FluentManagementException("mobile service does not exist!", "MobileServiceClient");
             }
         }
 
@@ -393,7 +393,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         AdministratorServerLogin = SqlAzureUsername,
                         AdministratorServerPassword = SqlAzurePassword,
                     };
-                client.DeleteDatabase(MobileServiceDbName, deleteSqlAzureDatabase);
+                client.DeleteDatabase(SqlAzureDbName, deleteSqlAzureDatabase);
             }
         }
 

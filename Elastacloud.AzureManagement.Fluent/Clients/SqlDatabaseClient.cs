@@ -114,17 +114,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             CheckLoginCredentials();
             // we need to add IP detect and add to the firewall first
-            var firewallCommandWithIpDetect = new AddNewFirewallRuleWithIpDetectCommand("mobile_mine")
+            var firewallCommandWithIpDetect = new AddNewFirewallRuleWithIpDetectCommand("mobileser")
                 {
                     SubscriptionId = _subscriptionId,
                     Certificate = _managementCertificate
                 };
+            firewallCommandWithIpDetect.ConfigureFirewallCommand(ServerName);
             firewallCommandWithIpDetect.Execute();
             // get the connection to the server
-            var connection = GetConnection(name);
+            var connection = GetConnection("master");
             // drop the named database
             ExecuteCommand(connection, "DROP DATABASE " + name);
-            // TODO: get the count of database that are left on the server
+            // Gets the count of databases left on the server
             if (deleteServerIfLastDatabase && DatabaseCount == 1)
             {
                 // delete the server
