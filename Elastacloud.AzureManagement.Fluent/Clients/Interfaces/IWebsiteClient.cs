@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces

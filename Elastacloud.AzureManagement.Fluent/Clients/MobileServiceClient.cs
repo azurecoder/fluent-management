@@ -189,6 +189,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (MobileServiceName == null) return;
             GetAllSettings();
             GetMobileServiceDetails();
+            GetWebspaceProperties();
             GetMobileServiceResources();
             GetMobileServiceTables();
         }
@@ -397,6 +398,21 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
         }
 
+        /// <summary>
+        /// Gets or sets the total number of instances for all of the mobile services
+        /// </summary>
+        public int TotalInstanceCount { get; set; }
+
+        /// <summary>
+        /// The name of the webspace to which the mobile service is bound 
+        /// </summary>
+        public string Webspace { get; set; }
+
+        /// <summary>
+        /// Whether this is free or reserved
+        /// </summary>
+        public ComputeMode ComputeMode { get; set; }
+
         #endregion
 
         #endregion
@@ -444,6 +460,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             ApplicationUrl = details.ApplicationUrl;
             Location = details.Location;
             MasterKey = details.MasterKey;
+            Webspace = details.Webspace;
         }
         
         /// <summary>
@@ -572,6 +589,25 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             
             var settings = (JObject)JsonConvert.DeserializeObject(command.JsonResult);
             DynamicSchemaEnabled = (bool)settings.GetValue(Constants.DynamicSchemaEnabled).ToObject(typeof(bool));
+        }
+
+        /// <summary>
+        /// Gets the webspace properties that will allow the manipulation of the scale
+        /// </summary>
+        private void GetWebspaceProperties()
+        {
+            if(Webspace == null)
+                throw new FluentManagementException("unable to get continue without webspace", "MobileServiceClient");
+
+            var command = new GetSharedInstanceCountCommand(Webspace)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            command.Execute();
+            TotalInstanceCount = command.WebspaceProperties.InstanceCount;
+            Webspace = command.WebspaceProperties.Name;
+            ComputeMode = command.WebspaceProperties.ComputeMode;
         }
 
         /// <summary>

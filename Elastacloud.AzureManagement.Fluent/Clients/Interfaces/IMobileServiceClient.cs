@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 using System.Collections.Generic;
+using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.MobileServices;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -165,5 +166,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Deletes a mobile service along with any linked database server
         /// </summary>
         void Delete(bool deleteSqlAzureDatabase = true);
+        /// <summary>
+        /// Gets or sets the total number of instances for all of the mobile services
+        /// </summary>
+        int TotalInstanceCount { get; set; }
+        /// <summary>
+        /// The name of the webspace to which the mobile service is bound 
+        /// </summary>
+        string Webspace { get; set; }
+        /// <summary>
+        /// Whether this is free or reserved
+        /// </summary>
+        ComputeMode ComputeMode { get; set; }
     }
 }

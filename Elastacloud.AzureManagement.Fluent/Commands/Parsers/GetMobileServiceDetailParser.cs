@@ -38,12 +38,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         internal override void Parse()
         {
             // have to ensure that both the IaaS and PaaS roles are returned
-            var dictionary = new Dictionary<string, string>(4);
+            var dictionary = new Dictionary<string, string>(5);
             var serviceResource = Document.Element(GetSchema() + RootElement);
             dictionary["ApplicationKey"] = serviceResource.Element(GetSchema() + "ApplicationKey").Value;
             dictionary["ApplicationUrl"] = serviceResource.Element(GetSchema() + "ApplicationUrl").Value;
             dictionary["MasterKey"] = serviceResource.Element(GetSchema() + "MasterKey").Value;
             dictionary["Location"] = serviceResource.Element(GetSchema() + "Region").Value;
+            dictionary["WebSpace"] = serviceResource.Element(GetSchema() + "WebSpace").Value;
             CommandResponse = dictionary;
         }
        

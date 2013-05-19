@@ -52,14 +52,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// </summary>
         public string Webspace { get; set; }
         /// <summary>
-        /// to set the website in North Europe
-        /// </summary>
-        public const string NorthEuropeWebSpace = "northeuropewebspace";
-        /// <summary>
-        /// To set the website in West Europe
-        /// </summary>
-        public const string WestEuropeWebSpace = "westeuropewebspace";
-        /// <summary>
         /// Adds the default website config and params to the current website 
         /// </summary>
         public Website()

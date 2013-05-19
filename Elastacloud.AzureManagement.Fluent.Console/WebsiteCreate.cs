@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Console.Properties;
+using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.MobileServices;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
 

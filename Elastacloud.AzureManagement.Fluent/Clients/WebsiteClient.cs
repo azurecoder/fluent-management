@@ -6,6 +6,7 @@ using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Websites;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
@@ -135,7 +136,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 website.WebsiteParameters.CurrentNumberOfWorkers : 1;
             website.Enabled = true;
             website.State = WebsiteState.Ready;
-            website.Webspace = website.Webspace ?? Website.NorthEuropeWebSpace;
+            website.Webspace = website.Webspace ?? WebspaceLocationConstants.NorthEuropeWebSpace;
             if (!String.IsNullOrEmpty(website.Webspace))
             {
                 ValidateWebSpace(website.Webspace);
@@ -304,7 +305,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         private void ValidateWebSpace(string webSpace)
         {
-            if(webSpace != Website.NorthEuropeWebSpace && webSpace != Website.WestEuropeWebSpace)
+            if (webSpace != WebspaceLocationConstants.NorthEuropeWebSpace && webSpace != WebspaceLocationConstants.WestEuropeWebSpace &&
+                webSpace != WebspaceLocationConstants.EastUSWebSpace)
                 throw new FluentManagementException("Ensure you use the correct webspace", "WebsiteClient");
         }
     }

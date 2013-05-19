@@ -6,26 +6,12 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
-
-namespace Elastacloud.AzureManagement.Fluent.Types.Websites
+namespace Elastacloud.AzureManagement.Fluent.Types
 {
-    /// <summary>
-    /// the details needed to bind to a remote github repository
-    /// </summary>
- 
-    public class GitDetails
+    public enum ComputeMode
     {
-        /// <summary>
-        /// The username to login to github
-        /// </summary>
-        public string Username { get; set; }
-        /// <summary>
-        /// The password used to login to github
-        /// </summary>
-        public string Password { get; set; }
-        /// <summary>
-        /// The github repository name to use
-        /// </summary>
-        public string RepositoryName { get; set; }
+        Free,
+        Shared,
+        Dedicated
     }
 }
