@@ -22,7 +22,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             CommandResponse = new List<string>();
         }
 
-        public List<string> Websites { get; private set; }
+        public List<WebspaceProperties> Webspaces { get; private set; }
 
         #region Overrides of BaseParser
 
@@ -38,16 +38,25 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
 
         internal override void Parse()
         {
-            if (Websites == null)
-                Websites = new List<string>();
+            if (Webspaces == null)
+                Webspaces = new List<WebspaceProperties>();
 
             var rootElements = Document.Element(GetSchema() + WebsiteListParser);
-            foreach (var element in rootElements.Elements(GetSchema() + "WebSpace").Where(element => element.Element(GetSchema() + "Name") != null))
-            {   
-                Websites.Add(element.Element(GetSchema() + "Name").Value);
+
+            foreach (var element in rootElements.Elements(GetSchema() + "WebSpace").
+                                                 Where(element => element.Element(GetSchema() + "Name") != null))
+            {
+                Webspaces.Add(new WebspaceProperties()
+                    {
+                        Name = element.Element(GetSchema() + "Name").Value,
+                        ComputeMode =
+                            (ComputeMode)
+                            Enum.Parse(typeof (ComputeMode), element.Element(GetSchema() + "ComputeMode").Value),
+                        InstanceCount = int.Parse(element.Element(GetSchema() + "NumberOfWorkers").Value)
+                    });
             }
            
-            CommandResponse = Websites;
+            CommandResponse = Webspaces;
         }
 
         #endregion

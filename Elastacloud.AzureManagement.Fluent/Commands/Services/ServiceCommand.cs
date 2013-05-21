@@ -231,7 +231,6 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             SitAndWait = new ManualResetEvent(false);
             BaseRequestUri = BaseUri;
             ContentType = "application/xml";
-            //AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2011-10-01" } };
             AdditionalHeaders = new Dictionary<string, string> { { "x-ms-version", "2012-03-01" } };
         }
 

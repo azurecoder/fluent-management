@@ -102,6 +102,7 @@
     <Compile Include="Commands\HDInsight\CreateHDInsightCluster.cs" />
     <Compile Include="Commands\MobileServices\DeleteMobileServiceCommand.cs" />
     <Compile Include="Commands\MobileServices\GetSharedInstanceCountCommand.cs" />
+    <Compile Include="Commands\Parsers\WebsiteServerFarmParser.cs" />
     <Compile Include="Commands\Parsers\WebspacePropertiesParser.cs" />
     <Compile Include="Commands\Parsers\GetSqlAzureFirewallParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteConfigParser.cs" />
@@ -178,6 +179,8 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Websites\GetServerFarmCommand.cs" />
+    <Compile Include="Commands\Websites\CreateWebsiteServerFarmCommand.cs" />
     <Compile Include="Commands\Websites\CreateWebsiteRepositoryCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteConfigCommand.cs" />
     <Compile Include="Commands\Websites\UpdateWebsiteConfigCommand.cs" />
@@ -213,7 +216,11 @@
     <Compile Include="Clients\Interfaces\IHDInsightClient.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\ComputeMode.cs" />
-    <Compile Include="Types\WebspaceLocationConstants - Copy.cs" />
+    <Compile Include="Types\Websites\WebspaceDetails.cs" />
+    <Compile Include="Types\Websites\ServerFarm.cs" />
+    <Compile Include="Types\Websites\InstanceSize.cs" />
+    <Compile Include="Types\Websites\SiteMode.cs" />
+    <Compile Include="Types\WebspaceProperties.cs" />
     <Compile Include="Types\SqlFirewallRule.cs" />
     <Compile Include="Types\RoleInstance.cs" />
     <Compile Include="Types\Exceptions\FluentManagementException.cs" />

@@ -9,43 +9,45 @@
 
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types;
+using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
 {
     /// <summary>
     /// Used to create a hosted service within a given subscription
     /// </summary>
-    internal class GetWebsiteListCommand : ServiceCommand
+    internal class GetServerFarmCommand : ServiceCommand
     {
+        public const string WebsitePostfix = ".azurewebsites.net";
         /// <summary>
         /// Constructs a websites list command
         /// </summary>
-        internal GetWebsiteListCommand()
+        internal GetServerFarmCommand(Website website)
         {
             HttpVerb = HttpVerbGet;
             ServiceType = "services";
             OperationId = "webspaces";
+            Website = website;
+            HttpVerb = HttpVerbGet;
             // keep this in to ensure no 403
-            HttpCommand = "/";
+            HttpCommand = String.Format("{0}/serverfarms/{1}", Website.Webspace, Website.ServerFarm.Name);
+            /* propertiesToInclude=repositoryuri%2Cpublishingpassword%2Cpublishingusername */
         }
-        /// <summary>
-        /// Contains the names that will be used in further request to list the websites in regions 
-        /// </summary>
-        public List<WebspaceProperties> WebsiteRegions { get; set; }
 
-        /// <summary>
-        /// Used to populate the website regions
-        /// </summary>
-        protected override void ResponseCallback(System.Net.HttpWebResponse webResponse)
+        public Website Website { get; set; }
+
+        // /// // <ServerFarm xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><CurrentNumberOfWorkers>2</CurrentNumberOfWorkers><CurrentWorkerSize>Small</CurrentWorkerSize><Name>DefaultServerFarm</Name><NumberOfWorkers>2</NumberOfWorkers><Status>Ready</Status><WorkerSize>Small</WorkerSize></ServerFarm>
+        protected override void ResponseCallback(HttpWebResponse webResponse)
         {
-            WebsiteRegions = Parse(webResponse, BaseParser.WebsiteListParser, new WebsiteListParser(null));
+            Website.ServerFarm = Parse(webResponse, BaseParser.WebsiteServerFarm, new WebsiteServerFarmParser(null));
             SitAndWait.Set();
         }
+
     }
 }

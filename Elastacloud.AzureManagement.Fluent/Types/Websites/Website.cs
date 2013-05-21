@@ -15,6 +15,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
     /// </summary>
     public class Website
     {
+        private ComputeMode _mode;
         /// <summary>
         /// A list of hostnames used by the website
         /// </summary>
@@ -27,10 +28,23 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// Whether the website is enabled or not
         /// </summary>
         public bool Enabled { get; set; }
+
         /// <summary>
         /// What the Mode is of the website - Free, Shared, Reserved
         /// </summary>
-        public ComputeMode ComputeMode { get; set; }
+        public ComputeMode ComputeMode
+        {
+            get
+            {
+                if (_mode == ComputeMode.Shared && Mode == SiteMode.Limited)
+                {
+                    return ComputeMode.Free;
+                }
+                return _mode;
+            }
+            set { _mode = value; }
+        }
+
         /// <summary>
         /// The current state of the website stopped/started
         /// </summary>
@@ -48,9 +62,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
         /// </summary>
         public WebsiteConfig Config { get; set; }
         /// <summary>
+        /// The server famr that the websites are bound to
+        /// </summary>
+        public ServerFarm ServerFarm { get; set; }
+        /// <summary>
         /// Which web location this is in e.g. northeuropewebspace
         /// </summary>
         public string Webspace { get; set; }
+        /// <summary>
+        /// Can be either limited or basic
+        /// </summary>
+        public SiteMode Mode { get; set; }
         /// <summary>
         /// Adds the default website config and params to the current website 
         /// </summary>

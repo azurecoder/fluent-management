@@ -170,6 +170,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The config of the sit parser tag
         /// </summary>
         public const string WebsiteConfigParser = "SiteConfig";
+        /// <summary>
+        /// The root element for the server farm for WAWS
+        /// </summary>
+        public const string WebsiteServerFarm = "ServerFarm";
         
         /// <summary>
         /// The schema for the Sql azure manmagement request

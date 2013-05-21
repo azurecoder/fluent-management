@@ -40,6 +40,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The subscription id that the website is in
         /// </summary>
         protected string SubscriptionId { get; set; }
+        /// <summary>
+        /// Contains a running total of all of the region counts related to that subscription
+        /// </summary>
+        private Dictionary<string, int> regionCounts = new Dictionary<string, int>(); 
 
         #region Implementation of IWebsiteClient
 
@@ -58,10 +62,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             // use this list to derive a list of websites discarding 404 errors
             var list = command.WebsiteRegions;
-            foreach (string region in list)
+            foreach (WebspaceProperties region in list)
             {
                 // the website context command which will return the websites in the various regions
-                var context = new WebsiteContextRequestCommand(region)
+                var context = new WebsiteContextRequestCommand(region.Name)
                                   {
                                       SubscriptionId = SubscriptionId,
                                       Certificate = ManagementCertificate
@@ -70,6 +74,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 // keep adding the response collections together
                 if(context.Websites != null)
                     websites.AddRange(context.Websites);
+                // add the number of instances to the running collection for the webspace
+                regionCounts.Add(region.Name, region.InstanceCount);
             }
 
             return websites;
@@ -134,6 +140,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             website.WebsiteParameters.CurrentNumberOfWorkers = website.WebsiteParameters.CurrentNumberOfWorkers != 0 ? 
                 website.WebsiteParameters.CurrentNumberOfWorkers : 1;
+           
             website.Enabled = true;
             website.State = WebsiteState.Ready;
             website.Webspace = website.Webspace ?? WebspaceLocationConstants.NorthEuropeWebSpace;
@@ -141,6 +148,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 ValidateWebSpace(website.Webspace);
             }
+            SetScalePotential(website);
+            // check to see whether this is dedicate first
+           // if((website.ServerFarm != null && website.ServerFarm.InstanceCount))
+
+
             // create the website
             var command = new CreateWebsiteCommand(website)
                               {
@@ -308,6 +320,66 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (webSpace != WebspaceLocationConstants.NorthEuropeWebSpace && webSpace != WebspaceLocationConstants.WestEuropeWebSpace &&
                 webSpace != WebspaceLocationConstants.EastUSWebSpace)
                 throw new FluentManagementException("Ensure you use the correct webspace", "WebsiteClient");
+        }
+
+        private void SetScalePotential(Website website)
+        {
+            // if the type hasn't been defined then set the default to free
+            switch (website.ComputeMode)
+            {
+                case ComputeMode.Free:
+                    website.ComputeMode = ComputeMode.Shared;
+                    website.Mode = SiteMode.Limited;
+                    break;
+                case ComputeMode.Shared:
+                    website.ComputeMode = ComputeMode.Shared;
+                    website.Mode = SiteMode.Basic;
+                    break;
+                case ComputeMode.Dedicated:
+                    {
+                        website.ComputeMode = ComputeMode.Dedicated;
+                        website.Mode = SiteMode.Basic;
+                        // TODO: Create the default server farm here and add to config
+                        try
+                        {
+                            // check to see whether this has been set or not
+                            if (website.ServerFarm == null)
+                            {
+                                website.ServerFarm = new ServerFarm() {Name = "DefaultServerFarm"};    
+                            }
+                            // then use this to get or create the server farm
+                            var command = new GetServerFarmCommand(website)
+                                {
+                                    SubscriptionId = SubscriptionId,
+                                    Certificate = ManagementCertificate
+                                };
+                            command.Execute();
+                            WebsiteProperties = command.Website;
+                        }
+                        catch (Exception)
+                        {
+                            // if we get the exception here then this will most likely be a 404 - for the time being treat it as such ...
+                            try
+                            {
+                                var command = new CreateWebsiteServerFarmCommand(website)
+                                {
+                                    SubscriptionId = SubscriptionId,
+                                    Certificate = ManagementCertificate
+                                };
+                                command.Execute();
+                            }
+                            catch (Exception)
+                            {
+                                // if this fails we want to halt
+                                throw new FluentManagementException(
+                                    "Subscription does not support a dedicated server farm", "WebsiteClient");
+                            }
+                            
+                        }
+                        break;
+                    }
+            }
+
         }
     }
 }

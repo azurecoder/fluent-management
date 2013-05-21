@@ -101,6 +101,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                         site.Hostname.Add(hostNameElement.Value);
                     }
                 }
+                // get the state of the website
+                if (element.Element(GetSchema() + "SiteMode") != null)
+                {
+                    site.Mode = (SiteMode)Enum.Parse(typeof(SiteMode), element.Element(GetSchema() + "SiteMode").Value, true);
+                }
+               
+                // get the state of the website
+                if (element.Element(GetSchema() + "ComputeMode") != null)
+                {
+                    site.ComputeMode = (ComputeMode)Enum.Parse(typeof(ComputeMode), element.Element(GetSchema() + "ComputeMode").Value);
+                }
                 Websites.Add(site);
             }
            
