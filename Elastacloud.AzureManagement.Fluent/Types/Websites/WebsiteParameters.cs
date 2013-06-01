@@ -15,10 +15,25 @@ namespace Elastacloud.AzureManagement.Fluent.Types.Websites
     /// </summary>
     public class WebsiteParameters
     {
+        /// <summary>
+        /// This returns the current number of workers across the webfarm
+        /// </summary>
         public int CurrentNumberOfWorkers { get; set; }
+        /// <summary>
+        /// This returns the number of workers used across the whole webfarm
+        /// </summary>
         public int NumberOfWorkers { get; set; }
+        /// <summary>
+        /// The state of the current website
+        /// </summary>
         public WebsiteState CurrentWorkerState { get; set; }
+        /// <summary>
+        /// This gets or set the size of the website workers
+        /// </summary>
         public WorkerSize CurrentWorkerSize { get; set; }
+        /// <summary>
+        /// This sets the availability state of the workers 
+        /// </summary>
         public WebsiteAvailabilityState AvailabilityState { get; set; }
     }
 

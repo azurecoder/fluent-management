@@ -86,6 +86,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             BuildBase64Config(ref command);
             command.Execute();
             Refresh();
+            // if the mobile service is not properly created we don't want to leave this lingering so delete it and all resources 
+            // associated with it 
+            if (MobileServiceState == State.UnHealthy)
+            {
+                Delete();
+            }
         }
 
         /// <summary>
