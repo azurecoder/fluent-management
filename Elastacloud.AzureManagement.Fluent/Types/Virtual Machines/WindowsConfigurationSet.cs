@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
@@ -30,7 +31,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 
         /// <summary>
         /// Whether the password should be reset on the first login - the default for this is false
+        /// !!! This is now deprecated 
         /// </summary>
+        [Obsolete("This has now been removed from the VM definition")]
         public bool ResetPasswordOnFirstLogon { get; set; }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                                        new XElement(Namespaces.NsWindowsAzure + "ConfigurationSetType", ConfigurationSetType.ToString()),
                                        new XElement(Namespaces.NsWindowsAzure + "ComputerName", namer.GetPureRandomValue().ToUpper()),
                                        new XElement(Namespaces.NsWindowsAzure + "AdminPassword", AdminPassword),
-                                       new XElement(Namespaces.NsWindowsAzure + "ResetPasswordOnFirstLogon", ResetPasswordOnFirstLogon.ToString(CultureInfo.InvariantCulture).ToLower()),
+                                       /*new XElement(Namespaces.NsWindowsAzure + "ResetPasswordOnFirstLogon", ResetPasswordOnFirstLogon.ToString(CultureInfo.InvariantCulture).ToLower()),*/
                                        new XElement(Namespaces.NsWindowsAzure + "EnableAutomaticUpdates", EnableAutomaticUpdate.ToString(CultureInfo.InvariantCulture).ToLower()),
                                        new XElement(Namespaces.NsWindowsAzure + "TimeZone", TimeZone));
             //if (ComputerName != null)
