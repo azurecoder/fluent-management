@@ -75,6 +75,8 @@
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
     <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\Interfaces\IServiceBusClient.cs" />
+    <Compile Include="Clients\ServiceBusClient.cs" />
     <Compile Include="Clients\SqlDatabaseClient.cs" />
     <Compile Include="Clients\GithubClient.cs" />
     <Compile Include="Clients\Helpers\IWebsiteRequestHelper.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="Commands\Parsers\WebsiteConfigParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
+    <Compile Include="Commands\Service Bus\CreateServiceBusNamspaceCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
@@ -210,6 +213,7 @@
     <Compile Include="Fluent API\Services\IDefinitionActivity.cs" />
     <Compile Include="Fluent API\Services\IQueryCloudService.cs" />
     <Compile Include="Fluent API\Virtual Machines\Classes\WindowsVirtualMachineProperties.cs" />
+    <Compile Include="Helpers\ServiceBusNameValidator.cs" />
     <Compile Include="Helpers\VmConstants.cs" />
     <Compile Include="Helpers\LocationConstants.cs" />
     <Compile Include="Helpers\OPC\PackageFile.cs" />

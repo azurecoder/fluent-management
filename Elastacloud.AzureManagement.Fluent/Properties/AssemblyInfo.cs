@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Elastacloud.AzureManagement.Fluent")]
 [assembly:
     AssemblyDescription(
-        "Library used for management of Windows Azure services, storage, WASD, WAMS and VM's")]
+        "Library used for management of Windows Azure services, SQL, storage, WASD, WAMS and VM's")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Elastacloud Limited")]
 [assembly: AssemblyProduct("Elastacloud.AzureManagement.Fluent")]
@@ -49,5 +49,5 @@ using System.Runtime.InteropServices;
 
 // Make internal interfaces visible to Moq and the testing library
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2"), InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
-[assembly: AssemblyVersion("0.4.8.5")]
-[assembly: AssemblyFileVersion("0.4.8.5")]
+[assembly: AssemblyVersion("0.4.8.6")]
+[assembly: AssemblyFileVersion("0.4.8.6")]
