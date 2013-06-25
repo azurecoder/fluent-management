@@ -10,9 +10,6 @@ namespace Elastacloud.AzureManagement.Fluent.Console
     {
         static void Main(string[] args)
         {
-            var settings = new PublishSettingsExtractor(@"C:\Projects\hpcmoodys.publishsettings");
-            settings.AddPublishSettingsToPersonalMachineStore();
-
             var executor = ParseTokens(args);
 
             executor.Execute();

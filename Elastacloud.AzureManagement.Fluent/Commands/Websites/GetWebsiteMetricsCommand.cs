@@ -39,7 +39,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             string startTimeText = startTime.ToString(@"yyyy-MM-ddTHH:mm");
             string endTimeText = endTime.ToString(@"yyyy-MM-ddTHH:mm");
            
-            HttpCommand = String.Format("{0}/sites/{1}?StartTime={2}&EndTime={3}", Website.Webspace, Website.Name, startTimeText, endTimeText);
+            HttpCommand = String.Format("{0}/sites/{1}/metrics?StartTime={2}&EndTime={3}", Website.Webspace, Website.Name, startTimeText, endTimeText);
         }
         /// <summary>
         /// The website details including all of the information that comes back on the webspace

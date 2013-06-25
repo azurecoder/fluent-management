@@ -85,14 +85,20 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 {
                     site.EndTime = DateTime.Parse(data.Element(GetSchema() + "EndTime").Value);
                 }
+                // the end time of the samples collection
+                if (data.Element(GetSchema() + "Unit") != null)
+                {
+                    site.Units = data.Element(GetSchema() + "Unit").Value;
+                }
                 // the units of the samples collection
-                var total = data.Element("Values").Elements("MetricSample");
+                var total = data.Element(GetSchema() + "Values").Elements(GetSchema() + "MetricSample");
 
                 if (total.FirstOrDefault() != null)
                 {
                     // for the time being just take the first node as there isn't any need to enumerate the collection as this should contain one node
-                    site.Total = int.Parse(total.FirstOrDefault().Element("Total").Value);
+                    site.Total = int.Parse(total.FirstOrDefault().Element(GetSchema() + "Total").Value);
                 }
+                WebsiteMetrics.Add(site);
             }
            
             CommandResponse = WebsiteMetrics;
