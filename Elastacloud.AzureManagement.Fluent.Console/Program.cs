@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Console.Properties;
 using System.Linq;
-using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
-using Elastacloud.AzureManagement.Fluent.Types;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
-using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 // e.g. vm create subscription_id publish_settings_file cloud_service_name role_name password
 namespace Elastacloud.AzureManagement.Fluent.Console
@@ -16,6 +10,9 @@ namespace Elastacloud.AzureManagement.Fluent.Console
     {
         static void Main(string[] args)
         {
+            var settings = new PublishSettingsExtractor(@"C:\Projects\hpcmoodys.publishsettings");
+            settings.AddPublishSettingsToPersonalMachineStore();
+
             var executor = ParseTokens(args);
 
             executor.Execute();

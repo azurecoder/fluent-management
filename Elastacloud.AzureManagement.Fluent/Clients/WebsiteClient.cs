@@ -281,6 +281,24 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         }
 
         /// <summary>
+        /// Gets the website metrics in the requested interval backwards from datetime.now
+        /// </summary>
+        public List<WebsiteMetric> GetWebsiteMetricsPerInterval(TimeSpan span)
+        {
+            // use the timespan here with the query to get back the metric values for the interval
+            var start = DateTime.UtcNow - span;
+            var end = DateTime.UtcNow;
+
+            var command = new GetWebsiteMetricsCommand(WebsiteProperties, start, end)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            command.Execute();
+            return command.WebsiteMetrics;
+        }
+
+        /// <summary>
         /// Gets the website properties
         /// </summary>
         public Website WebsiteProperties { get; set; }

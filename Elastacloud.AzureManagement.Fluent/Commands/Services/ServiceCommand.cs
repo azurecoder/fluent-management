@@ -199,6 +199,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// Used to get and set the accept headers
         /// </summary>
         internal string Accept { get; set; }
+        /// <summary>
+        /// This means that the management access will need access to port 8443
+        /// </summary>
+        internal bool IsManagement { get; set; }
 
         #endregion
 
@@ -245,7 +249,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             _exception = null;
             var serviceManagementRequest = new ServiceManagementRequest
                                                {
-                                                   BaseUri = BaseRequestUri,
+                                                   BaseUri = BaseRequestUri + (IsManagement ? ":8443" : ""),
                                                    HttpVerb = HttpVerb,
                                                    OptionalData = HttpCommand,
                                                    ServiceType = ServiceType,

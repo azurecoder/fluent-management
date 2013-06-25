@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Websites;
@@ -60,5 +61,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Updates the config with the current compute config
         /// </summary>
         void Update();
+        /// <summary>
+        /// Gets the website metrics in the requested interval backwards from datetime.now
+        /// </summary>
+        List<WebsiteMetric> GetWebsiteMetricsPerInterval(TimeSpan span);
     }
 }
