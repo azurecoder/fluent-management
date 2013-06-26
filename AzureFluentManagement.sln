@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{610607
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.WasabiWeb", "Elastacloud.AzureManagement.Fluent.WasabiWeb\Elastacloud.AzureManagement.Fluent.WasabiWeb.csproj", "{49C338E5-96B8-4923-9804-83AF630655EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{99A2E617-E69B-4482-802D-BE90F64F5B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99A2E617-E69B-4482-802D-BE90F64F5B14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99A2E617-E69B-4482-802D-BE90F64F5B14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49C338E5-96B8-4923-9804-83AF630655EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49C338E5-96B8-4923-9804-83AF630655EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49C338E5-96B8-4923-9804-83AF630655EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49C338E5-96B8-4923-9804-83AF630655EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
