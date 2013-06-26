@@ -57,7 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb.Test
                 EndTime = DateTime.UtcNow,
                 Name = "bill 1",
                 StartTime = DateTime.UtcNow.Subtract(TimeSpan.FromMinutes(5)),
-                Total = 9,
+                Total = 11,
                 Units = "elastaclouds"
             };
             metrics.Add(metric);
@@ -224,19 +224,74 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb.Test
             response.Should().Be(WasabiWebState.LeaveUnchanged);
         }
 
-        [Test, Ignore]
-        public void WasabiRulesEngine_CreateManyWithAnd_ScaleUp3()
+        [Test]
+        public void WasabiRulesEngine_CreateManyWithOr_ScaleUp3()
         {
-            // arrange - tom is 5 and bob is 9 bill is 
-            var rule1 = new WasabiWebRule("tom", 14, 6);
-            var rule2 = new WasabiWebRule("bob", 8, 6);
-            var rule3 = new WasabiWebRule("bill", 8, 6);
+            // arrange - tom is 5 and bob is 9 bill is 11
+            var rule1 = new WasabiWebRule("tom", 14, 6); // scale down
+            var rule2 = new WasabiWebRule("bob", 8, 6); // scale up
+            var rule3 = new WasabiWebRule("bill", 10, 6); // scale up
             var engine = new WasabiWebRulesEngine("mysite", 3);
             engine.AddRule(rule1);
             engine.AddRule(rule2);
+            engine.AddRule(rule3);
 
             // act
             var response = engine.Scale(WasabiWebLogicalOperation.Or, AddThirdMetric());
+            // assert
+            response.Should().Be(WasabiWebState.ScaleUp);
+        }
+
+        [Test]
+        public void WasabiRulesEngine_CreateManyWithOr_ScaleDown3()
+        {
+            // arrange - tom is 5 and bob is 9 bill is 11
+            var rule1 = new WasabiWebRule("tom", 14, 6); // scale down
+            var rule2 = new WasabiWebRule("bob", 8, 6); // scale up
+            var rule3 = new WasabiWebRule("bill", 17, 12); // scale down
+            var engine = new WasabiWebRulesEngine("mysite", 3);
+            engine.AddRule(rule1);
+            engine.AddRule(rule2);
+            engine.AddRule(rule3);
+
+            // act
+            var response = engine.Scale(WasabiWebLogicalOperation.Or, AddThirdMetric());
+            // assert
+            response.Should().Be(WasabiWebState.ScaleDown);
+        }
+
+        [Test]
+        public void WasabiRulesEngine_CreateManyWithAnd_ScaleUp3()
+        {
+            // arrange - tom is 5 and bob is 9 bill is 11
+            var rule1 = new WasabiWebRule("tom", 14, 6); // scale down
+            var rule2 = new WasabiWebRule("bob", 8, 6); // scale up
+            var rule3 = new WasabiWebRule("bill", 10, 6); // scale up
+            var engine = new WasabiWebRulesEngine("mysite", 3);
+            engine.AddRule(rule1);
+            engine.AddRule(rule2);
+            engine.AddRule(rule3);
+
+            // act
+            var response = engine.Scale(WasabiWebLogicalOperation.And, AddThirdMetric());
+            // assert
+            response.Should().Be(WasabiWebState.LeaveUnchanged);
+        }
+
+        [Test]
+        public void WasabiRulesEngine_CreateManyWithAnd_ScaleDown3()
+        {
+            // arrange - tom is 5 and bob is 9 bill is 11
+            var rule1 = new WasabiWebRule("tom", 14, 6); // scale down
+            var rule2 = new WasabiWebRule("bob", 8, 6); // scale up
+            var rule3 = new WasabiWebRule("bill", 17, 12); // scale down
+            var engine = new WasabiWebRulesEngine("mysite", 3);
+            engine.AddRule(rule1);
+            engine.AddRule(rule2);
+            engine.AddRule(rule3);
+
+            // act
+            var response = engine.Scale(WasabiWebLogicalOperation.And, AddThirdMetric());
             // assert
             response.Should().Be(WasabiWebState.LeaveUnchanged);
         }
