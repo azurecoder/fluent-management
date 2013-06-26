@@ -25,6 +25,10 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// <param name="rule"></param>
         public void AddRule(IWasabiWebRule rule)
         {
+            bool exists = _rules.Exists(a => a.MetricName == rule.MetricName);
+            if(exists)
+                throw new WasabiWebException("duplicate detected - rule already exists for that particular metric");
+
             _rules.Add(rule);
         }
 
@@ -40,15 +44,15 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
             foreach (var rule in _rules)
             {
                 // find the metric 
-                var metric = metrics.Find(a => a.Name == rule.MetricName);
+                var metric = metrics.Find(a => a.DisplayName == rule.MetricName);
                 // for the time being if it doesn't exist just continue 
                 if(metric == null)
                     continue;
                 // if the value is greater than the total then scaleup count
-                if (metric.Total < rule.Value)
+                if (metric.Total > rule.IsGreaterThan)
                     countScaleUp++;
                 // if the value is less than the total then scale down count
-                if (metric.Total > rule.Value)
+                if (metric.Total < rule.IsLessThan)
                     countScaleDown++;
             }
             // check to seee whether they should scale up or down

@@ -50,11 +50,6 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
             return WasabiWebState.LeaveUnchanged;
         }
 
-        /// <summary>
-        /// Sets the value to test against
-        /// </summary>
-        public int Value { get; set; }
-
         #endregion
     }
 }

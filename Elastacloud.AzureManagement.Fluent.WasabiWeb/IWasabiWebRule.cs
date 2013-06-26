@@ -21,9 +21,5 @@
         /// Tests the state of the website
         /// </summary>
         WasabiWebState Test(int value);
-        /// <summary>
-        /// Sets the value to test against
-        /// </summary>
-        int Value { get; set; }
     }
 }
