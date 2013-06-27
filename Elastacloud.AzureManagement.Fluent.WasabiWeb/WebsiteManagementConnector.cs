@@ -24,50 +24,65 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// <summary>
         /// The X509v2 management certificate
         /// </summary>
-        private X509Certificate2 _managementCertificate;
+        public X509Certificate2 ManagementCertificate { get; set; }
+        /// <summary>
+        /// The type of logical operation to perform on the rules
+        /// </summary>
+        public WasabiWebLogicalOperation Operation { get; set; }
         /// <summary>
         /// Used to construct a connector to Fluent Management
         /// </summary>
-        public WebsiteManagementConnector(IWasabiWebRulesEngine engine)
+        public WebsiteManagementConnector(IWasabiWebRulesEngine engine, string subscriptionId, WasabiWebLogicalOperation logicalOperation = WasabiWebLogicalOperation.And, 
+            string publishSettingsFile = null)
         {
             _engine = engine;
+            SubscriptionId = subscriptionId;
+            PublishSettingsFile = publishSettingsFile;
+            Operation = logicalOperation;
             // build the timer here using the samples period
             var timer = new Timer(engine.SamplesPeriodInMins*60*1000)
                 {
                     AutoReset = true,
                     Enabled = true,
                 };
-            timer.Elapsed += (sender, args) => _stateHistory.Add(DateTime.Now, Update());
+            timer.Elapsed += (sender, args) => _stateHistory.Add(DateTime.Now, MonitorAndScale());
         }
 
         #region Implementation of IWebsiteManagementConnector
 
         /// <summary>
+        /// The Scale change event which is raised when the service completes
+        /// </summary>
+        public event ScaleStateChange ScaleUpdate;
+
+        /// <summary>
         /// Updates the website based on the scale option 
         /// </summary>
-        public WasabiWebState Update()
+        public WasabiWebState MonitorAndScale()
         {
             // get the management certificate first of all
-            if (_managementCertificate == null)
+            if (ManagementCertificate == null)
             {
                 if(String.IsNullOrEmpty(PublishSettingsFile) && String.IsNullOrEmpty(SubscriptionId))
                     throw new ApplicationException("Unable to find publishsettings files or subscription id is empty");
 
                 var settings = new PublishSettingsExtractor(PublishSettingsFile);
-                _managementCertificate = settings.AddPublishSettingsToPersonalMachineStore();
+                ManagementCertificate = settings.AddPublishSettingsToPersonalMachineStore();
             }
 
             // use the certificate to run the client and command 
-            var client = new WebsiteClient(SubscriptionId, _managementCertificate, _engine.WebsiteName);
+            var client = new WebsiteClient(SubscriptionId, ManagementCertificate, _engine.WebsiteName);
             // get the metrics for the timer time period
             var metrics = client.GetWebsiteMetricsPerInterval(TimeSpan.FromMinutes(_engine.SamplesPeriodInMins));
-            var scalePotential = _engine.Scale(WasabiWebLogicalOperation.And, metrics);
+            var scalePotential = _engine.Scale(Operation, metrics);
             // with the scale potential we'll need to increase or decrease the instance count
             if (scalePotential == WasabiWebState.ScaleDown && client.InstanceCount > 1)
                 client.InstanceCount -= 1;
             if (scalePotential == WasabiWebState.ScaleUp && client.InstanceCount < 10)
                 client.InstanceCount += 1;
             client.Update();
+            // raise the event now
+            ScaleUpdate(scalePotential, client.InstanceCount);
 
             return scalePotential;
         }

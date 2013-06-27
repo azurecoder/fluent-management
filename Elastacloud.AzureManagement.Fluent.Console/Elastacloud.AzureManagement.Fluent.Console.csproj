@@ -69,6 +69,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent.WasabiWeb\Elastacloud.AzureManagement.Fluent.WasabiWeb.csproj">
+      <Project>{49c338e5-96b8-4923-9804-83af630655eb}</Project>
+      <Name>Elastacloud.AzureManagement.Fluent.WasabiWeb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent\Elastacloud.AzureManagement.Fluent.csproj">
       <Project>{6119d185-70b4-4137-97ed-876a30e0850b}</Project>
       <Name>Elastacloud.AzureManagement.Fluent</Name>
