@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
 namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
 {
@@ -8,10 +9,18 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
     /// </summary>
     public delegate void ScaleStateChange(WasabiWebState state, int newScaleCount);
     /// <summary>
+    /// Generates an alert if a metric has breached one of the rules
+    /// </summary>
+    public delegate void MetricAlert(WebsiteMetric metric, IWasabiWebRule rule);
+    /// <summary>
     /// Used to connect to the service management API through fluent management
     /// </summary>
     public interface IWebsiteManagementConnector
     {
+        /// <summary>
+        /// Subscribes to the alerts if a metric threshold has been breached
+        /// </summary>
+        event MetricAlert SubscribeAlerts;
         /// <summary>
         /// Fires when the timer fires with a scale state change
         /// </summary>
@@ -20,6 +29,10 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// Updates the website based on the scale option 
         /// </summary>
         WasabiWebState MonitorAndScale();
+        /// <summary>
+        /// Raises the alert event if any of the metrics have been breached in the time period
+        /// </summary>
+        void MonitorAndAlert();
         /// <summary>
         /// The subscription id for the user's account
         /// </summary>

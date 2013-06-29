@@ -14,7 +14,7 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// <summary>
         /// Used to construct a WasabiWebRule
         /// </summary>
-        public WasabiWebRule(string metricName, int isGreaterThan, int isLessThan)
+        public WasabiWebRule(string metricName, int isGreaterThan, int isLessThan = 0 /* set a default value of zero if we alerts and don't specify */)
         {
             MetricName = metricName;
             IsGreaterThan = isGreaterThan;

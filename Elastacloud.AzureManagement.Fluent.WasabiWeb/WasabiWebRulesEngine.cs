@@ -79,6 +79,16 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         }
 
         /// <summary>
+        /// An indexer used to get any of the values of the website metrics rules
+        /// </summary>
+        /// <param name="metricName">The name of the metric</param>
+        /// <returns>A metric instance</returns>
+        public IWasabiWebRule this[string metricName]
+        {
+            get { return _rules.Find(a => a.MetricName == metricName);}
+        }
+
+        /// <summary>
         /// Gets or sets the samples period in minutes 
         /// </summary>
         public int SamplesPeriodInMins { get; set; }

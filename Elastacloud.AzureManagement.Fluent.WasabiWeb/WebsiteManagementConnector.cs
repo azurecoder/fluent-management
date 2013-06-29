@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Timers;
 using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
@@ -13,6 +14,10 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
     /// </summary>
     public class WebsiteManagementConnector : IWebsiteManagementConnector
     {
+        /// <summary>
+        /// An empty timer used to callback when the sample period is reached
+        /// </summary>
+        private readonly Timer _timer = null;
         /// <summary>
         /// The state history stored for each of the scaling activities
         /// </summary>
@@ -40,15 +45,19 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
             PublishSettingsFile = publishSettingsFile;
             Operation = logicalOperation;
             // build the timer here using the samples period
-            var timer = new Timer(engine.SamplesPeriodInMins*60*1000)
+            _timer = new Timer(engine.SamplesPeriodInMins*60*1000)
                 {
                     AutoReset = true,
                     Enabled = true,
                 };
-            timer.Elapsed += (sender, args) => _stateHistory.Add(DateTime.Now, MonitorAndScale());
         }
 
         #region Implementation of IWebsiteManagementConnector
+
+        /// <summary>
+        /// Used when alerts are subscribed to
+        /// </summary>
+        public event MetricAlert SubscribeAlerts;
 
         /// <summary>
         /// The Scale change event which is raised when the service completes
@@ -60,20 +69,17 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// </summary>
         public WasabiWebState MonitorAndScale()
         {
-            // get the management certificate first of all
-            if (ManagementCertificate == null)
-            {
-                if(String.IsNullOrEmpty(PublishSettingsFile) && String.IsNullOrEmpty(SubscriptionId))
-                    throw new ApplicationException("Unable to find publishsettings files or subscription id is empty");
+            _timer.Elapsed += (sender, args) => _stateHistory.Add(DateTime.Now, MonitorAndScale());
 
-                var settings = new PublishSettingsExtractor(PublishSettingsFile);
-                ManagementCertificate = settings.AddPublishSettingsToPersonalMachineStore();
-            }
+            EnsureManagementCertificate();
 
             // use the certificate to run the client and command 
             var client = new WebsiteClient(SubscriptionId, ManagementCertificate, _engine.WebsiteName);
             // get the metrics for the timer time period
             var metrics = client.GetWebsiteMetricsPerInterval(TimeSpan.FromMinutes(_engine.SamplesPeriodInMins));
+            if(metrics.Count == 0)
+                return WasabiWebState.LeaveUnchanged;
+
             var scalePotential = _engine.Scale(Operation, metrics);
             // with the scale potential we'll need to increase or decrease the instance count
             if (scalePotential == WasabiWebState.ScaleDown && client.InstanceCount > 1)
@@ -82,9 +88,48 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
                 client.InstanceCount += 1;
             client.Update();
             // raise the event now
-            ScaleUpdate(scalePotential, client.InstanceCount);
+            if(ScaleUpdate != null)
+                ScaleUpdate(scalePotential, client.InstanceCount);
 
             return scalePotential;
+        }
+        // check to see whether there is a management certificate and use it in the service management call
+        private void EnsureManagementCertificate()
+        {
+            // get the management certificate first of all
+            if (ManagementCertificate == null)
+            {
+                if (String.IsNullOrEmpty(PublishSettingsFile) && String.IsNullOrEmpty(SubscriptionId))
+                    throw new ApplicationException("Unable to find publishsettings files or subscription id is empty");
+
+                var settings = new PublishSettingsExtractor(PublishSettingsFile);
+                ManagementCertificate = settings.AddPublishSettingsToPersonalMachineStore();
+            }
+        }
+
+        /// <summary>
+        /// Raises the alert event if any of the metrics have been breached in the time period
+        /// </summary>
+        public void MonitorAndAlert()
+        {
+            EnsureManagementCertificate();
+
+            // use the certificate to run the client and command 
+            var client = new WebsiteClient(SubscriptionId, ManagementCertificate, _engine.WebsiteName);
+            // get the metrics for the timer time period
+            var metrics = client.GetWebsiteMetricsPerInterval(TimeSpan.FromMinutes(_engine.SamplesPeriodInMins));
+            // enumerate the metrics piece by piece
+            foreach (var metric in metrics)
+            {
+                // check for the metric to ensure it's in the collection otherwise discard it
+                if (_engine[metric.Name] == null)
+                    continue;
+                var rule = _engine[metric.Name];
+                if ((metric.Total > rule.IsGreaterThan || metric.Total < rule.IsLessThan) && SubscribeAlerts != null)
+                {
+                    SubscribeAlerts(metric, rule);
+                }
+            }
         }
 
         /// <summary>

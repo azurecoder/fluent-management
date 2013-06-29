@@ -49,8 +49,19 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                 {
                     ManagementCertificate = _certificate
                 };
+            connector.ScaleUpdate += (state, count) => System.Console.WriteLine("State: {0}, Scale: {1}", state, count);
             connector.MonitorAndScale();
 
+            var engineAlert = new WasabiWebRulesEngine("ukwaug", 5);
+            engineAlert.AddRule(new WasabiWebRule(MetricsConstants.Http5xx, 20));
+            var connector2 = new WebsiteManagementConnector(engine, _subscriptionId, WasabiWebLogicalOperation.Or)
+            {
+                ManagementCertificate = _certificate
+            };
+            connector2.SubscribeAlerts +=
+                (metric, rule) =>
+                System.Console.WriteLine("Name: {0}, value: {1} {2}", metric.Name, metric.Total, metric.Units);
+            connector2.MonitorAndAlert();
         }
 
         public void ParseTokens(string[] args)

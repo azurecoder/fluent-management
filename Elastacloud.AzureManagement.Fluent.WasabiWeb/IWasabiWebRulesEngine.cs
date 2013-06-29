@@ -23,5 +23,11 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
         /// The name of the website in WAWS
         /// </summary>
         string WebsiteName { get; set; }
+        /// <summary>
+        /// Indexer used to get the metric from a collection of metrics
+        /// </summary>
+        /// <param name="metricName">The name of the metric</param>
+        /// <returns>An IWasabiWebRule interface containing details on the rule</returns>
+        IWasabiWebRule this[string metricName] { get; }
     }
 }
