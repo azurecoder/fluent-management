@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>site read 1c26b36c-88f9-4789-b197-5be9728803de "C:\Projects\June2013.publishsettings" richtest5 richtest5 richtest5 Microsoft123</StartArguments>
+    <StartArguments>vm linux e9d3203a-6548-49f6-b293-a352aadf077a "C:\Projects\Asos\Asos.publishsettings" asos101 asos101 richtest5 Microsoft123</StartArguments>
   </PropertyGroup>
 </Project>

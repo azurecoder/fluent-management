@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
@@ -45,30 +46,48 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <returns>A valid deployment for the command</returns>
         public static Deployment GetAdHocWindowsTemplateDeployment(WindowsVirtualMachineProperties properties)
         {
-            return AddPersistentVMRole(properties, PersistentVMRole.AddAdhocWindowsRoleTemplate(properties));
+            return AddPersistentVMRole(properties, new [] {PersistentVMRole.AddAdhocWindowsRoleTemplate(properties)});
+        }
+
+        /// <summary>
+        /// Gets an ad-hoc deployment for a Windows templated VM instance
+        /// </summary>
+        /// <param name="properties">The VM properties touse for the deployment</param>
+        /// <returns>A valid deployment for the command</returns>
+        public static Deployment GetAdHocLinuxTemplateDeployment(List<LinuxVirtualMachineProperties> properties)
+        {
+            return AddPersistentVMRole(properties[0], PersistentVMRole.AddAdhocLinuxRoleTemplates(properties) );
         }
 
         /// <summary>
         /// Used to create a deployment and add any persistent vm role to the deployment
         /// </summary>
         /// <param name="properties"></param>
-        /// <param name="role">The PersistentVMRole</param>
+        /// <param name="roles">The PersistentVMRole</param>
         /// <returns>The Deployment that is being used</returns>
-        private static Deployment AddPersistentVMRole(WindowsVirtualMachineProperties properties, PersistentVMRole role)
+        private static Deployment AddPersistentVMRole(VirtualMachineProperties properties, IEnumerable<PersistentVMRole> roles)
         {
             var namer = new RandomAccountName();
             var deployment = new Deployment
                                  {
+                                     // use the first deployment property if it's not the same then fluent doesn't supporting deployment splitting at this level!
                                      Name = properties.DeploymentName,
 //                                     Label = Convert.ToBase64String(Encoding.UTF8.GetBytes(cloudServiceName))
                                      Label = properties.DeploymentName
                                  };
-            role.RoleName = role.RoleName ?? namer.GetPureRandomValue();
             var roleList = new RoleList();
-            roleList.Roles.Add(role);
+
+            foreach (var role in roles)
+            {
+                role.RoleName = role.RoleName ?? namer.GetPureRandomValue();
+                roleList.Roles.Add(role);
+            }
+
             deployment.RoleList = roleList;
             return deployment;
         }
+
+      
 
         #region Implementation of ICustomXmlSerializer
 

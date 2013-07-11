@@ -18,11 +18,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
     /// </summary>
     public interface IVirtualMachineClient
     {
-        /// <summary>
-        /// Creates a new virtual machine from a gallery template
-        /// </summary>
-        /// <param name="properties">Can be any gallery template</param>
-        IVirtualMachineClient CreateNewVirtualMachineFromTemplateGallery(WindowsVirtualMachineProperties properties);
+       
 
         /// <summary>
         /// Deletes the virtual machine that has context with the client
@@ -44,10 +40,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Stops the virtual machine instance
         /// </summary>
         void Stop();
-        /// <summary>
-        /// Gets thye configuration for the virtual machine
-        /// </summary>
-        PersistentVMRole VirtualMachine { get; }
+       
         /// <summary>
         /// Gets the container that the storage blob resides in 
         /// </summary>
@@ -56,9 +49,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// The name of the blob which is stored for the vm
         /// </summary>
         string StorageFileName { get; }
-        /// <summary>
-        /// Returns the properties of the associated virtual machine
-        /// </summary>
-        WindowsVirtualMachineProperties Properties { get; set; }
+
     }
 }

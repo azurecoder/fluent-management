@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
@@ -20,42 +21,41 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
     /// <summary>
     /// Creates a deployment for a virtual machine and allows some preconfigured defaults from the image gallery 
     /// </summary>
-    internal class StartVirtualMachineCommand : ServiceCommand
+    internal class CreateLinuxVirtualMachineDeploymentCommand : ServiceCommand
     {
         // https://management.core.windows.net/<subscription-id>/services/hostedservices/<service-name>/deployments/
         /// <summary>
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
-        internal StartVirtualMachineCommand(VirtualMachineProperties properties)
+        // https://management.core.windows.net/<subscription-id>/services/hostedservices/<cloudservice-name>/deployments
+        internal CreateLinuxVirtualMachineDeploymentCommand(List<LinuxVirtualMachineProperties> properties, string cloudServiceName)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
             ServiceType = "services";
-            HttpCommand = string.Format("{0}/deployments/{1}/roleinstances/{2}/Operations", properties.CloudServiceName, properties.DeploymentName, properties.RoleName);
+            HttpCommand = (CloudServiceName = cloudServiceName) + "/deployments";
             Properties = properties;
         }
 
         /// <summary>
+        /// The name of the cloud service to which the virtual machine will be created 
+        /// </summary>
+        public string CloudServiceName { get; set; }
+
+        /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
-        public VirtualMachineProperties Properties { get; set; }
+        public List<LinuxVirtualMachineProperties> Properties { get; set; }
 
         /// <summary>
         /// Creates a deployment payload for a predefined template 
         /// </summary>
         /// <returns>A string xml representation</returns>
-        /// POST https://management.core.windows.net/<subscription-id>/services/hostedservices/<service-name>/deployments/<deployment-name>/roleinstances/<role-name>/Operations
         protected override string CreatePayload()
         {
-            /*<StartRoleOperation xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-                <OperationType>StartRoleOperation</OperationType>
-              </StartRoleOperation>*/
-            XNamespace ns = "http://schemas.microsoft.com/windowsazure";
-            var doc = new XDocument(
-                new XDeclaration("1.0", "utf-8", ""),
-                new XElement(ns + "StartRoleOperation",
-                             new XElement(ns + "OperationType", "StartRoleOperation")));
-            return doc.ToStringFullXmlDeclaration();
+            var deployment = Deployment.GetAdHocLinuxTemplateDeployment(Properties);
+            var document = new XDocument(deployment.GetXmlTree());
+            return document.ToStringFullXmlDeclarationWithReplace();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         public override string ToString()
         {
-            return "StartVirtualMachineCommand";
+            return "CreateLinuxVirtualMachineDeploymentCommand";
         }
     }
 }

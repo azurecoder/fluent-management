@@ -6,29 +6,25 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
-using System.Xml.Linq;
-
-namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
+namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 {
-    /// <summary>
-    /// The base class configuration set for the 3 types Linux, Windows and Network
-    /// </summary>
-    public abstract class ConfigurationSet : ICustomXmlSerializer
+    public interface IWindowsVirtualMachineClient : IVirtualMachineClient
     {
         /// <summary>
-        /// Used to set the type of configuration set used with this vm instance
+        /// Returns the properties of the associated virtual machine
         /// </summary>
-        public abstract ConfigurationSetType ConfigurationSetType { get; }
-
-        #region Implementation of ICustomXmlSerializer
-
+        WindowsVirtualMachineProperties Properties { get; set; }
         /// <summary>
-        /// Gets the Xml tree for the custom serialiser
+        /// Gets thye configuration for the virtual machine
         /// </summary>
-        /// <returns>An XElement </returns>
-        public abstract XElement GetXmlTree();
-
-        #endregion
+        PersistentVMRole VirtualMachine { get; }
+        /// <summary>
+        /// Creates a new virtual machine from a gallery template
+        /// </summary>
+        /// <param name="properties">Can be any gallery template</param>
+        IVirtualMachineClient CreateNewVirtualMachineFromTemplateGallery(WindowsVirtualMachineProperties properties);
     }
 }

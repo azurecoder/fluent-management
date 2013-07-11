@@ -6,29 +6,20 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
-
-using System.Xml.Linq;
-
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
     /// <summary>
-    /// The base class configuration set for the 3 types Linux, Windows and Network
+    /// The type of keys used to deploy a linux vm
     /// </summary>
-    public abstract class ConfigurationSet : ICustomXmlSerializer
+    public enum KeyType
     {
         /// <summary>
-        /// Used to set the type of configuration set used with this vm instance
+        /// The public key used to deploy a linux vm 
         /// </summary>
-        public abstract ConfigurationSetType ConfigurationSetType { get; }
-
-        #region Implementation of ICustomXmlSerializer
-
+        PublicKey,
         /// <summary>
-        /// Gets the Xml tree for the custom serialiser
+        /// The key pair used to deploy the vm
         /// </summary>
-        /// <returns>An XElement </returns>
-        public abstract XElement GetXmlTree();
-
-        #endregion
+        KeyPair
     }
 }

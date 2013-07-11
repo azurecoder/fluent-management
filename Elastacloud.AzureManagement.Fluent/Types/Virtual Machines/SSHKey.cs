@@ -7,19 +7,34 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
     /// <summary>
-    /// The base class configuration set for the 3 types Linux, Windows and Network
+    /// Used to contain an SSH key whether public or key pair
     /// </summary>
-    public abstract class ConfigurationSet : ICustomXmlSerializer
+    public class SSHKey : ICustomXmlSerializer
     {
+        private readonly KeyType _keyType;
         /// <summary>
-        /// Used to set the type of configuration set used with this vm instance
+        /// creates an serialises an ssh key
         /// </summary>
-        public abstract ConfigurationSetType ConfigurationSetType { get; }
+        public SSHKey(KeyType keyType)
+        {
+            _keyType = keyType;
+        }
+        /// <summary>
+        /// The key fingerprint
+        /// </summary>
+        public string FingerPrint { get; set; }
+        /// <summary>
+        /// The path to the key
+        /// </summary>
+        public string Path { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 
@@ -27,7 +42,19 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// Gets the Xml tree for the custom serialiser
         /// </summary>
         /// <returns>An XElement </returns>
-        public abstract XElement GetXmlTree();
+        public XElement GetXmlTree()
+        {
+            if(String.IsNullOrEmpty(FingerPrint) || String.IsNullOrEmpty(Path))
+                throw new FluentManagementException("The fingerprint or path has to have a value", "SSHKey");
+
+            var element = new XElement(Namespaces.NsWindowsAzure + _keyType.ToString());
+            var fingerPrint = new XElement(Namespaces.NsWindowsAzure + FingerPrint);
+            var path = new XElement(Namespaces.NsWindowsAzure + Path);
+            element.Add(fingerPrint);
+            element.Add(path);
+
+            return element;
+        }
 
         #endregion
     }

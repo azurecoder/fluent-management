@@ -48,7 +48,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <summary>
         /// This can either be Windows or Linux but not both - in future create an intermediate abstraction for both
         /// </summary>
-        public WindowsConfigurationSet OperatingSystemConfigurationSet { get; set; }
+        public ConfigurationSet OperatingSystemConfigurationSet { get; set; }
 
         /// <summary>
         /// The NetworkConfigurationSet that each Role must own
@@ -94,33 +94,67 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 
         #endregion
 
+        /// <summary>
+        /// Adds the default template for a Windows Virtual Machine
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
         public static PersistentVMRole AddAdhocWindowsRoleTemplate(WindowsVirtualMachineProperties properties)
         {
-            // build the default endpoints 
-            var inputEndpoints = new InputEndpoints();
-            if(properties.PublicEndpoints == null)
-                properties.PublicEndpoints = new List<InputEndpoint>();
-
-            foreach (var endpoint in properties.PublicEndpoints)
-            {
-                inputEndpoints.AddEndpoint(endpoint);
-            }
-
-            if (properties.PublicEndpoints.All(endpoint => endpoint.Port != 3389))
-                inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
-
-            // add the endpoints collections to a network configuration set
-            var network = new NetworkConfigurationSet
-            {
-                InputEndpoints = inputEndpoints
-            };
             // build the windows configuration set
             var windows = new WindowsConfigurationSet
             {
                 AdminPassword = properties.AdministratorPassword ?? "ElastaPassword101",
                 ResetPasswordOnFirstLogon = true
             };
-            OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetWindowsOSImageFromTemplate(properties);
+            return GetAdHocTemplate(properties, windows);
+        }
+
+        /// <summary>
+        /// Adds the default template for a Windows Virtual Machine
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
+        public static List<PersistentVMRole> AddAdhocLinuxRoleTemplates(List<LinuxVirtualMachineProperties> properties)
+        {
+            return (from persistentVMRoleProperty in properties
+                           let linux = new LinuxConfigurationSet()
+                               {
+                                   HostName = persistentVMRoleProperty.HostName, 
+                                   DisableSshPasswordAuthentication = persistentVMRoleProperty.DisableSSHPasswordAuthentication, 
+                                   UserName = persistentVMRoleProperty.UserName, 
+                                   UserPassword = persistentVMRoleProperty.AdministratorPassword, 
+                                   KeyPairs = persistentVMRoleProperty.KeyPairs, 
+                                   PublicKeys = persistentVMRoleProperty.PublicKeys
+                               }
+                           select GetAdHocTemplate(persistentVMRoleProperty, linux)).ToList();
+        }
+
+        public static PersistentVMRole GetAdHocTemplate(VirtualMachineProperties properties, ConfigurationSet operatingSystemConfigurationSet)
+        {
+            // build the default endpoints 
+            var inputEndpoints = new InputEndpoints();
+            if (properties.PublicEndpoints == null)
+                properties.PublicEndpoints = new List<InputEndpoint>();
+            // add all of the endpoints 
+            foreach (var endpoint in properties.PublicEndpoints)
+            {
+                inputEndpoints.AddEndpoint(endpoint);
+            }
+
+            if (operatingSystemConfigurationSet.ConfigurationSetType == ConfigurationSetType.WindowsProvisioningConfiguration)
+            {
+                if (properties.PublicEndpoints.All(endpoint => endpoint.Port != 3389))
+                    inputEndpoints.AddEndpoint(InputEndpoint.GetDefaultRemoteDesktopSettings());
+            }
+            
+            // add the endpoints collections to a network configuration set
+            var network = new NetworkConfigurationSet
+            {
+                InputEndpoints = inputEndpoints
+            };
+
+            OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetOSImageFromTemplate(properties);
             var disks = new DataVirtualHardDisks();
             if (properties.DataDisks != null)
             {
@@ -138,7 +172,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             return new PersistentVMRole
             {
                 NetworkConfigurationSet = network,
-                OperatingSystemConfigurationSet = windows,
+                OperatingSystemConfigurationSet = operatingSystemConfigurationSet,
                 RoleSize = properties.VmSize,
                 RoleName = properties.RoleName,
                 HardDisks = disks,

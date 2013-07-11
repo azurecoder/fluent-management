@@ -14,26 +14,33 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
     /// </summary>
     public enum VirtualMachineTemplates
     {
-        /// <summary>
-        /// The SQL Server 2012 image
-        /// </summary>
-        SqlServer2012Enterprise,
-        SqlServer2012Web,
-        SqlServer2012Standard,
+        VisualStudioUltimate2013Preview,
+        BizTalkServer2013Enterprise,
+        BizTalkServer2013Evaluation,
+        BizTalkServer2013Standard,
+        OpenLogicCentOS63,
+        WindowsServer2008R2SP1May2013,
+        WindowsServer2008R2SP1June2013,
+        WindowsServer2012DatacenterMay2013,
+        WindowsServer2012DatacenterJune2013,
+        WindowsServer2012R2Preview,
+        UbuntuServer12042LTS,
+        UbuntuServer1210,
+        UbuntuServer1304,
+        SUSELinuxEnterpriseServer11ServicePack2,
 // ReSharper disable InconsistentNaming
-        WindowsServer2008R2SP1_30GB,
+        openSUSE123,
 // ReSharper restore InconsistentNaming
-// ReSharper disable InconsistentNaming
-        WindowsServer2008R2SP1_127GB,
-// ReSharper restore InconsistentNaming
-// ReSharper disable InconsistentNaming
-        WindowsServer2012_30GB,
-// ReSharper restore InconsistentNaming
-// ReSharper disable InconsistentNaming
-        WindowsServer2012_127GB,
-// ReSharper restore InconsistentNaming
-        BiztalkServer2013Standard,
-        BiztalkServer2013Enterprise
-
+        SharePointServer2013Trial,
+        SQLServer2008R2SP2EnterpriseOnWindowsServer2008R2SP1,
+        SQLServer2008R2SP2StandardOnWindowsServer2008R2SP1,
+        SQLServer2012SP1EnterpriseOnWindowsServer2008R2,
+        SQLServer2012SP1EnterpriseOnWindowsServer2008R2SP1,
+        SQLServer2012SP1EnterpriseOnWindowsServer2012,
+        SQLServer2012SP1StandardOnWindowsServer2008R2SP1,
+        SQLServer2012SP1StandardOnWindowsServer2012,
+        SQLServer2012SP1WebOnWindowsServer2008R2SP1,
+        SQLServer2014CTP1EvaluationEditionOnWindowsServer2012,
+        SQLServer2014CTP1EvaluationEditionOnWindowsServer2012R2
     }
 }

@@ -8,6 +8,8 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Helpers;
@@ -25,6 +27,14 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The name of the source image used to build the operating system 
         /// </summary>
         public string SourceImageName { get; set; }
+        /// <summary>
+        /// This contains the gallery of vm templates
+        /// </summary>
+        public static Dictionary<string, string> VmTemplates = new Dictionary<string, string>();
+        /// <summary>
+        /// used to generate random names for the os disks 
+        /// </summary>
+        private static readonly RandomAccountName Namer = new RandomAccountName();
 
         #region Implementation of ICustomXmlSerializer
 
@@ -57,6 +67,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <param name="diskName">The name of the C: drive </param>
         /// <param name="diskLabel">The drive volume label for C:</param>
         /// <returns>An OSVirtualHardDisk instance</returns>
+        [Obsolete]
         public static OSVirtualHardDisk GetSqlServerOSImage(string storageAccountName, string diskName = null, string diskLabel = null)
         {
             /*<OSVirtualHardDisk>
@@ -79,55 +90,32 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// </summary>
         /// <param name="properties">The path to the media space in blob storage where the host vhd will be placed</param>
         /// <returns>An OSVirtualHardDisk instance</returns>
-        public static OSVirtualHardDisk GetWindowsOSImageFromTemplate(WindowsVirtualMachineProperties properties)
+        public static OSVirtualHardDisk GetOSImageFromTemplate(VirtualMachineProperties properties)
         {
             /*<OSVirtualHardDisk>
                         <MediaLink>http://elastacacheweb.blob.core.windows.net/vhds/elastasql.vhd</MediaLink>
                         <SourceImageName>MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd</SourceImageName>
               </OSVirtualHardDisk>*/
             string templateDetails = null;
-            switch (properties.VirtualMachineType)
+
+            string vmType = properties.VirtualMachineType.ToString();
+            AddVmTemplatesToDictionary();
+            if (VmTemplates.ContainsKey(vmType))
             {
-                case VirtualMachineTemplates.BiztalkServer2013Enterprise:
-                    templateDetails = VmConstants.VmTemplateBizTalkServer2013Enterprise;
-                    break;
-                case VirtualMachineTemplates.BiztalkServer2013Standard:
-                    templateDetails = VmConstants.VmTemplateBizTalkServer2013Standard;
-                    break;
-                case VirtualMachineTemplates.SqlServer2012Enterprise:
-                    templateDetails = VmConstants.VmTemplateSqlServer2012Enterprise;
-                    break;
-                case VirtualMachineTemplates.SqlServer2012Standard:
-                    templateDetails = VmConstants.VmTemplateSqlServer2012Standard;
-                    break;
-                case VirtualMachineTemplates.SqlServer2012Web:
-                    templateDetails = VmConstants.VmTemplateSqlServer2012Web;
-                    break;
-                case VirtualMachineTemplates.WindowsServer2008R2SP1_127GB:
-                    templateDetails = VmConstants.VmTemplateWin2K8SP1_DataCentre_127GB;
-                    break;
-                case VirtualMachineTemplates.WindowsServer2008R2SP1_30GB:
-                    templateDetails = VmConstants.VmTemplateWin2K8SP1_DataCentre_30GB;
-                    break;
-                case VirtualMachineTemplates.WindowsServer2012_127GB:
-                    templateDetails = VmConstants.VmTemplateWin2012_DataCentre_127GB;
-                    break;
-                case VirtualMachineTemplates.WindowsServer2012_30GB:
-                    templateDetails = VmConstants.VmTemplateWin2012_DataCentre_30GB;
-                    break;
+                templateDetails = VmTemplates[vmType];
             }
+
             if(templateDetails == null && properties.CustomTemplateName == null)
-                throw new FluentManagementException("no template specified cannot proceed", "CreateWindowsVirtualMachineDeploymentCommand");
+                throw new FluentManagementException("no template specified cannot proceed", "GetOSImageFromTemplate");
 
             if (properties.CustomTemplateName != null)
                 templateDetails = properties.CustomTemplateName;
 
-            var namer = new RandomAccountName();
             return new OSVirtualHardDisk
             {
                 DiskLabel = "OsDisk",
                 DiskName = "OsDisk",
-                MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", properties.StorageAccountName, namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
+                MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", properties.StorageAccountName, Namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
 
                 SourceImageName = templateDetails,
                 HostCaching = HostCaching.ReadWrite,
@@ -135,5 +123,22 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         }
 
         #endregion
+
+        private static void AddVmTemplatesToDictionary()
+        {
+            // get the constants if they haven't been got already
+            if (VmTemplates.Count > 0)
+                return;
+            // if not then add them to the collection
+            var constants = new VmConstants();
+            FieldInfo[] thisObjectProperties = constants.GetType().GetFields();
+            foreach (FieldInfo info in thisObjectProperties)
+            {
+                if (info.IsLiteral && info.IsStatic)
+                {
+                    VmTemplates.Add(info.Name, (string)info.GetRawConstantValue());
+                }
+            }
+        }
     }
 }

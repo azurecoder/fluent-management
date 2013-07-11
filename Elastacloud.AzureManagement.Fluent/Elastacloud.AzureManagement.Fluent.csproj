@@ -75,6 +75,9 @@
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
     <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\Interfaces\ILinuxVirtualMachineClient.cs" />
+    <Compile Include="Clients\Interfaces\IWindowsVirtualMachineClient.cs" />
+    <Compile Include="Clients\LinuxVirtualMachineClient.cs" />
     <Compile Include="Clients\Interfaces\IServiceBusClient.cs" />
     <Compile Include="Clients\ServiceBusClient.cs" />
     <Compile Include="Clients\SqlDatabaseClient.cs" />
@@ -104,6 +107,7 @@
     <Compile Include="Commands\HDInsight\CreateHDInsightCluster.cs" />
     <Compile Include="Commands\MobileServices\DeleteMobileServiceCommand.cs" />
     <Compile Include="Commands\MobileServices\GetSharedInstanceCountCommand.cs" />
+    <Compile Include="Commands\Parsers\CheckCloudServiceNameAvailableParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteMetricsParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteServerFarmParser.cs" />
     <Compile Include="Commands\Parsers\WebspacePropertiesParser.cs" />
@@ -112,8 +116,11 @@
     <Compile Include="Commands\Parsers\WebsiteParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
     <Compile Include="Commands\Service Bus\CreateServiceBusNamspaceCommand.cs" />
+    <Compile Include="Commands\Services\CheckCloudServiceNameAvailableCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\AddLinuxVirtualMachineToDeploymentCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\CreateLinuxVirtualMachineDeploymentCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
     <Compile Include="Commands\ICommand.cs" />
@@ -214,6 +221,8 @@
     <Compile Include="Fluent API\Roles\RoleContextManager.cs" />
     <Compile Include="Fluent API\Services\IDefinitionActivity.cs" />
     <Compile Include="Fluent API\Services\IQueryCloudService.cs" />
+    <Compile Include="Fluent API\Virtual Machines\Classes\LinuxVirtualMachineProperties.cs" />
+    <Compile Include="Fluent API\Virtual Machines\Classes\VirtualMachineProperties.cs" />
     <Compile Include="Fluent API\Virtual Machines\Classes\WindowsVirtualMachineProperties.cs" />
     <Compile Include="Helpers\ServiceBusNameValidator.cs" />
     <Compile Include="Helpers\VmConstants.cs" />
@@ -222,6 +231,9 @@
     <Compile Include="Clients\Interfaces\IHDInsightClient.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\ComputeMode.cs" />
+    <Compile Include="Types\Virtual Machines\KeyType.cs" />
+    <Compile Include="Types\Virtual Machines\LinuxConfigurationSet.cs" />
+    <Compile Include="Types\Virtual Machines\SSHKey.cs" />
     <Compile Include="Types\Websites\MetricsConstants.cs" />
     <Compile Include="Types\Websites\WebsiteMetric.cs" />
     <Compile Include="Types\Websites\WebspaceDetails.cs" />

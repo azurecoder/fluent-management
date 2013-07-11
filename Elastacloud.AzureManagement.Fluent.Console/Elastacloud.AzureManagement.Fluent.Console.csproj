@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationFactory.cs" />
+    <Compile Include="VmCreateLinux.cs" />
     <Compile Include="WebsiteCreate.cs" />
     <Compile Include="WebsiteGet.cs" />
     <Compile Include="VmDelete.cs" />

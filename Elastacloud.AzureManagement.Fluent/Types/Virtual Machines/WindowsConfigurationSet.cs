@@ -53,7 +53,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// Gets the Xml tree for the custom serialiser
         /// </summary>
         /// <returns>An XElement </returns>
-        public XElement GetXmlTree()
+        public override XElement GetXmlTree()
         {
             var namer = new RandomAccountName();
             // if the timezone is set to null then set it GMT

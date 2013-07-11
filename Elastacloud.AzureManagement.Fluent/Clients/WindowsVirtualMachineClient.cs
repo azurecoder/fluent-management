@@ -22,7 +22,7 @@ using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
-    public class WindowsVirtualMachineClient : IVirtualMachineClient
+    public class WindowsVirtualMachineClient : IWindowsVirtualMachineClient
     {
         // the name of the cloud service to look up 
         private string _cloudServiceName;

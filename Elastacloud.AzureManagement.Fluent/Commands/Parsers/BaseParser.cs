@@ -174,6 +174,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         /// The root element for the server farm for WAWS
         /// </summary>
         public const string WebsiteServerFarm = "ServerFarm";
+        /// <summary>
+        /// The Xml for the check cloud service name available response 
+        /// </summary>
+        public const string CloudServiceAvailable = "AvailabilityResponse";
         
         /// <summary>
         /// The schema for the Sql azure manmagement request

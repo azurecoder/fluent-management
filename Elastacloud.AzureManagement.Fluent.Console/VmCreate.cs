@@ -42,7 +42,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                          Port = 80,
                                          Protocol = Protocol.TCP
                                      }}),
-                                     VirtualMachineType = VirtualMachineTemplates.WindowsServer2008R2SP1_30GB,
+                                     VirtualMachineType = VirtualMachineTemplates.BizTalkServer2013Enterprise,
                                      VmSize = VmSize.Small,
                                      StorageAccountName = "elastastorage",
                                      DataDisks = new List<DataVirtualHardDisk>(){new DataVirtualHardDisk(){LogicalDiskSizeInGB = 100}}

@@ -53,8 +53,8 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             connector.MonitorAndScale();
 
             var engineAlert = new WasabiWebRulesEngine("ukwaug", 5);
-            engineAlert.AddRule(new WasabiWebRule(MetricsConstants.Http5xx, 20));
-            var connector2 = new WebsiteManagementConnector(engine, _subscriptionId, WasabiWebLogicalOperation.Or)
+            engineAlert.AddRule(new WasabiWebRule(MetricsConstants.Http2xx, 20));
+            var connector2 = new WebsiteManagementConnector(engineAlert, _subscriptionId, WasabiWebLogicalOperation.Or)
             {
                 ManagementCertificate = _certificate
             };
