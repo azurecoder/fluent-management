@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System.Collections.Generic;
+using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
@@ -32,7 +33,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <param name="cloudServiceName">The name of the cloud service - if it doesn't exist it will be created</param>
         /// <param name="location">Where the cloud service will be created if it doesn't exist</param>
         IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(
-            List<LinuxVirtualMachineProperties> properties, string cloudServiceName,
+            List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null,
             string location = LocationConstants.NorthEurope);
     }
 }

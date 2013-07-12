@@ -9,10 +9,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
@@ -66,8 +68,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         /// <param name="properties">Can be any gallery template</param>
         /// <param name="cloudServiceName">The name of the cloud service - if it doesn't exist it will be created</param>
+        /// <param name="serviceCertificate">The service certificate responsible for adding the ssh keys</param>
         /// <param name="location">Where the cloud service will be created if it doesn't exist</param>
-        public IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, string location = LocationConstants.NorthEurope)
+        public IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null, string location = LocationConstants.NorthEurope)
         {
             if(String.IsNullOrEmpty(cloudServiceName))
                 throw new FluentManagementException("Cloud service name cannot be empty", "LinuxVirtualMachineClient");
@@ -90,6 +93,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     };
                 cloudServiceCommand.Execute();
             }
+            // upload the service certificate if it exists for the ssh keys
+            if (serviceCertificate != null)
+            {
+                var client = new ServiceClient(SubscriptionId, ManagementCertificate, cloudServiceName);
+                client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password);
+            }
 
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
@@ -99,45 +108,21 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
-            var taskCollection = new List<Task>();
             // try and add the other concurrently
+            // concurrency doesn't work - there is no way to build a fast deployment :-(
             for (int i = 1; i < properties.Count; i++)
             {
                 // add this we'll need to ensure that it's populated for the command
-                properties[i].CloudServiceName = cloudServiceName;
-                //var task = new Task(() =>
-                //{
-                    // clousrure may cause an exception here - proof is in the pudding!
-                    var startCommand = new AddLinuxVirtualMachineToDeploymentCommand(properties[i], cloudServiceName)
+                var theProperty = properties[i];
+                theProperty.CloudServiceName = cloudServiceName;
+                // clousrure may cause an exception here - proof is in the pudding!
+                var startCommand = new AddLinuxVirtualMachineToDeploymentCommand(theProperty, cloudServiceName)
                     {
                         SubscriptionId = SubscriptionId,
                         Certificate = ManagementCertificate
                     };
-                    startCommand.Execute();
-                //});
-                //task.Start();
-                //taskCollection.Add(task);
+                startCommand.Execute();
             }
-            
-
-            // start the role up -- this could take a while the previous two operations are fairly lightweight
-            // and the provisioning doesn't occur until the role starts not when it is created
-            //foreach (var property in properties)
-            //{
-            //    // add this we'll need to ensure that it's populated for the command
-            //    property.CloudServiceName = cloudServiceName;
-            //    var task = new Task(() =>
-            //        {
-            //            // clousrure may cause an exception here - proof is in the pudding!
-            //            var startCommand = new StartVirtualMachineCommand(property)
-            //                {
-            //                    SubscriptionId = SubscriptionId,
-            //                    Certificate = ManagementCertificate
-            //                };
-            //            startCommand.Execute();
-            //        });
-            //    task.Start();
-            //}
 
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
             Properties = properties;

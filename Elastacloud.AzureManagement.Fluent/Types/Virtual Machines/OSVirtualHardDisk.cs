@@ -99,10 +99,13 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             string templateDetails = null;
 
             string vmType = properties.VirtualMachineType.ToString();
-            AddVmTemplatesToDictionary();
-            if (VmTemplates.ContainsKey(vmType))
+            if (String.IsNullOrEmpty(properties.CustomTemplateName))
             {
-                templateDetails = VmTemplates[vmType];
+                AddVmTemplatesToDictionary();
+                if (VmTemplates.ContainsKey(vmType))
+                {
+                    templateDetails = VmTemplates[vmType];
+                }
             }
 
             if(templateDetails == null && properties.CustomTemplateName == null)

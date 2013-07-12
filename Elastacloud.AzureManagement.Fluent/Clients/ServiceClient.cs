@@ -12,6 +12,7 @@ using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
@@ -78,6 +79,19 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             cert.Execute();
         }
+
+        /// <summary>
+        /// Creates a service certificate
+        /// </summary>
+        /// <param name="name">The name (CN) of the certificate</param>
+        /// <param name="password">The password of the certificate</param>
+        /// <param name="exportDirectory">Where the .pem, .cer and pfx will be put</param>
+        public X509Certificate2 CreateServiceCertificate(string name, string password, string exportDirectory)
+        {
+            return CertificateGenerator.Create("ASOS R-MPI", DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)),
+                                        DateTime.UtcNow.AddYears(2), password, true, exportDirectory);
+        }
+
         /// <summary>
         /// Creates a new cloud service 
         /// </summary>

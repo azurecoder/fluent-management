@@ -16,6 +16,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Prng;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -31,8 +32,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// <summary>
         /// Static method used to create a certificate and return as a .net object
         /// </summary>
-        public static X509Certificate2 Create(string name, DateTime start, DateTime end, string userPassword,
-                                              bool addtoStore = false)
+        public static X509Certificate2 Create(string name, DateTime start, DateTime end, string userPassword, bool addtoStore = false, string exportDirectory = null)
         {
             // generate a key pair using RSA
             var generator = new RsaKeyPairGenerator();
@@ -60,13 +60,14 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             x509Generator.AddExtension(X509Extensions.ExtendedKeyUsage, true, extendedKeyUsage.ToAsn1Object());
             // algorithm can only be SHA1 ??
             x509Generator.SetSignatureAlgorithm("sha1WithRSA");
+
             // Set the key pair
             x509Generator.SetPublicKey(cerKp.Public);
             X509Certificate certificate = x509Generator.Generate(cerKp.Private);
+            
 
             // export the certificate bytes
-            byte[] certStream = DotNetUtilities.ToX509Certificate(certificate).Export(X509ContentType.Pkcs12,
-                                                                                      userPassword);
+            byte[] certStream = DotNetUtilities.ToX509Certificate(certificate).Export(X509ContentType.Pkcs12, userPassword);
 
             // build the key parameter and the certificate entry
             var keyEntry = new AsymmetricKeyEntry(privateKey);
@@ -78,15 +79,41 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             builder.SetKeyAlgorithm(PkcsObjectIdentifiers.Sha1WithRsaEncryption);
             builder.Build();
             // create a memorystream to hold the output 
-            var stream = new MemoryStream(2000);
+            var stream = new MemoryStream(10000);
             // create the individual store and set two entries for cert and key
             var store = new Pkcs12Store();
-            store.SetCertificateEntry("Elastacloud Test Certificate", entry);
-            store.SetKeyEntry("Elastacloud Test Certificate", keyEntry, new[] {entry});
+            store.SetCertificateEntry("Created by Fluent Management", entry);
+            store.SetKeyEntry("Created by Fluent Management", keyEntry, new[] { entry });
             store.Save(stream, userPassword.ToCharArray(), new SecureRandom());
 
-            // Create the equivalent C# representation
+             // Create the equivalent C# representation
             var cert = new X509Certificate2(stream.GetBuffer(), userPassword, X509KeyStorageFlags.Exportable);
+            // set up the PEM writer too 
+            if (exportDirectory != null)
+            {
+                var textWriter = new StringWriter();
+                var pemWriter = new PemWriter(textWriter);
+                pemWriter.WriteObject(cerKp.Private);
+                pemWriter.Writer.Flush();
+                string privateKeyPem = textWriter.ToString();
+                using (var writer = new StreamWriter(Path.Combine(exportDirectory, cert.Thumbprint + ".pem")))
+                    {
+                        writer.WriteLine(privateKeyPem);
+                    }
+                // also export the certs - first the .pfx
+                byte[] privateKeyBytes = cert.Export(X509ContentType.Pfx, userPassword);
+                using (var writer = new FileStream(Path.Combine(exportDirectory, cert.Thumbprint + ".pfx"), FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    writer.Write(privateKeyBytes, 0, privateKeyBytes.Length);
+                }
+                // also export the certs - then the .cer
+                byte[] publicKeyBytes = cert.Export(X509ContentType.Cert);
+                using (var writer = new FileStream(Path.Combine(exportDirectory, cert.Thumbprint + ".cer"), FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    writer.Write(publicKeyBytes, 0, publicKeyBytes.Length);
+                }
+            }
+
             // if specified then this add this certificate to the store
             if (addtoStore)
                 AddToMyStore(cert);
@@ -94,6 +121,8 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             return cert;
         }
 
+        #region Certificate Store
+        
         /// <summary>
         /// Adds a certificate to My store for the LocalMachine
         /// </summary>
@@ -135,5 +164,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
                                                                                 certificate2.Thumbprint, false);
             return certCollection.Count > 0;
         }
+
+        #endregion
     }
 }

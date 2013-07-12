@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="BasicHttpRequestBuilder.cs" />
     <Compile Include="Clients\BlobClient.cs" />
+    <Compile Include="Clients\Helpers\ServiceCertificateModel.cs" />
     <Compile Include="Clients\Interfaces\ILinuxVirtualMachineClient.cs" />
     <Compile Include="Clients\Interfaces\IWindowsVirtualMachineClient.cs" />
     <Compile Include="Clients\LinuxVirtualMachineClient.cs" />
