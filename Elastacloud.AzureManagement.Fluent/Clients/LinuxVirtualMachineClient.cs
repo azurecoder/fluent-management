@@ -175,7 +175,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
-            throw new NotImplementedException();
+            foreach (var linuxVirtualMachineProperties in Properties)
+            {
+                // start the role up -- this could take a while the previous two operations are fairly lightweight
+                // and the provisioning doesn't occur until the role starts not when it is created
+                var stopCommand = new StopVirtualMachineCommand(linuxVirtualMachineProperties)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                stopCommand.Execute();
+            }
+           
         }
 
         /// <summary>

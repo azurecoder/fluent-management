@@ -101,15 +101,18 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             }
             if (!String.IsNullOrEmpty(UserPassword))
             {
+                // we have to set this to blank if the pass auth is set to true otherwise there will be no way login full stop
+                if (DisableSshPasswordAuthentication)
+                    UserPassword = "";
                 element.Add(new XElement(Namespaces.NsWindowsAzure + "UserPassword", UserPassword));
             }
-            element.Add(new XElement(Namespaces.NsWindowsAzure + "DisableSshPasswordAuthentication", DisableSshPasswordAuthentication.ToString().ToLower()));
+            element.Add(new XElement(Namespaces.NsWindowsAzure + "DisableSshPasswordAuthentication",
+                                     DisableSshPasswordAuthentication.ToString().ToLower()));
 
-            
-            // check to see whether the keys can be appended
-            if (PublicKeys != null && KeyPairs != null && (PublicKeys.Count > 0 || KeyPairs.Count > 0))
+            XElement sshElement = null;
+            if (PublicKeys != null && PublicKeys.Count > 0)
             {
-                var sshElement = new XElement(Namespaces.NsWindowsAzure + "SSH" /* add the public key and keypairs xml */);
+                sshElement = new XElement(Namespaces.NsWindowsAzure + "SSH" /* add the public key and keypairs xml */);
                 // add the public keys section
                 if (PublicKeys != null && PublicKeys.Count > 0)
                 {
@@ -120,15 +123,29 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     }
                     sshElement.Add(publicKeys);
                 }
-                // add the keypairs section to the node tree
-                if (KeyPairs != null && KeyPairs.Count > 0)
+            }
+
+            // check to see whether the keys can be appended
+            if (KeyPairs != null && KeyPairs.Count > 0)
+            {
+                if (sshElement == null)
                 {
-                    var keyPairs = new XElement(Namespaces.NsWindowsAzure + "KeyPairs");
-                    foreach (var keyPair in KeyPairs)
-                    {
-                        keyPairs.Add(keyPair.GetXmlTree());
-                    }
+                    sshElement = new XElement(Namespaces.NsWindowsAzure + "SSH"
+                        /* add the public key and keypairs xml */);
                 }
+                // add the keypairs section to the node tree
+
+                var keyPairs = new XElement(Namespaces.NsWindowsAzure + "KeyPairs");
+                foreach (var keyPair in KeyPairs)
+                {
+                    keyPairs.Add(keyPair.GetXmlTree());
+                }
+                sshElement.Add(keyPairs);
+            }
+
+            if (sshElement != null)
+            {
+                element.Add(sshElement);
             }
 
             return element;

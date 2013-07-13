@@ -28,23 +28,24 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
+            const string userName = "moodyballs";
             var serviceClient = new ServiceClient(_applicationFactory.SubscriptionId,
                                                   _applicationFactory.ManagementCertificate,
                                                   _applicationFactory.CloudServiceName);
-            var certificate = serviceClient.CreateServiceCertificate("ASOS R-MPI", "password", @"C:\Projects\Asos");
-            var keypairs = new SSHKey(KeyType.KeyPair)
+            var certificate = serviceClient.CreateServiceCertificate("ASOS R-MPI", _applicationFactory.Password, @"C:\Projects\Asos\keys");
+            var keypairs = new SSHKey(KeyType.PublicKey)
                 {
                     FingerPrint = certificate.Thumbprint,
-                    Path = "/home/moodyballs101/.ssh/authorized_keys"
+                    Path = String.Format("/home/{0}/.ssh/authorized_keys", userName)
                 };
-            var publickey = new SSHKey(KeyType.PublicKey)
+            var publickey = new SSHKey(KeyType.KeyPair)
                 {
                     FingerPrint = certificate.Thumbprint,
-                    Path = "/home/moodyballs101/.ssh/id_rsa"
+                    Path = String.Format("/home/{0}/.ssh/id_rsa", userName)
                 };
             var properties1 = new LinuxVirtualMachineProperties()
                                  {
-                                     UserName = "moodyballs101",
+                                     UserName = userName,
                                      AdministratorPassword = _applicationFactory.Password,
                                      HostName = "asosmpiplus1",
                                      RoleName = "asosmpiplus1",
@@ -56,7 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                          Port = 6185,
                                          Protocol = Protocol.TCP
                                      }}),
-                                     CustomTemplateName = "asosrmpi",
+                                     CustomTemplateName = "asosrmpicore",
                                      DeploymentName = "asosmpiplus",
                                      VmSize = VmSize.Small,
                                      StorageAccountName = "rmpi",
@@ -66,7 +67,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                  };
             var properties2 = new LinuxVirtualMachineProperties()
                 {
-                    UserName = "moodyballs101",
+                    UserName = userName,
                     AdministratorPassword = _applicationFactory.Password,
                     RoleName = "asosmpiplus2",
                     HostName = "asosmpiplus2",
@@ -81,7 +82,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                     Protocol = Protocol.TCP
                                 }
                         }),
-                    CustomTemplateName = "rmpislave",
+                    CustomTemplateName = "asosrmpicore",
                     DeploymentName = "asosmpiplus",
                     VmSize = VmSize.Small,
                     StorageAccountName = "rmpi",
@@ -91,7 +92,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                 };
             var properties3 = new LinuxVirtualMachineProperties()
             {
-                UserName = "moodyballs101",
+                UserName = userName,
                 AdministratorPassword = _applicationFactory.Password,
                 RoleName = "asosmpiplus3",
                 HostName = "asosmpiplus3",
@@ -106,7 +107,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                     Protocol = Protocol.TCP
                                 }
                         }),
-                CustomTemplateName = "rmpislave",
+                CustomTemplateName = "asosrmpicore",
                 DeploymentName = "asosmpiplus",
                 VmSize = VmSize.Small,
                 StorageAccountName = "rmpi",
@@ -125,7 +126,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                 };
             var newClient =
                 client.CreateNewVirtualMachineDeploymentFromTemplateGallery(
-                    new List<LinuxVirtualMachineProperties>(new[] {properties1, properties2}),
+                    new List<LinuxVirtualMachineProperties>(new[] {properties1, properties2, properties3}),
                     _applicationFactory.CloudServiceName, model);
         }
 

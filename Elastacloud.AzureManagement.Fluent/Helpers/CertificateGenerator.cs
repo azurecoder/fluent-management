@@ -93,7 +93,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             {
                 var textWriter = new StringWriter();
                 var pemWriter = new PemWriter(textWriter);
-                pemWriter.WriteObject(cerKp.Private);
+                pemWriter.WriteObject(cerKp.Private, "DESEDE", userPassword.ToCharArray(), new SecureRandom());
                 pemWriter.Writer.Flush();
                 string privateKeyPem = textWriter.ToString();
                 using (var writer = new StreamWriter(Path.Combine(exportDirectory, cert.Thumbprint + ".pem")))

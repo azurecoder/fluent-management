@@ -63,31 +63,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <summary>
         /// This gets the host OS image of Windows Server Data Centre and SQL Server 2012
         /// </summary>
-        /// <param name="storageAccountName">The path to the media space in blob storage where the host vhd will be placed</param>
-        /// <param name="diskName">The name of the C: drive </param>
-        /// <param name="diskLabel">The drive volume label for C:</param>
-        /// <returns>An OSVirtualHardDisk instance</returns>
-        [Obsolete]
-        public static OSVirtualHardDisk GetSqlServerOSImage(string storageAccountName, string diskName = null, string diskLabel = null)
-        {
-            /*<OSVirtualHardDisk>
-                        <MediaLink>http://elastacacheweb.blob.core.windows.net/vhds/elastasql.vhd</MediaLink>
-                        <SourceImageName>MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd</SourceImageName>
-                    </OSVirtualHardDisk>*/
-            var namer = new RandomAccountName();
-            return new OSVirtualHardDisk
-                       {
-                           DiskLabel = diskLabel,
-                           DiskName = diskName,
-                           MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", storageAccountName, namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
-                           SourceImageName = "MSFT__Sql-Server-11EVAL-11.0.2215.0-05152012-en-us-30GB.vhd",
-                           HostCaching = HostCaching.ReadWrite,
-                       };
-        }
-
-        /// <summary>
-        /// This gets the host OS image of Windows Server Data Centre and SQL Server 2012
-        /// </summary>
         /// <param name="properties">The path to the media space in blob storage where the host vhd will be placed</param>
         /// <returns>An OSVirtualHardDisk instance</returns>
         public static OSVirtualHardDisk GetOSImageFromTemplate(VirtualMachineProperties properties)
@@ -118,7 +93,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             {
                 DiskLabel = "OsDisk",
                 DiskName = "OsDisk",
-                MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", properties.StorageAccountName, Namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddmmyy")),
+                MediaLink = String.Format("http://{0}.blob.core.windows.net/vhds/{1}{2}.vhd", properties.StorageAccountName, Namer.GetNameFromInitString("os"), DateTime.Now.ToString("ddMMyyhhmmss-ffffff")),
 
                 SourceImageName = templateDetails,
                 HostCaching = HostCaching.ReadWrite,
