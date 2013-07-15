@@ -19,13 +19,21 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
     public class LinuxVirtualMachineProperties : VirtualMachineProperties
     {
         /// <summary>
+        /// Creates a linux virtual machine properties
+        /// </summary>
+        public LinuxVirtualMachineProperties()
+        {
+            PublicKeys = new List<SSHKey>();
+            KeyPairs = new List<SSHKey>();
+        }
+        /// <summary>
         /// a list of the public keys that are available to deploy to the linux VMs
         /// </summary>
-        public List<SSHKey> PublicKeys { get; set; }
+        internal List<SSHKey> PublicKeys { get; set; }
         /// <summary>
         /// A list of the key pairs available to linux vms
         /// </summary>
-        public List<SSHKey> KeyPairs { get; set; }
+        internal List<SSHKey> KeyPairs { get; set; }
         /// <summary>
         /// The name of the linux host
         /// </summary>
@@ -37,6 +45,6 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
         /// <summary>
         /// The password auth and whether to only use SSH
         /// </summary>
-        public bool DisableSSHPasswordAuthentication { get; set; }
+        internal bool DisableSSHPasswordAuthentication { get; set; }
     }
 }

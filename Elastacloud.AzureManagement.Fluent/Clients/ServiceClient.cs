@@ -69,9 +69,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         /// <param name="certificate">The certificate being uploaded</param>
         /// <param name="password">The .pfx password for the certificate</param>
-        public void UploadServiceCertificate(X509Certificate2 certificate, string password)
+        /// <param name="includePrivateKey">The .pfx password for the certificate</param>
+        public void UploadServiceCertificate(X509Certificate2 certificate, string password = "", bool includePrivateKey = false)
         {
-            var certBytes = certificate.Export(X509ContentType.Pkcs12, password);
+            var certBytes = includePrivateKey
+                                ? certificate.Export(X509ContentType.Pkcs12, password)
+                                : certificate.Export(X509ContentType.Cert);
+            
             var cert = new AddServiceCertificateCommand(certBytes, password, Name)
             {
                 SubscriptionId = SubscriptionId,

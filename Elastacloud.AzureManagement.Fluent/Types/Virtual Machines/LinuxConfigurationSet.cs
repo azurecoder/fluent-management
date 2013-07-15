@@ -21,6 +21,12 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
     public class LinuxConfigurationSet : ConfigurationSet
     {
         /// <summary>
+        /// Constructs a linux configuration set
+        /// </summary>
+        public LinuxConfigurationSet()
+        {
+        }
+        /// <summary>
         /// The hostname of the Linux VM
         /// </summary>
         public string HostName { get; set; }
@@ -101,9 +107,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             }
             if (!String.IsNullOrEmpty(UserPassword))
             {
-                // we have to set this to blank if the pass auth is set to true otherwise there will be no way login full stop
-                if (DisableSshPasswordAuthentication)
-                    UserPassword = "";
                 element.Add(new XElement(Namespaces.NsWindowsAzure + "UserPassword", UserPassword));
             }
             element.Add(new XElement(Namespaces.NsWindowsAzure + "DisableSshPasswordAuthentication",

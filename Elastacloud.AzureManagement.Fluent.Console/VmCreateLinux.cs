@@ -33,12 +33,12 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                                   _applicationFactory.ManagementCertificate,
                                                   _applicationFactory.CloudServiceName);
             var certificate = serviceClient.CreateServiceCertificate("ASOS R-MPI", _applicationFactory.Password, @"C:\Projects\Asos\keys");
-            var keypairs = new SSHKey(KeyType.PublicKey)
+            var publickey = new SSHKey(KeyType.PublicKey)
                 {
                     FingerPrint = certificate.Thumbprint,
                     Path = String.Format("/home/{0}/.ssh/authorized_keys", userName)
                 };
-            var publickey = new SSHKey(KeyType.KeyPair)
+            var keypairs = new SSHKey(KeyType.KeyPair)
                 {
                     FingerPrint = certificate.Thumbprint,
                     Path = String.Format("/home/{0}/.ssh/id_rsa", userName)
@@ -57,13 +57,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                          Port = 6185,
                                          Protocol = Protocol.TCP
                                      }}),
-                                     CustomTemplateName = "asosrmpicore",
+                                     CustomTemplateName = "asos-r-allpackages",
                                      DeploymentName = "asosmpiplus",
                                      VmSize = VmSize.Small,
-                                     StorageAccountName = "rmpi",
-                                     DisableSSHPasswordAuthentication = true,
-                                     PublicKeys = new List<SSHKey>(new[]{publickey}),
-                                     KeyPairs = new List<SSHKey>(new[]{keypairs})
+                                     StorageAccountName = "rmpi"
                                  };
             var properties2 = new LinuxVirtualMachineProperties()
                 {
@@ -82,13 +79,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                     Protocol = Protocol.TCP
                                 }
                         }),
-                    CustomTemplateName = "asosrmpicore",
+                    CustomTemplateName = "asos-r-allpackages",
                     DeploymentName = "asosmpiplus",
                     VmSize = VmSize.Small,
-                    StorageAccountName = "rmpi",
-                    DisableSSHPasswordAuthentication = true,
-                    PublicKeys = new List<SSHKey>(new[] { publickey }),
-                    KeyPairs = new List<SSHKey>(new[] { keypairs })
+                    StorageAccountName = "rmpi"
                 };
             var properties3 = new LinuxVirtualMachineProperties()
             {
@@ -107,13 +101,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                                     Protocol = Protocol.TCP
                                 }
                         }),
-                CustomTemplateName = "asosrmpicore",
+                CustomTemplateName = "asos-r-allpackages",
                 DeploymentName = "asosmpiplus",
                 VmSize = VmSize.Small,
-                StorageAccountName = "rmpi",
-                DisableSSHPasswordAuthentication = true,
-                PublicKeys = new List<SSHKey>(new[] { publickey }),
-                KeyPairs = new List<SSHKey>(new[] { keypairs })
+                StorageAccountName = "rmpi"
             };
 
             // set up the service certificate first of all 

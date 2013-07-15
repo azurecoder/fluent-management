@@ -48,7 +48,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 throw new FluentManagementException("The fingerprint or path has to have a value", "SSHKey");
 
             var element = new XElement(Namespaces.NsWindowsAzure + _keyType.ToString());
-            var fingerPrint = new XElement(Namespaces.NsWindowsAzure + "FingerPrint", FingerPrint);
+            var fingerPrint = new XElement(Namespaces.NsWindowsAzure + "Fingerprint", FingerPrint);
             var path = new XElement(Namespaces.NsWindowsAzure + "Path", Path);
             element.Add(fingerPrint);
             element.Add(path);

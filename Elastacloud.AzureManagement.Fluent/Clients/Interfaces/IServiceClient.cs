@@ -30,7 +30,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// </summary>
         /// <param name="certificate">The certificate being uploaded</param>
         /// <param name="password">The .pfx password for the certificate</param>
-        void UploadServiceCertificate(X509Certificate2 certificate, string password);
+        /// <param name="includePrivateKey">Includes the private key</param>
+        void UploadServiceCertificate(X509Certificate2 certificate, string password = "", bool includePrivateKey = false);
         /// <summary>
         /// Creates a new cloud service 
         /// </summary>

@@ -97,7 +97,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (serviceCertificate != null)
             {
                 var client = new ServiceClient(SubscriptionId, ManagementCertificate, cloudServiceName);
-                client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password);
+                client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password, true);
+                foreach (var linuxVirtualMachineProperty in properties)
+                {
+                    linuxVirtualMachineProperty.KeyPairs.Add(new SSHKey(KeyType.KeyPair) { 
+                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
+                        Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
+                    });
+                    linuxVirtualMachineProperty.PublicKeys.Add(new SSHKey(KeyType.PublicKey)
+                    {
+                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
+                        Path = String.Format("/home/{0}/.ssh/authorized_keys", linuxVirtualMachineProperty.UserName)
+                    });
+                    linuxVirtualMachineProperty.DisableSSHPasswordAuthentication = true;
+                }
             }
 
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
@@ -167,7 +180,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Restart()
         {
-            throw new NotImplementedException();
+            // start the role up -- this could take a while the previous two operations are fairly lightweight
+            // and the provisioning doesn't occur until the role starts not when it is created
+            foreach (var linuxVirtualMachineProperty in Properties)
+            {
+                var restartCommand = new RestartVirtualMachineCommand(linuxVirtualMachineProperty)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                restartCommand.Execute();    
+            }
+            
         }
 
         /// <summary>
@@ -175,18 +199,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
-            foreach (var linuxVirtualMachineProperties in Properties)
-            {
-                // start the role up -- this could take a while the previous two operations are fairly lightweight
-                // and the provisioning doesn't occur until the role starts not when it is created
-                var stopCommand = new StopVirtualMachineCommand(linuxVirtualMachineProperties)
+            foreach (var stopCommand in Properties.Select(linuxVirtualMachineProperties => new StopVirtualMachineCommand(linuxVirtualMachineProperties)
                 {
                     SubscriptionId = SubscriptionId,
                     Certificate = ManagementCertificate
-                };
+                }))
+            {
                 stopCommand.Execute();
             }
-           
         }
 
         /// <summary>
