@@ -87,7 +87,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
             #region string and int values
 
             // gets the source control type
-            if (element.Element(GetSchema() + "ScmType") != null)
+            if (element.Element(GetSchema() + "ScmType") != null && element.Element(GetSchema() + "ScmType").Value != String.Empty)
             {
                 Config.ScmType = (ScmType)Enum.Parse(typeof(ScmType), element.Element(GetSchema() + "ScmType").Value);
             }
@@ -150,9 +150,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 {
                     Config.ConnectionStrings.Add(new ConnStringInfo()
                                                      {
-                                                         Name = nvPair.Element(GetSchema() + "Name").Value,
                                                          ConnectionString =
                                                              nvPair.Element(GetSchema() + "ConnectionString").Value,
+                                                         Name = nvPair.Element(GetSchema() + "Name").Value,
                                                          Type = nvPair.Element(GetSchema() + "Type").Value
                                                      });
                 }

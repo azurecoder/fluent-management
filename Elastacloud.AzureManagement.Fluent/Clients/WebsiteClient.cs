@@ -170,6 +170,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             repoCommand.Execute();
             WebsiteProperties = website;
 
+            // TODO: fix this value in code!!!!
             website.WebsiteParameters.NumberOfWorkers = website.WebsiteParameters.NumberOfWorkers == 0
                                                             ? website.WebsiteParameters.CurrentNumberOfWorkers
                                                             : website.WebsiteParameters.NumberOfWorkers;

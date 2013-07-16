@@ -129,8 +129,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
             foreach (var connectionString in Website.Config.ConnectionStrings)
             {
                 connectionStrings.Add(new XElement(xmlns + "ConnStringInfo",
-                                                   new XElement(xmlns + "Name", connectionString.Name),
                                                    new XElement(xmlns + "ConnectionString", connectionString.ConnectionString),
+                                                   new XElement(xmlns + "Name", connectionString.Name),
                                                    new XElement(xmlns + "Type", connectionString.Type)));
             }
             // add the default documents

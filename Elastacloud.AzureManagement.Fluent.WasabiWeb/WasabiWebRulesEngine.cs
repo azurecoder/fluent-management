@@ -44,7 +44,7 @@ namespace Elastacloud.AzureManagement.Fluent.WasabiWeb
             foreach (var rule in _rules)
             {
                 // find the metric 
-                var metric = metrics.Find(a => a.DisplayName == rule.MetricName);
+                var metric = metrics.Find(a => a.Name == rule.MetricName);
                 // for the time being if it doesn't exist just continue 
                 if(metric == null)
                     continue;
