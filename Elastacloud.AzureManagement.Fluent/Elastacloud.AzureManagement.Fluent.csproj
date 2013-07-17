@@ -121,6 +121,7 @@
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
     <Compile Include="Commands\Virtual Machines\AddLinuxVirtualMachineToDeploymentCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\GetLinuxVirtualMachineContextCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateLinuxVirtualMachineDeploymentCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
@@ -261,7 +262,7 @@
     <Compile Include="Types\Subscription.cs" />
     <Compile Include="Types\UpdateDeploymentStatus.cs" />
     <Compile Include="Types\Virtual Machines\StatefulSerialiser.cs" />
-    <Compile Include="Types\Virtual Machines\StatefulWindowsSerialiser.cs" />
+    <Compile Include="Types\Virtual Machines\StatefulVirtualMachineSerialiser.cs" />
     <Compile Include="Types\Virtual Machines\VirtualMachineTemplates.cs" />
     <Compile Include="Fluent API\AzureManager.cs" />
     <Compile Include="Fluent API\IServiceTransaction.cs" />

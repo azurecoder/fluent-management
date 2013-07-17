@@ -61,6 +61,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets thye configuration for the virtual machine
         /// </summary>
+        // TODO: PULL BACK THE CORRECT VALUE FROM HERE
         public List<PersistentVMRole> VirtualMachine { get; private set; }
 
         /// <summary>
@@ -93,25 +94,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     };
                 cloudServiceCommand.Execute();
             }
-            // upload the service certificate if it exists for the ssh keys
-            if (serviceCertificate != null)
-            {
-                var client = new ServiceClient(SubscriptionId, ManagementCertificate, cloudServiceName);
-                client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password, true);
-                foreach (var linuxVirtualMachineProperty in properties)
-                {
-                    linuxVirtualMachineProperty.KeyPairs.Add(new SSHKey(KeyType.KeyPair) { 
-                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
-                        Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
-                    });
-                    linuxVirtualMachineProperty.PublicKeys.Add(new SSHKey(KeyType.PublicKey)
-                    {
-                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
-                        Path = String.Format("/home/{0}/.ssh/authorized_keys", linuxVirtualMachineProperty.UserName)
-                    });
-                    linuxVirtualMachineProperty.DisableSSHPasswordAuthentication = true;
-                }
-            }
+            // adds service certificate to the deployment
+            AddServiceCertificateToRoles(serviceCertificate, cloudServiceName, ref properties);
 
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
@@ -143,6 +127,48 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return new LinuxVirtualMachineClient(properties, SubscriptionId, ManagementCertificate);
         }
 
+        private void AddServiceCertificateToRoles(ServiceCertificateModel serviceCertificate, string cloudServiceName, ref List<LinuxVirtualMachineProperties> properties)
+        {
+            // upload the service certificate if it exists for the ssh keys
+            if (serviceCertificate != null)
+            {
+                var client = new ServiceClient(SubscriptionId, ManagementCertificate, cloudServiceName);
+                client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password, true);
+                foreach (var linuxVirtualMachineProperty in properties)
+                {
+                    linuxVirtualMachineProperty.KeyPairs.Add(new SSHKey(KeyType.KeyPair)
+                    {
+                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
+                        Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
+                    });
+                    linuxVirtualMachineProperty.PublicKeys.Add(new SSHKey(KeyType.PublicKey)
+                    {
+                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
+                        Path = String.Format("/home/{0}/.ssh/authorized_keys", linuxVirtualMachineProperty.UserName)
+                    });
+                    linuxVirtualMachineProperty.DisableSSHPasswordAuthentication = true;
+                }
+            }
+        }
+
+        public void AddRolesToExistingDeployment(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate)
+        {
+            // add the service certificate
+            AddServiceCertificateToRoles(serviceCertificate, cloudServiceName, ref properties);
+            // concurrency doesn't work - there is no way to build a fast deployment :-(
+            foreach (var theProperty in properties)
+            {
+                theProperty.CloudServiceName = cloudServiceName;
+                // clousrure may cause an exception here - proof is in the pudding!
+                var startCommand = new AddLinuxVirtualMachineToDeploymentCommand(theProperty, cloudServiceName)
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                startCommand.Execute();
+            }
+        }
+
         /// <summary>
         /// the management certificate used to connect to the virtual machine
         /// </summary>
@@ -163,7 +189,68 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
         public void DeleteVirtualMachine(bool removeDisks, bool removeCloudService, bool removeStorageAccount)
         {
-            throw new NotImplementedException();
+            //TODO: write a get method for the virtual machine properties
+            IBlobClient blobClient = null;
+            foreach (var vm in VirtualMachine)
+            {
+                // create the blob client
+                string diskName = vm.OSHardDisk.DiskName;
+                string storageAccount = ParseBlobDetails(vm.OSHardDisk.MediaLink);
+                // create the blob client
+                blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount,
+                                                        ManagementCertificate);
+
+                // find the property
+                var linuxVirtualMachineProperty = Properties.Find(a => a.RoleName == vm.RoleName);
+                // first delete the virtual machine command
+                var deleteVirtualMachine = new DeleteVirtualMachineCommand(linuxVirtualMachineProperty)
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                try
+                {
+                    deleteVirtualMachine.Execute();
+                }
+                catch (Exception)
+                {
+                    // should be a 400 here if this is the case then there is only a single role in the deployment - quicker to do it this way!
+                    var deleteVirtualMachineDeployment = new DeleteVirtualMachineDeploymentCommand(linuxVirtualMachineProperty)
+                        {
+                            SubscriptionId = SubscriptionId,
+                            Certificate = ManagementCertificate
+                        };
+                    deleteVirtualMachineDeployment.Execute();
+                }
+
+                // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
+                // remove the disk association
+                DeleteNamedVirtualMachineDisk(diskName);
+                // remove the data disks
+                DeleteDataDisks(vm, removeDisks ? blobClient : null);
+                if (removeDisks)
+                {
+                    // remove the physical disk
+                    blobClient.DeleteBlob(StorageFileName);
+                }
+            }
+            // if we need to use the first cloud service
+            // remove the cloud services
+            if (removeCloudService)
+            {
+                // delete the cloud service here
+                var deleteCloudService = new DeleteHostedServiceCommand(Properties[0].CloudServiceName)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                deleteCloudService.Execute();
+            }
+            // remove the storage account
+            if (removeStorageAccount)
+            {
+                blobClient.DeleteStorageAccount();
+            }
         }
 
         /// <summary>
@@ -172,7 +259,47 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="name">The name of the vm disk</param>
         public void DeleteNamedVirtualMachineDisk(string name)
         {
-            throw new NotImplementedException();
+            bool diskErased = false;
+            int count = 0;
+            // keep this going until we delete the disk or time out!
+            while (count < 100 && !diskErased)
+            {
+                try
+                {
+                    var deleteVirtualMachineDisk = new DeleteVirtualMachineDiskCommand(name)
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                    deleteVirtualMachineDisk.Execute();
+                    diskErased = true;
+                }
+                catch (Exception)
+                {
+                    count++;
+                    Thread.Sleep(3000);
+                }
+            }
+        }
+
+        private void DeleteDataDisks(PersistentVMRole vm, IBlobClient client)
+        {
+            // delete the data disks in the reverse order
+            if (vm.HardDisks.HardDiskCollection == null) return;
+            for (int i = vm.HardDisks.HardDiskCollection.Count - 1; i >= 0; i--)
+            {
+                var dataDiskCommand = new DeleteVirtualMachineDiskCommand(vm.HardDisks.HardDiskCollection[i].DiskName)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                dataDiskCommand.Execute();
+
+                int pos = vm.HardDisks.HardDiskCollection[i].MediaLink.LastIndexOf('/');
+                string diskFile = vm.HardDisks.HardDiskCollection[i].MediaLink.Substring(pos + 1);
+                if (client != null)
+                    client.DeleteBlob(diskFile);
+            }
         }
 
         /// <summary>
@@ -209,6 +336,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
         }
 
+        /// <summary>
+        /// Returns the name of the blob and container 
+        /// </summary>
+        /// <param name="blobAddress"></param>
+        private string ParseBlobDetails(string blobAddress)
+        {
+            var helper = new UrlHelper(blobAddress);
+            StorageContainerName = helper.Path;
+            StorageFileName = helper.File;
+            return helper.HostSubDomain;
+        }
         /// <summary>
         /// Gets the container that the storage blob resides in 
         /// </summary>

@@ -28,96 +28,53 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
-            const string userName = "moodyballs";
+            const string userName = "jed";
+            
             var serviceClient = new ServiceClient(_applicationFactory.SubscriptionId,
                                                   _applicationFactory.ManagementCertificate,
                                                   _applicationFactory.CloudServiceName);
-            var certificate = serviceClient.CreateServiceCertificate("ASOS R-MPI", _applicationFactory.Password, @"C:\Projects\Asos\keys");
-            var publickey = new SSHKey(KeyType.PublicKey)
-                {
-                    FingerPrint = certificate.Thumbprint,
-                    Path = String.Format("/home/{0}/.ssh/authorized_keys", userName)
-                };
-            var keypairs = new SSHKey(KeyType.KeyPair)
-                {
-                    FingerPrint = certificate.Thumbprint,
-                    Path = String.Format("/home/{0}/.ssh/id_rsa", userName)
-                };
-            var properties1 = new LinuxVirtualMachineProperties()
-                                 {
-                                     UserName = userName,
-                                     AdministratorPassword = _applicationFactory.Password,
-                                     HostName = "asosmpiplus1",
-                                     RoleName = "asosmpiplus1",
-                                     CloudServiceName = _applicationFactory.CloudServiceName,
-                                     PublicEndpoints = new List<InputEndpoint>(new[] {new InputEndpoint() 
-                                     { 
-                                         EndpointName = "SSH", 
-                                         LocalPort = 22,
-                                         Port = 6185,
-                                         Protocol = Protocol.TCP
-                                     }}),
-                                     CustomTemplateName = "asos-r-allpackages",
-                                     DeploymentName = "asosmpiplus",
-                                     VmSize = VmSize.Small,
-                                     StorageAccountName = "rmpi"
-                                 };
-            var properties2 = new LinuxVirtualMachineProperties()
+            //var certificate = serviceClient.CreateServiceCertificate("ASOS R-MPI", _applicationFactory.Password, @"C:\Projects\Asos\keys");
+
+            var propertiesList = new List<LinuxVirtualMachineProperties>();
+            for(int i = 43; i <= 43; i++)
+            {
+                var properties = new LinuxVirtualMachineProperties()
                 {
                     UserName = userName,
                     AdministratorPassword = _applicationFactory.Password,
-                    RoleName = "asosmpiplus2",
-                    HostName = "asosmpiplus2",
+                    HostName = String.Format("{0}-{1}", _applicationFactory.DeploymentName, i),
+                    RoleName = String.Format("{0}-{1}", _applicationFactory.DeploymentName, i),
                     CloudServiceName = _applicationFactory.CloudServiceName,
-                    PublicEndpoints = new List<InputEndpoint>(new[]
-                        {
-                            new InputEndpoint()
-                                {
-                                    EndpointName = "SSH",
-                                    LocalPort = 22,
-                                    Port = 6186,
-                                    Protocol = Protocol.TCP
-                                }
-                        }),
+                    PublicEndpoints = new List<InputEndpoint>(new[] {new InputEndpoint() 
+                                     { 
+                                         EndpointName = "SSH", 
+                                         LocalPort = 22,
+                                         Port = 6185 + i,
+                                         Protocol = Protocol.TCP
+                                     }}),
                     CustomTemplateName = "asos-r-allpackages",
-                    DeploymentName = "asosmpiplus",
-                    VmSize = VmSize.Small,
-                    StorageAccountName = "rmpi"
+                    DeploymentName = _applicationFactory.DeploymentName,
+                    VmSize = VmSize.ExtraLarge,
+                    StorageAccountName = _applicationFactory.RoleName
                 };
-            var properties3 = new LinuxVirtualMachineProperties()
-            {
-                UserName = userName,
-                AdministratorPassword = _applicationFactory.Password,
-                RoleName = "asosmpiplus3",
-                HostName = "asosmpiplus3",
-                CloudServiceName = _applicationFactory.CloudServiceName,
-                PublicEndpoints = new List<InputEndpoint>(new[]
-                        {
-                            new InputEndpoint()
-                                {
-                                    EndpointName = "SSH",
-                                    LocalPort = 22,
-                                    Port = 6187,
-                                    Protocol = Protocol.TCP
-                                }
-                        }),
-                CustomTemplateName = "asos-r-allpackages",
-                DeploymentName = "asosmpiplus",
-                VmSize = VmSize.Small,
-                StorageAccountName = "rmpi"
-            };
+                propertiesList.Add(properties);
+            }
+            
+           
 
             // set up the service certificate first of all 
             var client = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId, _applicationFactory.ManagementCertificate);
+
+            var certificate = new X509Certificate2(@"C:\Projects\Asos\keys\25917D3D71E06109B67901B2357C608B00F2187B.pfx", "asosb!gcompute1302", X509KeyStorageFlags.Exportable);
 
             var model = new ServiceCertificateModel()
                 {
                     Password = _applicationFactory.Password,
                     ServiceCertificate = certificate
                 };
-            var newClient =
-                client.CreateNewVirtualMachineDeploymentFromTemplateGallery(
-                    new List<LinuxVirtualMachineProperties>(new[] {properties1, properties2, properties3}),
+            
+                client.AddRolesToExistingDeployment(
+                    propertiesList,
                     _applicationFactory.CloudServiceName, model);
         }
 

@@ -9,6 +9,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
@@ -270,7 +271,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     Certificate = Properties.Certificate
                 };
                 command.Execute();
-                return (_vmRole = command.PersistentVm);
+                return (_vmRole = command.PersistentVm.FirstOrDefault());
             }
         }
 

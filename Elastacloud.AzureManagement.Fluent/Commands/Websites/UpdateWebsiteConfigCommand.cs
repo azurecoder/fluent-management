@@ -103,9 +103,9 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
                 publishingUsername = new XElement(xmlns + "PublishingUsername", Website.Config.PublishingUsername);
             }
             // add the number of workers 
-            if (Website.WebsiteParameters.NumberOfWorkers > 0)
+            if (Website.Config.NumberOfWorkers > 0)
             {
-                numberOfWorkers = new XElement(xmlns + "NumberOfWorkers", Website.WebsiteParameters.NumberOfWorkers);
+                numberOfWorkers = new XElement(xmlns + "NumberOfWorkers", Website.Config.NumberOfWorkers);
             }
 
             #endregion

@@ -22,7 +22,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
-        internal DeleteVirtualMachineDeploymentCommand(WindowsVirtualMachineProperties properties)
+        internal DeleteVirtualMachineDeploymentCommand(VirtualMachineProperties properties)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
@@ -35,7 +35,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
-        public WindowsVirtualMachineProperties Properties { get; set; }
+        public VirtualMachineProperties Properties { get; set; }
 
         /// <summary>
         /// returns the name of the command

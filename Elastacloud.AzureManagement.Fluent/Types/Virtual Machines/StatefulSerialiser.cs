@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 
@@ -15,7 +16,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
     public abstract class StatefulSerialiser
     {
-        public abstract PersistentVMRole GetVmRole();
+        public abstract List<PersistentVMRole> GetVmRoles();
 
         #region Helpers
 

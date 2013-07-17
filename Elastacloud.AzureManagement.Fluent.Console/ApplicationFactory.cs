@@ -65,7 +65,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             {
                 return new WebsiteCreate(this);
             }
-            if (Operation == "linux")
+            if (Term == "linux")
             {
                 return new VmCreateLinux(this);
             }

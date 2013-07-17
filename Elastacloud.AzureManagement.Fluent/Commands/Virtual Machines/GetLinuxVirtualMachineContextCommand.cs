@@ -20,13 +20,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
     /// <summary>
     /// Creates a deployment for a virtual machine and allows some preconfigured defaults from the image gallery 
     /// </summary>
-    internal class GetWindowsVirtualMachineContextCommand : ServiceCommand
+    internal class GetLinuxVirtualMachineContextCommand : ServiceCommand
     {
         // GET https://management.core.windows.net/<subscription-id>/services/hostedservices/<service-name>/deploymentslots/Production
         /// <summary>
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
-        internal GetWindowsVirtualMachineContextCommand(WindowsVirtualMachineProperties properties)
+        internal GetLinuxVirtualMachineContextCommand(WindowsVirtualMachineProperties properties)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
