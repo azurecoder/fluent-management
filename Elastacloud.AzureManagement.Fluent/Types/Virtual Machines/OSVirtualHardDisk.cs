@@ -35,6 +35,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// used to generate random names for the os disks 
         /// </summary>
         private static readonly RandomAccountName Namer = new RandomAccountName();
+        /// <summary>
+        /// The operating system which is being tested for
+        /// </summary>
+        public string OS { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 

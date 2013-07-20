@@ -37,6 +37,16 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// <summary>
         /// Extra large VM (8 x 1.6GHz CPU, 14GB RAM, 2,040GB Storage)
         /// </summary>
-        ExtraLarge
+        ExtraLarge,
+
+        /// <summary>
+        /// A6 (4 x 1.6GHz CPU, 28GB RAM, 1,000GB Storage)
+        /// </summary>
+        A6,
+
+        /// <summary>
+        /// A7 (8 x 1.6GHz CPU, 56GB RAM, 2,040GB Storage)
+        /// </summary>
+        A7
     }
 }

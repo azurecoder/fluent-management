@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -62,7 +63,22 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Gets thye configuration for the virtual machine
         /// </summary>
         // TODO: PULL BACK THE CORRECT VALUE FROM HERE
-        public List<PersistentVMRole> VirtualMachine { get; private set; }
+        public List<PersistentVMRole> VirtualMachine
+        {
+            get
+            {
+                if (_vmRoles != null)
+                    return _vmRoles;
+                var command = new GetLinuxVirtualMachineContextCommand(Properties.First())
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                command.Execute();
+                return (_vmRoles = command.PersistentVm.ToList());
+            }
+        }
+
 
         /// <summary>
         /// Creates a new virtual machine from a gallery template
@@ -84,6 +100,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     Certificate = ManagementCertificate
                 };
             checkCloudServiceAvailabilityCommand.Execute();
+            Trace.WriteLine(String.Format("Checked cloud service availability - is available: {0}", checkCloudServiceAvailabilityCommand.CloudServiceAvailable));
             // when the check is complete we'll create the cloud service in the specified or default region if it doesn't exist
             if (checkCloudServiceAvailabilityCommand.CloudServiceAvailable)
             {
@@ -93,10 +110,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 cloudServiceCommand.Execute();
+                Trace.WriteLine(String.Format("Cloud service named {0} has been created", cloudServiceName));
             }
             // adds service certificate to the deployment
             AddServiceCertificateToRoles(serviceCertificate, cloudServiceName, ref properties);
-
+            Trace.WriteLine("A new service certificate has been added to the cloud service");
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
             var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[]{properties[0]}), cloudServiceName)
@@ -105,6 +123,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
+            Trace.WriteLine("Deployment created and first virtual machine added");
             // try and add the other concurrently
             // concurrency doesn't work - there is no way to build a fast deployment :-(
             for (int i = 1; i < properties.Count; i++)
@@ -119,6 +138,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 startCommand.Execute();
+                Trace.WriteLine("New VM added to deployment with hostname {0}", theProperty.HostName);
             }
 
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
@@ -166,6 +186,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 startCommand.Execute();
+                Trace.WriteLine("Added VM with hostname {0} to deployment", theProperty.HostName);
             }
         }
 
@@ -311,12 +332,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // and the provisioning doesn't occur until the role starts not when it is created
             foreach (var linuxVirtualMachineProperty in Properties)
             {
-                var restartCommand = new RestartVirtualMachineCommand(linuxVirtualMachineProperty)
+                var restartCommand = new StartVirtualMachineCommand(linuxVirtualMachineProperty)
                 {
                     SubscriptionId = SubscriptionId,
                     Certificate = ManagementCertificate
                 };
-                restartCommand.Execute();    
+                restartCommand.Execute();
+                Trace.WriteLine("VM restarted with hostname {0}", linuxVirtualMachineProperty.HostName);
             }
             
         }
@@ -326,13 +348,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
-            foreach (var stopCommand in Properties.Select(linuxVirtualMachineProperties => new StopVirtualMachineCommand(linuxVirtualMachineProperties)
-                {
-                    SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
-                }))
+            foreach (LinuxVirtualMachineProperties linuxVirtualMachineProperties in Properties)
             {
+                var stopCommand = new StopVirtualMachineCommand(linuxVirtualMachineProperties)
+                    {
+                        SubscriptionId = SubscriptionId, 
+                        Certificate = ManagementCertificate
+                    };
                 stopCommand.Execute();
+                Trace.WriteLine("VM stopped and deprovisioned with hostname {0}", linuxVirtualMachineProperties.HostName);
             }
         }
 

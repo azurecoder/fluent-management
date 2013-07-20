@@ -28,7 +28,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         internal StartVirtualMachineCommand(VirtualMachineProperties properties)
         {
-            AdditionalHeaders["x-ms-version"] = "2012-03-01";
+            AdditionalHeaders["x-ms-version"] = "2013-06-01";
             OperationId = "hostedservices";
             ServiceType = "services";
             HttpCommand = string.Format("{0}/deployments/{1}/roleinstances/{2}/Operations", properties.CloudServiceName, properties.DeploymentName, properties.RoleName);

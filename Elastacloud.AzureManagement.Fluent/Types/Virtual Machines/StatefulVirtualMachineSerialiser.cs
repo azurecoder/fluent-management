@@ -46,7 +46,12 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     GetStringValue(root.Element(Namespace + "AvailabilitySetName"));
                 persistentVirtualMachine.RoleSize = GetEnumValue<VmSize>(root.Element(Namespace + "RoleSize"));
                 persistentVirtualMachine.RoleName = GetStringValue(root.Element(Namespace + "RoleName"));
-                //persistentVirtualMachine.IPAddress = GetStringValue(root.Element(Namespace + "IpAddress"));
+                // get the roleinstance from the list
+                var roleInstance = _document.Descendants(Namespace + "RoleInstanceList").Elements(Namespace + "RoleInstance").FirstOrDefault(
+                    a => a.Element(Namespace + "RoleName").Value == persistentVirtualMachine.RoleName);
+                // add the ip address
+                persistentVirtualMachine.IPAddress = GetStringValue(roleInstance.Element(Namespace + "IpAddress"));
+
                 // get the networkconfiguration
                 var configurationSets = root.Descendants(Namespace + "ConfigurationSet");
                 foreach (var configurationSet in configurationSets)
@@ -61,6 +66,12 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     };
                 var osDisk = GetOSHardDisk(root.Element(Namespace + "OSVirtualHardDisk"));
                 persistentVirtualMachine.OSHardDisk = osDisk;
+                // check and add linux as an OS
+                if (osDisk.OS.ToLower() == "linux")
+                {
+                    persistentVirtualMachine.OperatingSystemConfigurationSet = new LinuxConfigurationSet() { HostName = GetStringValue(roleInstance.Element(Namespace + "HostName")) };
+                }
+
                 listVm.Add(persistentVirtualMachine);
             }
 
@@ -115,7 +126,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 DiskName = GetStringValue(disk.Element(Namespace + "DiskName")),
                 HostCaching = GetEnumValue<HostCaching>(disk.Element(Namespace + "HostCaching")),
                 MediaLink = GetStringValue(disk.Element(Namespace + "MediaLink")),
-                SourceImageName = GetStringValue(disk.Element(Namespace + "SourceImageName"))
+                SourceImageName = GetStringValue(disk.Element(Namespace + "SourceImageName")),
+                OS = GetStringValue(disk.Element(Namespace + "OS"))
             };
         }
 

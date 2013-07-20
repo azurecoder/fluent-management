@@ -36,7 +36,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         public void CreateSession()
         {
-
+            
         }
 
         #endregion

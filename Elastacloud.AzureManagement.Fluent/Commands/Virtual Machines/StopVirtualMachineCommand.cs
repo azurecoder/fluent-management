@@ -28,7 +28,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         internal StopVirtualMachineCommand(VirtualMachineProperties properties)
         {
-            AdditionalHeaders["x-ms-version"] = "2012-03-01";
+            AdditionalHeaders["x-ms-version"] = "2013-06-01";
             OperationId = "hostedservices";
             ServiceType = "services";
             HttpCommand = string.Format("{0}/deployments/{1}/roleinstances/{2}/Operations", properties.CloudServiceName, properties.DeploymentName, properties.RoleName);
@@ -49,12 +49,14 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         {
             /*<ShutdownRoleOperation xmlns="http://schemas.microsoft.com/windowsazure" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
    <OperationType>ShutdownRoleOperation</OperationType>
+             * <PostShutdownAction>StoppedDeallocated</PostShutdownAction>
 </ShutdownRoleOperation>*/
             XNamespace ns = "http://schemas.microsoft.com/windowsazure";
             var doc = new XDocument(
                 new XDeclaration("1.0", "utf-8", ""),
                 new XElement(ns + "ShutdownRoleOperation",
-                             new XElement(ns + "OperationType", "ShutdownRoleOperation")));
+                             new XElement(ns + "OperationType", "ShutdownRoleOperation"),
+                             new XElement(ns + "PostShutdownAction", "StoppedDeallocated")));
             return doc.ToStringFullXmlDeclaration();
         }
 

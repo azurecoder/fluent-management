@@ -26,7 +26,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
-        internal GetLinuxVirtualMachineContextCommand(WindowsVirtualMachineProperties properties)
+        internal GetLinuxVirtualMachineContextCommand(VirtualMachineProperties properties)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
@@ -40,7 +40,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
-        public WindowsVirtualMachineProperties Properties { get; set; }
+        public VirtualMachineProperties Properties { get; set; }
 
         /// <summary>
         /// Used to bring back and parse the context response for a virtual machine
@@ -68,7 +68,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         public override string ToString()
         {
-            return "GetWindowsVirtualMachineContextCommand";
+            return "GetLinuxVirtualMachineContextCommand";
         }
     }
 }
