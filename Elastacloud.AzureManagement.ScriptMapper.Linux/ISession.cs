@@ -42,7 +42,22 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// <summary>
         /// Copies a directory to the local filesystem from the remote server
         /// </summary>
-        /// <param name="directoryName">The absolute path of the directory name</param>
-        void CopyDirectoryLocally(string directoryName);
+        /// <param name="remoteDirectory">The absolute path of the directory name</param>
+        /// <param name="localDirectory">The absolute path of the directory name</param>
+        void CopyDirectoryLocally(string remoteDirectory, string localDirectory);
+
+        /// <summary>
+        /// A method to copy the remote file to the local file
+        /// </summary>
+        /// <param name="remoteFilePath">The remote file on the server</param>
+        /// <param name="remoteFileName">The name of the remote file</param>
+        /// <param name="localDirectory">The local directoryto place the file</param>
+        void CopyFileLocally(string remoteFilePath, string remoteFileName, string localDirectory);
+        /// <summary>
+        /// uploads a file to the a directory of the server 
+        /// </summary>
+        /// <param name="remotePath">The absolute remote path of the file - it will be overwritten every time</param>
+        /// <param name="localPath">the local path from which the file be uploaded</param>
+        void UploadFile(string remotePath, string localPath);
     }
 }
