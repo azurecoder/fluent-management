@@ -28,8 +28,21 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         string PathToPrivateKey { get; set; }
         /// <summary>
+        /// The name of the host we're trying to connect with 
+        /// </summary>
+        string Hostname { get; set; }
+        /// <summary>
+        /// The port that the hostname is connectable on
+        /// </summary>
+        int Port { get; set; }
+        /// <summary>
         /// Creates a linux ssh session
         /// </summary>
         void CreateSession();
+        /// <summary>
+        /// Copies a directory to the local filesystem from the remote server
+        /// </summary>
+        /// <param name="directoryName">The absolute path of the directory name</param>
+        void CopyDirectoryLocally(string directoryName);
     }
 }
