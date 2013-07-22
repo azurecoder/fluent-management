@@ -9,6 +9,7 @@ using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
+using Elastacloud.AzureManagement.Fluent.Linq;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
@@ -28,7 +29,24 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
-           
+            var input = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId,
+                                                      _applicationFactory.ManagementCertificate);
+            input.CleanupUnattachedDisks();
+
+            var inputs = new LinqToAzureInputs()
+            {
+                ManagementCertificateThumbprint = _applicationFactory.ManagementCertificate.Thumbprint,
+                SubscriptionId = _applicationFactory.SubscriptionId
+            };
+            var queryableVirtualMachines = new LinqToAzureOrderedQueryable<VirtualMachineProperties>(inputs);
+            // build up a filtered query to check the new account
+            var query = from vms in queryableVirtualMachines
+                        where vms.CloudServiceName == "rmpicloud3"
+                        select vms;
+            var myAccount = query.First();
+    
+
+            
         }
 
         public void ParseTokens(string[] args)

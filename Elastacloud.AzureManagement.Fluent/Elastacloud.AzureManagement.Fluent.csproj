@@ -109,6 +109,7 @@
     <Compile Include="Commands\MobileServices\DeleteMobileServiceCommand.cs" />
     <Compile Include="Commands\MobileServices\GetSharedInstanceCountCommand.cs" />
     <Compile Include="Commands\Parsers\CheckCloudServiceNameAvailableParser.cs" />
+    <Compile Include="Commands\Parsers\GetAllDisksParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteMetricsParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteServerFarmParser.cs" />
     <Compile Include="Commands\Parsers\WebspacePropertiesParser.cs" />
@@ -121,7 +122,8 @@
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
     <Compile Include="Commands\Virtual Machines\AddLinuxVirtualMachineToDeploymentCommand.cs" />
-    <Compile Include="Commands\Virtual Machines\GetLinuxVirtualMachineContextCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\GetVirtualDisksCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\GetVirtualMachineContextCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateLinuxVirtualMachineDeploymentCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineDiskCommand.cs" />
     <Compile Include="Commands\ErrorRouter.cs" />
@@ -204,11 +206,13 @@
     <Compile Include="Commands\Websites\WebsiteContextRequestCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteListCommand.cs" />
     <Compile Include="Fluent API\LinqToAzure\Executors\CloudServiceExecutor.cs" />
+    <Compile Include="Fluent API\LinqToAzure\Executors\VirtualMachineExecutor.cs" />
     <Compile Include="Fluent API\LinqToAzure\Finders\CloudServiceFinder.cs" />
     <Compile Include="Fluent API\LinqToAzure\Evaluator.cs" />
     <Compile Include="Fluent API\LinqToAzure\ExecutionFactory.cs" />
     <Compile Include="Fluent API\LinqToAzure\ExpressionTreeHelpers.cs" />
     <Compile Include="Fluent API\LinqToAzure\ExpressionTreeModifier.cs" />
+    <Compile Include="Fluent API\LinqToAzure\Finders\VirtualMachineFinder.cs" />
     <Compile Include="Fluent API\LinqToAzure\IExecuteQuery.cs" />
     <Compile Include="Fluent API\LinqToAzure\InnermostWhereFinder.cs" />
     <Compile Include="Fluent API\LinqToAzure\InvalidQueryException.cs" />
@@ -231,11 +235,13 @@
     <Compile Include="Helpers\LocationConstants.cs" />
     <Compile Include="Helpers\OPC\PackageFile.cs" />
     <Compile Include="Clients\Interfaces\IHDInsightClient.cs" />
+    <Compile Include="Types\AttachedVM.cs" />
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\ComputeMode.cs" />
     <Compile Include="Types\Virtual Machines\KeyType.cs" />
     <Compile Include="Types\Virtual Machines\LinuxConfigurationSet.cs" />
     <Compile Include="Types\Virtual Machines\SSHKey.cs" />
+    <Compile Include="Types\VirtualDisk.cs" />
     <Compile Include="Types\Websites\MetricsConstants.cs" />
     <Compile Include="Types\Websites\WebsiteMetric.cs" />
     <Compile Include="Types\Websites\WebspaceDetails.cs" />

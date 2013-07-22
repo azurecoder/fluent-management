@@ -34,6 +34,7 @@ namespace Elastacloud.AzureManagement.Fluent.Linq
             var newExpressionTree = treeCopier.Visit(expression);
 
             // This step creates an IQueryable that executes by replacing Queryable methods with Enumerable methods. 
+           // return queryableStorageAccount;
             return isEnumerable ? queryableStorageAccount.Provider.CreateQuery(newExpressionTree) : queryableStorageAccount.Provider.Execute(newExpressionTree);
         }
 

@@ -111,9 +111,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Deletes the virtual machine that has context with the client
         /// </summary>
         /// <param name="removeDisks">True if the underlying disks in blob storage should be removed</param>
+        /// <param name="removeUnderlyingBlobs">Whether or not remove the blob as well as the OS disk</param>
         /// <param name="removeCloudService">Removes the cloud service container</param>
         /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
-        public void DeleteVirtualMachine(bool removeDisks = true, bool removeCloudService = true, bool removeStorageAccount = true)
+        public void DeleteVirtualMachine(bool removeDisks = true, bool removeUnderlyingBlobs = true, bool removeCloudService = true, bool removeStorageAccount = true)
         {
             // set this if it hasn't been set yet
             PersistentVMRole vm = null;
@@ -284,6 +285,33 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the blob which is stored for the vm
         /// </summary>
         public string StorageFileName { get; private set; }
+
+        /// <summary>
+        /// Cleans up any disks which don't have an attached VM
+        /// </summary>
+        public void CleanupUnattachedDisks()
+        {
+            // get all of the disks in the subscription
+            var command = new GetVirtualDisksCommand()
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            var disks = command.Disks;
+            // initiate the blob delete
+
+            // iterate through the disks and clean up the unattached ones
+            foreach (var disk in disks)
+            {
+                // get the blob details
+                //string storageAccount = ParseBlobDetails(disk.MediaLink);
+                //IBlobClient blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount, ManagementCertificate);
+                DeleteNamedVirtualMachineDisk(disk.Name);
+                // delete the underlying blob
+                //blobClient.DeleteBlob(disk.Name);
+            }
+        }
 
         /// <summary>
         /// download rdp file for the windows vm

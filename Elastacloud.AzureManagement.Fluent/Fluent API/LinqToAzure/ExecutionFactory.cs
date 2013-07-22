@@ -13,6 +13,8 @@ using System.Linq.Expressions;
 using System.Text;
 using Elastacloud.AzureManagement.Fluent.Linq;
 using Elastacloud.AzureManagement.Fluent.Types;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.LinqToAzure
 {
@@ -100,6 +102,11 @@ namespace Elastacloud.AzureManagement.Fluent.LinqToAzure
             {
                 _queryable = new CloudServiceExecutor(_lambdaExpression);
                 return _queryable.Execute<CloudService>(_inputs);
+            }
+            if (_expressionQueryableType == typeof(LinqToAzureOrderedQueryable<VirtualMachineProperties>))
+            {
+                _queryable = new VirtualMachineExecutor(_lambdaExpression);
+                return _queryable.Execute<List<PersistentVMRole>>(_inputs);
             }
             throw new ApplicationException("Unsupported factory type");
         }

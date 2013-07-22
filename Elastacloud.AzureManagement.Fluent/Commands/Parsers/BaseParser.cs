@@ -98,6 +98,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         #region Root Verbs
 
         /// <summary>
+        /// The root element for VirtualDisks
+        /// </summary>
+        public const string GetVirtualDisksParser = "Disks";
+        /// <summary>
         /// The root element for the mobile services table list
         /// </summary>
         public const string ListMobileServiceTablesParser = "Tables";

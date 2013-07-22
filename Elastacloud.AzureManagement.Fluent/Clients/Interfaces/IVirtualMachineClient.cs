@@ -18,15 +18,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
     /// </summary>
     public interface IVirtualMachineClient
     {
-       
-
         /// <summary>
         /// Deletes the virtual machine that has context with the client
         /// </summary>
         /// <param name="removeDisks">True if the underlying disks in blob storage should be removed</param>
+        /// <param name="removeUnderlyingBlobs">Whether or not remove the blob as well as the OS disk</param>
         /// <param name="removeCloudService">Removes the cloud service container</param>
         /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
-        void DeleteVirtualMachine(bool removeDisks, bool removeCloudService, bool removeStorageAccount);
+        void DeleteVirtualMachine(bool removeDisks, bool removeUnderlyingBlobs, bool removeCloudService, bool removeStorageAccount);
         /// <summary>
         /// Deletes a vm disk if a name is known
         /// </summary>
@@ -49,6 +48,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// The name of the blob which is stored for the vm
         /// </summary>
         string StorageFileName { get; }
+        /// <summary>
+        /// Cleans up any disks which don't have an attached VM
+        /// </summary>
+        void CleanupUnattachedDisks();
 
     }
 }

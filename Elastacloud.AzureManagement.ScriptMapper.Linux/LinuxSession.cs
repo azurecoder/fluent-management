@@ -8,6 +8,9 @@ using Renci.SshNet;
 
 namespace Elastacloud.AzureManagement.ScriptMapper.Linux
 {
+    /// <summary>
+    /// Specifically a linux implementation of the 
+    /// </summary>
     public class LinuxSession : ISession
     {
         private SshClient _sshclient = null;

@@ -69,7 +69,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 if (_vmRoles != null)
                     return _vmRoles;
-                var command = new GetLinuxVirtualMachineContextCommand(Properties.First())
+                var command = new GetVirtualMachineContextCommand(Properties.First())
                     {
                         SubscriptionId = SubscriptionId,
                         Certificate = ManagementCertificate
@@ -138,7 +138,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 startCommand.Execute();
-                Trace.WriteLine("New VM added to deployment with hostname {0}", theProperty.HostName);
+                Trace.WriteLine(String.Format("New VM added to deployment with hostname {0}", theProperty.HostName));
             }
 
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
@@ -186,7 +186,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 startCommand.Execute();
-                Trace.WriteLine("Added VM with hostname {0} to deployment", theProperty.HostName);
+                Trace.WriteLine(String.Format("Added VM with hostname {0} to deployment", theProperty.HostName));
             }
         }
 
@@ -206,9 +206,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Deletes the virtual machine that has context with the client
         /// </summary>
         /// <param name="removeDisks">True if the underlying disks in blob storage should be removed</param>
+        /// <param name="removeUnderlyingBlobs">removes the underlying blob</param>
         /// <param name="removeCloudService">Removes the cloud service container</param>
         /// <param name="removeStorageAccount">The storage account that the vhd is in</param>
-        public void DeleteVirtualMachine(bool removeDisks, bool removeCloudService, bool removeStorageAccount)
+        public void DeleteVirtualMachine(bool removeDisks = true, bool removeUnderlyingBlobs = true, bool removeCloudService = true, bool removeStorageAccount = true)
         {
             //TODO: write a get method for the virtual machine properties
             IBlobClient blobClient = null;
@@ -218,11 +219,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 string diskName = vm.OSHardDisk.DiskName;
                 string storageAccount = ParseBlobDetails(vm.OSHardDisk.MediaLink);
                 // create the blob client
-                blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount,
-                                                        ManagementCertificate);
+                blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount, ManagementCertificate);
 
                 // find the property
                 var linuxVirtualMachineProperty = Properties.Find(a => a.RoleName == vm.RoleName);
+                // if this property is null then we don't want it to impede the operation
+                if (linuxVirtualMachineProperty == null)
+                    continue;
                 // first delete the virtual machine command
                 var deleteVirtualMachine = new DeleteVirtualMachineCommand(linuxVirtualMachineProperty)
                     {
@@ -232,24 +235,32 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 try
                 {
                     deleteVirtualMachine.Execute();
+                    Trace.WriteLine(String.Format("Deleted virtual machine {0}", linuxVirtualMachineProperty.HostName));
                 }
                 catch (Exception)
                 {
-                    // should be a 400 here if this is the case then there is only a single role in the deployment - quicker to do it this way!
-                    var deleteVirtualMachineDeployment = new DeleteVirtualMachineDeploymentCommand(linuxVirtualMachineProperty)
-                        {
-                            SubscriptionId = SubscriptionId,
-                            Certificate = ManagementCertificate
-                        };
-                    deleteVirtualMachineDeployment.Execute();
+                    if (VirtualMachine.Count == 1)
+                    {
+                        // should be a 400 here if this is the case then there is only a single role in the deployment - quicker to do it this way!
+                        var deleteVirtualMachineDeployment =
+                            new DeleteVirtualMachineDeploymentCommand(linuxVirtualMachineProperty)
+                                {
+                                    SubscriptionId = SubscriptionId,
+                                    Certificate = ManagementCertificate
+                                };
+                        deleteVirtualMachineDeployment.Execute();
+                    }
                 }
+
+                if (!removeDisks)
+                    continue;
 
                 // when this is finished we'll delete the operating system disk - check this as we may need to putin a pause
                 // remove the disk association
                 DeleteNamedVirtualMachineDisk(diskName);
                 // remove the data disks
-                DeleteDataDisks(vm, removeDisks ? blobClient : null);
-                if (removeDisks)
+                DeleteDataDisks(vm, removeUnderlyingBlobs ? blobClient : null);
+                if (removeUnderlyingBlobs)
                 {
                     // remove the physical disk
                     blobClient.DeleteBlob(StorageFileName);
@@ -330,6 +341,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             // start the role up -- this could take a while the previous two operations are fairly lightweight
             // and the provisioning doesn't occur until the role starts not when it is created
+            Trace.WriteLine(String.Format("Stopping {0} virtual machines in deployment {1} in cloud service {2}",
+               Properties.Count, Properties.First().DeploymentName, Properties.First().CloudServiceName));
             foreach (var linuxVirtualMachineProperty in Properties)
             {
                 var restartCommand = new StartVirtualMachineCommand(linuxVirtualMachineProperty)
@@ -338,7 +351,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     Certificate = ManagementCertificate
                 };
                 restartCommand.Execute();
-                Trace.WriteLine("VM restarted with hostname {0}", linuxVirtualMachineProperty.HostName);
+                Trace.WriteLine(String.Format("VM restarted with hostname {0}", linuxVirtualMachineProperty.HostName));
             }
             
         }
@@ -348,6 +361,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
+            Trace.WriteLine(String.Format("Stopping {0} virtual machines in deployment {1} in cloud service {2}", 
+                Properties.Count, Properties.First().DeploymentName, Properties.First().CloudServiceName));
             foreach (LinuxVirtualMachineProperties linuxVirtualMachineProperties in Properties)
             {
                 var stopCommand = new StopVirtualMachineCommand(linuxVirtualMachineProperties)
@@ -356,7 +371,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 stopCommand.Execute();
-                Trace.WriteLine("VM stopped and deprovisioned with hostname {0}", linuxVirtualMachineProperties.HostName);
+                Trace.WriteLine(String.Format("VM stopped and deprovisioned with hostname {0}", linuxVirtualMachineProperties.HostName));
             }
         }
 
@@ -380,6 +395,37 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the blob which is stored for the vm
         /// </summary>
         public string StorageFileName { get; private set; }
+
+        /// <summary>
+        /// Cleans up any disks which don't have an attached VM
+        /// </summary>
+        public void CleanupUnattachedDisks()
+        {
+            // get all of the disks in the subscription
+            var command = new GetVirtualDisksCommand()
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            command.Execute();
+            var disks = command.Disks;
+            // initiate the blob delete
+
+            // iterate through the disks and clean up the unattached ones
+            foreach (var disk in disks)
+            {
+                // make sure the disk is unattached
+                if (disk.VM != null) continue;
+                // get the blob details
+                string storageAccount = ParseBlobDetails(disk.MediaLink);
+                IBlobClient blobClient = new BlobClient(SubscriptionId, StorageContainerName, storageAccount, ManagementCertificate);
+                DeleteNamedVirtualMachineDisk(disk.Name);
+                Trace.WriteLine(String.Format("Deleting disk with name {0}", disk.Name));
+                // delete the underlying blob
+                blobClient.DeleteBlob(StorageFileName);
+                Trace.WriteLine(String.Format("Deleting disk with name {0}", StorageFileName));
+            }
+        }
 
         #endregion
     }
