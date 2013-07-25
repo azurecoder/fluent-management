@@ -92,7 +92,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="exportDirectory">Where the .pem, .cer and pfx will be put</param>
         public X509Certificate2 CreateServiceCertificate(string name, string password, string exportDirectory)
         {
-            return CertificateGenerator.Create("ASOS R-MPI", DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)),
+            return CertificateGenerator.Create(name, DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)),
                                         DateTime.UtcNow.AddYears(2), password, true, exportDirectory);
         }
 
@@ -139,6 +139,29 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             deleteDeployment.Execute();
         }
 
+        /// <summary>
+        /// Updates a role instance count within a cloud services
+        /// </summary>
+        public void UpdateRoleInstanceCount(string roleName, int instanceCount)
+        {
+            var config = new GetDeploymenConfigurationCommand(Name)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            config.Execute();
+            config.Configuration.SetInstanceCountForRole(roleName, instanceCount);
+            var update = new SetDeploymenConfigurationCommand(Name, config.Configuration)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            update.Execute();
+        }
+
+        /// <summary>
+        /// Creates a service certificate and adds to the remote config 
+        /// </summary>
         public ServiceCertificate CreateServiceCertificateAndAddRemoteDesktop(string username, string password, ref CscfgFile file)
         {
             var certificate = new ServiceCertificate(username, password);

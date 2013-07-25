@@ -232,7 +232,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             // start the role up -- this could take a while the previous two operations are fairly lightweight
             // and the provisioning doesn't occur until the role starts not when it is created
-            var restartCommand = new RestartVirtualMachineCommand(Properties)
+            var restartCommand = new StartVirtualMachineCommand(Properties)
             {
                 SubscriptionId = Properties.SubscriptionId,
                 Certificate = Properties.Certificate

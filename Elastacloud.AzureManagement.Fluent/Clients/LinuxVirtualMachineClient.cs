@@ -341,7 +341,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             // start the role up -- this could take a while the previous two operations are fairly lightweight
             // and the provisioning doesn't occur until the role starts not when it is created
-            Trace.WriteLine(String.Format("Stopping {0} virtual machines in deployment {1} in cloud service {2}",
+            Trace.WriteLine(String.Format("Restarting {0} virtual machines in deployment {1} in cloud service {2}",
                Properties.Count, Properties.First().DeploymentName, Properties.First().CloudServiceName));
             foreach (var linuxVirtualMachineProperty in Properties)
             {

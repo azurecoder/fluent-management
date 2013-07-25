@@ -78,6 +78,10 @@
       <Project>{6119d185-70b4-4137-97ed-876a30e0850b}</Project>
       <Name>Elastacloud.AzureManagement.Fluent</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Elastacloud.AzureManagement.ScriptMapper.Linux\Elastacloud.AzureManagement.ScriptMapper.Linux.csproj">
+      <Project>{5224b49e-b6b8-425b-87fc-fe65a7c85e91}</Project>
+      <Name>Elastacloud.AzureManagement.ScriptMapper.Linux</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

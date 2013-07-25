@@ -48,6 +48,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <param name="slot">Either production or staging</param>
         void DeleteDeployment(DeploymentSlot slot = DeploymentSlot.Production);
         /// <summary>
+        /// Updates a role instance count within a cloud services
+        /// </summary>
+        void UpdateRoleInstanceCount(string roleName, int count);
+        /// <summary>
         /// Adds a remote desktop 
         /// </summary>
         /// <param name="username">The name of the user</param>
