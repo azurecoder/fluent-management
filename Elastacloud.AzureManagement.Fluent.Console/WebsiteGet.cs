@@ -52,6 +52,12 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             //connector.ScaleUpdate += (state, count) => System.Console.WriteLine("State: {0}, Scale: {1}", state, count);
             //connector.MonitorAndScale();
 
+            var client3 = new WebsiteClient(_subscriptionId, _certificate, "fluentwebtest38");
+            client3.Stop();
+            client3.Restart();
+
+
+
             var engineAlert = new WasabiWebRulesEngine("fluentwebtest38", 200);
             engineAlert.AddRule(new WasabiWebRule(MetricsConstants.Http2xx, 3));
             var connector2 = new WebsiteManagementConnector(engineAlert, _subscriptionId, WasabiWebLogicalOperation.Or)

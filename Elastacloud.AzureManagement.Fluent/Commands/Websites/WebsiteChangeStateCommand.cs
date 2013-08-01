@@ -46,7 +46,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Websites
                     new XDeclaration("1.0", "utf-8", ""),
                     new XElement(ns + "Site",
                                              new XElement(ns + "HostNames", 
-                                                 new XElement(array + "string", Site.Name + "azurewebsites.net")),
+                                                 new XElement(array + "string", Site.Name + ".azurewebsites.net")),
                                              new XElement(ns + "Name", Name),
                                              new XElement(ns + "State", State.ToString())));
             return doc.ToStringFullXmlDeclaration();

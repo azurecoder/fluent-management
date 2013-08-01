@@ -43,7 +43,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Contains a running total of all of the region counts related to that subscription
         /// </summary>
-        private Dictionary<string, int> regionCounts = new Dictionary<string, int>(); 
+        private readonly Dictionary<string, int> _regionCounts = new Dictionary<string, int>(); 
 
         #region Implementation of IWebsiteClient
 
@@ -52,6 +52,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public List<Website> List()
         {
+            // set the regioncount back to zero
+            _regionCounts.Clear();
             // get the lise of webspaces
             var websites = new List<Website>();
             var command = new GetWebsiteListCommand()
@@ -75,7 +77,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 if(context.Websites != null)
                     websites.AddRange(context.Websites);
                 // add the number of instances to the running collection for the webspace
-                regionCounts.Add(region.Name, region.InstanceCount);
+                _regionCounts.Add(region.Name, region.InstanceCount);
             }
 
             return websites;

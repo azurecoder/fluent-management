@@ -31,7 +31,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
-            
+           
         }
 
         public void ParseTokens(string[] args)

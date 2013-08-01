@@ -92,11 +92,11 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         public void CreateSession()
         {
-            var keyConverter = new SSHKeyConverter(PathToPrivateKey, UserPassword);
-            if (!keyConverter.Convert())
-            {
-                throw new ApplicationException("unable to convert key file");
-            }
+            //var keyConverter = new SSHKeyConverter(PathToPrivateKey, UserPassword);
+            //if (!keyConverter.Convert())
+            //{
+            //    throw new ApplicationException("unable to convert key file");
+            //}
             
             _sshclient = DisablePasswordLogin ? new SshClient(Hostname, Port, UserName, new PrivateKeyFile(PathToPrivateKey, UserPassword)) : new SshClient(Hostname, Port, UserName, UserPassword);
             _sshclient.Connect();
@@ -156,6 +156,17 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         {
             var sshCommand = _sshclient.CreateCommand(command);
             return sshCommand.Execute();
+        }
+
+        public string ExecuteWithRetries(string command, int count)
+        {
+            string response = null;
+            int i = 0;
+            while (String.IsNullOrEmpty(response) && i++ <= count)
+            {
+                response = ExecuteCommand(command);
+            }
+            return response;
         }
 
         /// <summary>
