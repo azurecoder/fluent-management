@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
@@ -51,12 +52,30 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Updates a role instance count within a cloud services
         /// </summary>
         void UpdateRoleInstanceCount(string roleName, int count);
+
         /// <summary>
         /// Adds a remote desktop 
         /// </summary>
         /// <param name="username">The name of the user</param>
         /// <param name="password">the password of the user</param>
+        /// <param name="file">The Cscfg file</param>
         /// <returns>A service certificate to be uploaded to azure</returns>
         ServiceCertificate CreateServiceCertificateAndAddRemoteDesktop(string username, string password, ref CscfgFile file);
+        /// <summary>
+        /// Returns a list of roles for a given cloud service
+        /// </summary>
+        List<string> Roles { get; }
+        /// <summary>
+        /// Gets or sets the deployment slot for the cloud service
+        /// </summary>
+        DeploymentSlot Slot { get; set; }
+        /// <summary>
+        /// Starts all of the roles within a cloud service
+        /// </summary>
+        void Start();
+        /// <summary>
+        /// Stops all of the roles within a cloud service
+        /// </summary>
+        void Stop();
     }
 }

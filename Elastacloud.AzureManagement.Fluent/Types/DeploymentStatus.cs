@@ -10,24 +10,18 @@
 namespace Elastacloud.AzureManagement.Fluent.Types
 {
     /// <summary>
-    /// The status that a role instance can take
+    /// The status that a role can take transitioning between statuses or cycling round 
     /// </summary>
     public enum DeploymentStatus
     {
-        RoleStateUnknown,
-        CreatingVM,
-        StartingVM,
-        CreatingRole,
-        StartingRole,
-        ReadyRole,
-        BusyRole,
-        StoppingRole,
-        StoppingVM,
-        DeletingVM,
-        StoppedVM,
-        RestartingRole,
-        CyclingRole,
-        FailedStartingVM,
-        UnresponsiveRole
+        Running,
+        Suspended,
+        RunningTransitioning,
+        SuspendedTransitioning,
+        Starting,
+        Suspending,
+        Deploying,
+        Deleting,
+        Unknown
     }
 }

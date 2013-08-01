@@ -163,7 +163,7 @@
     <Compile Include="Commands\Services\GetHostedServiceContainsDeploymentCommand.cs" />
     <Compile Include="Commands\Services\GetDeploymentConfigurationCommand.cs" />
     <Compile Include="Commands\Services\GetDeploymentRoleNamesCommand.cs" />
-    <Compile Include="Commands\Services\GetRoleStatusCommand.cs" />
+    <Compile Include="Commands\Services\GetDeploymentStatusCommand.cs" />
     <Compile Include="Commands\Services\GetAggregateDeploymentStatusCommand.cs" />
     <Compile Include="Commands\Services\GetHostedServiceListCommand.cs" />
     <Compile Include="Commands\Services\CreateDeploymentCommand.cs" />
@@ -318,7 +318,7 @@
     <Compile Include="Fluent API\Virtual Machines\IVirtualMachineQuery.cs" />
     <Compile Include="Fluent API\Virtual Machines\VirtualMachineManager.cs" />
     <Compile Include="Fluent API\Watchers\BaseWatcher.cs" />
-    <Compile Include="Fluent API\Watchers\RoleStatusWatcher.cs" />
+    <Compile Include="Fluent API\Watchers\DeploymentStatusWatcher.cs" />
     <Compile Include="Helpers\Base64ConfigReader.cs" />
     <Compile Include="Helpers\CertificateGenerator.cs" />
     <Compile Include="Helpers\Extensions.cs" />
@@ -340,14 +340,13 @@
     <Compile Include="Types\ConfigurationFile.cs" />
     <Compile Include="Types\ConfigurationFileType.cs" />
     <Compile Include="Types\Constants.cs" />
-    <Compile Include="Types\DeploymentStatus.cs" />
     <Compile Include="Types\CscfgFile.cs" />
     <Compile Include="Types\CsdefFile.cs" />
     <Compile Include="Types\Exceptions\StorageAccountDoesNotExistException.cs" />
     <Compile Include="Types\Exceptions\StorageAccountAlreadyExistsException.cs" />
     <Compile Include="Types\ICustomXmlSerializer.cs" />
     <Compile Include="Types\LocationInformation.cs" />
-    <Compile Include="Types\RoleStatus.cs" />
+    <Compile Include="Types\DeploymentStatus.cs" />
     <Compile Include="Types\StorageAccount.cs" />
     <Compile Include="Types\DeploymentSlot.cs" />
     <Compile Include="Types\CloudService.cs" />

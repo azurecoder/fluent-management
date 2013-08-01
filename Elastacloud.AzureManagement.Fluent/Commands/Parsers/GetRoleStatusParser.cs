@@ -36,10 +36,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         {
             var status = (string) Document.Element(GetSchema() + RootElement)
                                       .Element(GetSchema() + "Status");
-            RoleStatus roleStatus;
-            Enum.TryParse(status, true, out roleStatus);
+            RoleStatus deploymentStatus;
+            Enum.TryParse(status, true, out deploymentStatus);
 
-            CommandResponse = roleStatus;
+            CommandResponse = deploymentStatus;
         }
 
         #region Overrides of BaseParser

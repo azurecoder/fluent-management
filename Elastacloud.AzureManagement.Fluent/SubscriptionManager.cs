@@ -90,12 +90,12 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <param name="roleName">the name of the role</param>
         /// <param name="slot">the name of the deployment slot either production or staging</param>
         /// <param name="certificateThumbprint">the thumbprint of the management certificate</param>
-        /// <returns>A RoleStatusWatcher class instance</returns>
-        public RoleStatusWatcher GetRoleStatusChangedWatcher(string serviceName, string roleName, DeploymentSlot slot,
+        /// <returns>A DeploymentStatusWatcher class instance</returns>
+        public DeploymentStatusWatcher GetRoleStatusChangedWatcher(string serviceName, string roleName, DeploymentSlot slot,
                                                              string certificateThumbprint)
         {
             X509Certificate2 certificate = PublishSettingsExtractor.FromStore(certificateThumbprint);
-            return new RoleStatusWatcher(serviceName, roleName, slot, certificate, _subscriptionId);
+            return new DeploymentStatusWatcher(serviceName, slot, certificate, _subscriptionId);
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
 {
     public class RoleContextManager : IRoleOperation
     {
-        private RoleStatusWatcher _watcher;
+        private DeploymentStatusWatcher _watcher;
         /// <summary>
         /// Used to create a role context
         /// </summary>
@@ -124,7 +124,7 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
             get
             {
                 if(_watcher == null)
-                    _watcher = new RoleStatusWatcher(ServiceName, RoleName, DeploymentSlot, ManagementCertificate, SubscriptionId);
+                    _watcher = new DeploymentStatusWatcher(ServiceName, DeploymentSlot, ManagementCertificate, SubscriptionId);
 
                 return _watcher.CurrentState;
             }

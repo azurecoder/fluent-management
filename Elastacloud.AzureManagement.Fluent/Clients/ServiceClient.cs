@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
@@ -24,11 +25,43 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Used to construct the ServiceClient
         /// </summary>
-        public ServiceClient(string subscriptionId, X509Certificate2 certificate, string cloudService)
+        public ServiceClient(string subscriptionId, X509Certificate2 certificate, string cloudService, DeploymentSlot slot = DeploymentSlot.Production)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
             Name = cloudService;
+            Slot = slot;
+        }
+
+        /// <summary>
+        /// gets or sets the deployment slot for the cloud service
+        /// </summary>
+        public DeploymentSlot Slot { get; set; }
+
+        /// <summary>
+        /// Starts all of the roles within a cloud service
+        /// </summary>
+        public void Start()
+        {
+            var command = new UpdateRoleStatusCommand(Name, Slot, UpdateDeploymentStatus.Running)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+            command.Execute();
+        }
+
+        /// <summary>
+        /// Stops all of the roles within a cloud service
+        /// </summary>
+        public void Stop()
+        {
+            var command = new UpdateRoleStatusCommand(Name, Slot, UpdateDeploymentStatus.Suspended)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
         }
 
         /// <summary>
@@ -174,6 +207,23 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                               };
             file.NewVersion = ((ICloudConfig) desktop).ChangeConfig(file.NewVersion);
             return certificate;
+        }
+
+        /// <summary>
+        /// Returns a list of roles for a given cloud service
+        /// </summary>
+        public List<string> Roles
+        {
+            get
+            {
+                var command = new GetDeploymenRoleNamesCommand(Name, Slot)
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                command.Execute();
+                return command.RoleNames;
+            }
         }
     }
 }
