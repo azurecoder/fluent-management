@@ -119,7 +119,7 @@ namespace Elastacloud.AzureManagement.Fluent.Roles
         /// <summary>
         /// Gets the current status of the role
         /// </summary>
-        public RoleStatus CurrentStatus
+        public DeploymentStatus CurrentStatus
         {
             get
             {

@@ -25,7 +25,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         public GetRoleStatusParser(XDocument response)
             : base(response)
         {
-            CommandResponse = RoleStatus.Unknown;
+            CommandResponse = DeploymentStatus.Unknown;
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         {
             var status = (string) Document.Element(GetSchema() + RootElement)
                                       .Element(GetSchema() + "Status");
-            RoleStatus deploymentStatus;
+            DeploymentStatus deploymentStatus;
             Enum.TryParse(status, true, out deploymentStatus);
 
             CommandResponse = deploymentStatus;

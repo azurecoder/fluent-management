@@ -8,7 +8,6 @@
  ************************************************************************************************************/
 
 using System.IO;
-using Chilkat;
 
 namespace Elastacloud.AzureManagement.ScriptMapper.Linux
 {
@@ -41,22 +40,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
                 fileContent = reader.ReadToEnd();
             }
             // check to see whether this has worked
-            var key = new SshKey() {Password = _password};
-            if (key.FromRfc4716PublicKey(fileContent))
-            {
-                string openSshKey = key.ToOpenSshPrivateKey(true);
-                if (string.IsNullOrEmpty(openSshKey))
-                {
-                    // get a new file 
-                    string fileName = Path.GetFileNameWithoutExtension(_privateKeyFile) + ".fluentkey";
-                    using (var writer = new StreamWriter(fileName))
-                    {
-                        writer.Write(openSshKey);
-                    }
-                    KeyFilePath = fileName;
-                    return true;
-                }
-            }
+           
             return false;
         }
 

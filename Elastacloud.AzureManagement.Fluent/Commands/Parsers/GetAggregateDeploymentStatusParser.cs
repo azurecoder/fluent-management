@@ -38,7 +38,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
         {
             IEnumerable<XElement> rootElements = Document.Element(GetSchema() + RootElement)
                 .Descendants(GetSchema() + "RoleInstance");
-            if (rootElements.Select(roleInstance => roleInstance.Element(GetSchema() + "InstanceStatus").Value).Select(instanceStatus => (DeploymentStatus) Enum.Parse(typeof (DeploymentStatus), instanceStatus)).Any(status => status != DeploymentStatus.ReadyRole))
+            if (rootElements.Select(roleInstance => roleInstance.Element(GetSchema() + "InstanceStatus").Value).Select(instanceStatus => (RoleInstanceStatus) Enum.Parse(typeof (RoleInstanceStatus), instanceStatus)).Any(status => status != RoleInstanceStatus.ReadyRole))
             {
                 return;
             }
