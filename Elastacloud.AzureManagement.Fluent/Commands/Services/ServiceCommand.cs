@@ -61,7 +61,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             //Track and throw up the X-ms request id (x-ms-request-id)
             MsftAsyncResponseId = webResponse.GetResponseHeader("x-ms-request-id");
-            Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+           // Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
             for (;;)
             {
                 var asyncCommand = new GetAsyncStatusCommand
@@ -80,11 +80,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                     case OperationStatus.InProgress:
                         break;
                     case OperationStatus.Failed:
-                        Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+                        //Trace.WriteLine(String.Format("Hosted Service Response Id: {0}", MsftAsyncResponseId);
                         SitAndWait.Set();
                         return;
                     case OperationStatus.Succeeded:
-                        Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+                        //Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
                         SitAndWait.Set();
                         return;
                 }

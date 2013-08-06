@@ -92,16 +92,16 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         public void CreateSession()
         {
-            //var keyConverter = new SSHKeyConverter(PathToPrivateKey, UserPassword);
-            //if (!keyConverter.Convert())
-            //{
-            //    throw new ApplicationException("unable to convert key file");
-            //}
+            var keyConverter = new SSHKeyConverter(PathToPrivateKey, UserPassword);
+            if (!keyConverter.Convert())
+            {
+                throw new ApplicationException("unable to convert key file");
+            }
             
-            _sshclient = DisablePasswordLogin ? new SshClient(Hostname, Port, UserName, new PrivateKeyFile(PathToPrivateKey, UserPassword)) : new SshClient(Hostname, Port, UserName, UserPassword);
+            _sshclient = DisablePasswordLogin ? new SshClient(Hostname, Port, UserName, new PrivateKeyFile(keyConverter.KeyFilePath)) : new SshClient(Hostname, Port, UserName, UserPassword);
             _sshclient.Connect();
 
-            _sftpClient = DisablePasswordLogin ? new SftpClient(Hostname, Port, UserName, new PrivateKeyFile(PathToPrivateKey, UserPassword)) : new SftpClient(Hostname, Port, UserName, UserPassword);
+            _sftpClient = DisablePasswordLogin ? new SftpClient(Hostname, Port, UserName, new PrivateKeyFile(keyConverter.KeyFilePath)) : new SftpClient(Hostname, Port, UserName, UserPassword);
             _sftpClient.Connect();
         }
 
@@ -158,6 +158,9 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
             return sshCommand.Execute();
         }
 
+        /// <summary>
+        /// Executes a command with a prescribed number of retries
+        /// </summary>
         public string ExecuteWithRetries(string command, int count)
         {
             string response = null;
@@ -194,14 +197,12 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         public void Dispose()
         {
-            if (!_disposed)
-            {
-                _sshclient.Disconnect();
-                _sftpClient.Disconnect();
-                _sftpClient.Dispose();
-                _sshclient.Dispose();
-                _disposed = true;
-            }
+            if (_disposed) return;
+            _sshclient.Disconnect();
+            _sftpClient.Disconnect();
+            _sftpClient.Dispose();
+            _sshclient.Dispose();
+            _disposed = true;
         }
 
         #endregion

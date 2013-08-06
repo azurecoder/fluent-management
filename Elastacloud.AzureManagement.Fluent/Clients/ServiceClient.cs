@@ -76,7 +76,22 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// The name of the cloud service
         /// </summary>
         public string Name { get; set; }
-
+        /// <summary>
+        /// Gets the deployment name of the current deployment
+        /// </summary>
+        public string DeploymentName
+        {
+            get
+            {
+                var command = new GetCloudServicePropertiesCommand(Name)
+                    {
+                        SubscriptionId = SubscriptionId,
+                        Certificate = ManagementCertificate
+                    };
+                command.Execute();
+                return command.CloudServiceDeployments[0].Name;
+            }
+        }
         /// <summary>
         /// Adds a services certificate to the cloud service
         /// </summary>
