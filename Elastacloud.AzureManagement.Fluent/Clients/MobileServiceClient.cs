@@ -195,7 +195,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             if (MobileServiceName == null) return;
             GetAllSettings();
             GetMobileServiceDetails();
-            GetWebspaceProperties();
+            GetScaleSettings();
             GetMobileServiceResources();
             GetMobileServiceTables();
         }
@@ -410,11 +410,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public int TotalInstanceCount { get; set; }
 
         /// <summary>
-        /// The name of the webspace to which the mobile service is bound 
-        /// </summary>
-        public string Webspace { get; set; }
-
-        /// <summary>
         /// Whether this is free or reserved
         /// </summary>
         public ComputeMode ComputeMode { get; set; }
@@ -466,7 +461,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             ApplicationUrl = details.ApplicationUrl;
             Location = details.Location;
             MasterKey = details.MasterKey;
-            Webspace = details.Webspace;
         }
         
         /// <summary>
@@ -600,20 +594,16 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets the webspace properties that will allow the manipulation of the scale
         /// </summary>
-        private void GetWebspaceProperties()
+        private void GetScaleSettings()
         {
-            if(Webspace == null)
-                throw new FluentManagementException("unable to get continue without webspace", "MobileServiceClient");
-
-            var command = new GetSharedInstanceCountCommand(Webspace)
+            var command = new GetScaleSettingsCommand(MobileServiceName)
                 {
                     SubscriptionId = SubscriptionId,
                     Certificate = ManagementCertificate
                 };
             command.Execute();
-            TotalInstanceCount = command.WebspaceProperties.InstanceCount;
-            Webspace = command.WebspaceProperties.Name;
-            ComputeMode = command.WebspaceProperties.ComputeMode;
+            TotalInstanceCount = command.ScaleSettings.InstanceCount;
+            ComputeMode = command.ScaleSettings.ComputeMode;
         }
 
         /// <summary>

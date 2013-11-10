@@ -115,17 +115,17 @@ namespace Elastacloud.AzureManagement.Fluent.SqlAzure.Classes
         /* courtesy of Blorgbeard! */
         private void ExecuteBatchNonQuery(string sql, SqlConnection conn)
         {
-            string sqlBatch = string.Empty;
-            var cmd = new SqlCommand(string.Empty, conn);
-            conn.Open();
-            sql += "\nGO";   // make sure last batch is executed.
+            if(conn.State != ConnectionState.Open)
+                conn.Open();
+            string sqlBatch = String.Empty;
+
             try
             {
                 foreach (string line in sql.Split(new string[2] { "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (line.ToUpperInvariant().Trim() == "GO")
                     {
-                        cmd.CommandText = sqlBatch;
+                        var cmd = new SqlCommand(sqlBatch, conn);
                         cmd.ExecuteNonQuery();
                         sqlBatch = string.Empty;
                     }

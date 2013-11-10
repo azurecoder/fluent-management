@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Elastacloud.AzureManagement.Fluent.Types
 {
-    public class ScaleSettings
+    public class WebspaceProperties
     {
         public int InstanceCount { get; set; }
         public string Name { get; set; }

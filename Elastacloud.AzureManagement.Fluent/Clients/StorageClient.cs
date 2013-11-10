@@ -32,14 +32,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         protected X509Certificate2 ManagementCertificate { get; set; }
         protected string SubscriptionId { get; set; }
 
-				public void CreateNewStorageAccount(string name, string location = LocationConstants.NorthEurope)
+        public void CreateNewStorageAccount(string name, string location = LocationConstants.NorthEurope)
         {
             // issue the create storage account command 
             var create = new CreateStorageAccountCommand(name, "Created with Fluent Management", location)
-            {
-                SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
-            };
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
             create.Execute();
         }
 

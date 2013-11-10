@@ -12,6 +12,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types
     {
         Free,
         Shared,
-        Dedicated
+        Dedicated,
+        Standard,
+        Premium
     }
 }
