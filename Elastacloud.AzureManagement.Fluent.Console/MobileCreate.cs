@@ -29,7 +29,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             System.Console.WriteLine("=====================");
 
             var client = new MobileServiceClient(_subscriptionId, _certificate);
-            client.CreateMobileServiceWithNewDb(_mobileServiceName, "supersqluser", "Testable123");
+            client.CreateMobileServiceWithNewDb("racmobile2", "supersqluser", "Abc48c16");
 
             System.Console.WriteLine("Application key: {0}", client.ApplicationKey);
             System.Console.WriteLine("Application url: {0}", client.ApplicationUrl);
