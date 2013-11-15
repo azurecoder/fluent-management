@@ -87,7 +87,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="cloudServiceName">The name of the cloud service - if it doesn't exist it will be created</param>
         /// <param name="serviceCertificate">The service certificate responsible for adding the ssh keys</param>
         /// <param name="location">Where the cloud service will be created if it doesn't exist</param>
-        public IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null, string location = LocationConstants.NorthEurope)
+        /// <param name="affinityGroup">Affinity group that this service will live in</param>
+        public IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null, string location = LocationConstants.NorthEurope, string affinityGroup = "")
         {
             if(String.IsNullOrEmpty(cloudServiceName))
                 throw new FluentManagementException("Cloud service name cannot be empty", "LinuxVirtualMachineClient");
@@ -104,7 +105,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // when the check is complete we'll create the cloud service in the specified or default region if it doesn't exist
             if (checkCloudServiceAvailabilityCommand.CloudServiceAvailable)
             {
-                var cloudServiceCommand = new CreateCloudServiceCommand(cloudServiceName, "Created by Fluent Management", location)
+                var cloudServiceCommand = new CreateCloudServiceCommand(cloudServiceName, "Created by Fluent Management", location, affinityGroup)
                     {
                         SubscriptionId = SubscriptionId,
                         Certificate = ManagementCertificate

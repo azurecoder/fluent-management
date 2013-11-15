@@ -128,6 +128,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// Where the service is location-wise driven from <c href="LocationConstants.cs"></c>
         /// </summary>
         internal string Location { get; set; }
+        /// <summary>
+        /// Affinity group where the cloud service will be set up
+        /// </summary>
+        internal string AffinityGroup { get; set; }
 
         /// <summary>
         /// The type of HttpVerb defaults to POST

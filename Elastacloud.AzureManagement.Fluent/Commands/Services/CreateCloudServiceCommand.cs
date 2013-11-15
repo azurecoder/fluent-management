@@ -19,7 +19,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 	/// </summary>
 	internal class CreateCloudServiceCommand : ServiceCommand
 	{
-		internal CreateCloudServiceCommand(string name, string description, string location = LocationConstants.NorthEurope)
+		internal CreateCloudServiceCommand(string name, string description, string location = LocationConstants.NorthEurope, string affinityGroup = "")
 		{
 			Name = name;
 			Description = description;
@@ -27,6 +27,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 			HttpVerb = HttpVerbPost;
 			ServiceType = "services";
 			OperationId = "hostedservices";
+		    AffinityGroup = affinityGroup;
 		}
 
 		protected override string CreatePayload()
@@ -40,13 +41,19 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 							<AffinityGroup>affinity-group</AffinityGroup>
 					</CreateHostedService>*/
 			XNamespace ns = "http://schemas.microsoft.com/windowsazure";
+
+		    var locationElement = !string.IsNullOrEmpty(AffinityGroup)
+		        ? new XElement(ns + "AffinityGroup", AffinityGroup)
+		        : new XElement(ns + "Location", Location);
+
 			var doc = new XDocument(
 					new XDeclaration("1.0", "utf-8", ""),
 					new XElement(ns + "CreateHostedService",
-											 new XElement(ns + "ServiceName", Name),
-											 new XElement(ns + "Label", Convert.ToBase64String(Encoding.UTF8.GetBytes(Name))),
-											 new XElement(ns + "Description", Description),
-											 new XElement(ns + "Location", Location)));
+					new XElement(ns + "ServiceName", Name),
+					new XElement(ns + "Label", Convert.ToBase64String(Encoding.UTF8.GetBytes(Name))),
+					new XElement(ns + "Description", Description),
+					locationElement));
+
 			return doc.ToStringFullXmlDeclaration();
 		}
 	}
