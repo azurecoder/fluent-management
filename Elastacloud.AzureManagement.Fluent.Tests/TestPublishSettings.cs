@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
+using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using NUnit.Framework;
 using FluentAssertions;
@@ -70,10 +72,23 @@ namespace Elastacloud.AzureManagement.Fluent.Tests
 		[Test]
 		public void TestVersion2Schema()
 		{
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-GB");
+
 			var settings = PublishSettingsExtractor.GetFromXml(V2);
 			var dictionary = settings.GetSubscriptions();
 			dictionary.Count.Should().Be(1, "Number of subscriptions in Xml .publishsettings string");
 			settings.SchemaVersion.Should().Be(2, "the schema number used");
 		}
+
+        [Test]
+        public void TestVersion2SchemaWithForeginCultureSettings()
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("sv-SE");
+
+            var settings = PublishSettingsExtractor.GetFromXml(V2);
+            var dictionary = settings.GetSubscriptions();
+            dictionary.Count.Should().Be(1, "Number of subscriptions in Xml .publishsettings string");
+            settings.SchemaVersion.Should().Be(2, "the schema number used");
+        }
 	}
 }
