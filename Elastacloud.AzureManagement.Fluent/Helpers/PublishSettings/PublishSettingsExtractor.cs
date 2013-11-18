@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -81,7 +82,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
         {
             var schemaAttrs = _publishSettingsFileXml.Descendants("PublishProfile").FirstOrDefault().Attributes("SchemaVersion");
             var containsSchema = schemaAttrs.Any();
-            SchemaVersion = containsSchema ? (int)double.Parse(schemaAttrs.FirstOrDefault().Value) : 1D;
+            SchemaVersion = containsSchema ? (int)double.Parse(schemaAttrs.FirstOrDefault().Value, CultureInfo.InvariantCulture) : 1D;
 
             _subscriptions = _publishSettingsFileXml.Descendants("Subscription").Select(a => new Subscription()
                                                                     { 
