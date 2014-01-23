@@ -38,5 +38,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// The virtual IP address of the deployment
         /// </summary>
         public string IpAddress { get; set; }
+         /// <summary>
+        /// The slot taken by the deployment
+        /// </summary>
+        public string DeploymentID { get; set; }
+        }
     }
 }
