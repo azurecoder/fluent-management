@@ -64,6 +64,21 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
         }
 
+        public bool IsCloudServiceNameAvailable
+        {
+            get
+            {
+                var command = new CheckCloudServiceNameAvailableCommand(Name)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+
+                return command.CloudServiceAvailable;
+            }
+        }
+
         /// <summary>
         /// The subscription being used
         /// </summary>

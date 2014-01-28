@@ -77,5 +77,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Stops all of the roles within a cloud service
         /// </summary>
         void Stop();
+        /// <summary>
+        /// Checks to see whether the cloud service name is available for use
+        /// </summary>
+        bool IsCloudServiceNameAvailable { get; }
     }
 }
