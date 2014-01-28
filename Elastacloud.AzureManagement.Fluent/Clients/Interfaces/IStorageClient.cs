@@ -38,6 +38,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 		/// Gets a list of storage accounts 
 		/// </summary>
 		List<StorageAccount> GetStorageAccountList();
+        /// <summary>
+        /// This is slower than getting the raw list as each account needs to have a different request to return the keys
+        /// </summary>
+	    List<StorageAccount> GetStorageAccountListWithKeys();
 		/// <summary>
 		/// Gets the status of a storage account
 		/// </summary>

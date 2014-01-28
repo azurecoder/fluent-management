@@ -31,7 +31,44 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
-            
+            var props = new List<LinuxVirtualMachineProperties>();
+            for (int i = 1; i <= 7; i++)
+            {
+                var properties = new LinuxVirtualMachineProperties()
+                {
+                    CloudServiceName = "asos-yarn-spark2",
+                    HostName = "spark-node" + i,
+                    RoleName = "spark-node" + i,
+                    UserName = "azurecoder",
+                    AdministratorPassword = "AsosSp@rk20148yJed",
+                    DeploymentName = "spark-master",
+                    CustomTemplateName = "Azure-Data-Analysis",
+                    StorageAccountName = "rmpi",
+                    PublicEndpoints = new List<InputEndpoint>()
+                    {
+                        new InputEndpoint()
+                        {
+                            EndpointName = "SSL",
+                            LocalPort = 22,
+                            Port = 21 + i,
+                            Protocol = Protocol.TCP
+                        }
+                    },
+                    VmSize = VmSize.A7
+                };
+                //var linux1 = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId, _applicationFactory.ManagementCertificate)
+                //{
+                //    Properties = new List<LinuxVirtualMachineProperties>() { properties }
+                //};
+                //linux1.DeleteVirtualMachine(true, true, false, false);
+                props.Add(properties);
+            }
+            //var settings =
+            //    new PublishSettingsExtractor(@"C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings");
+            //var cert = settings.AddPublishSettingsToPersonalMachineStore();
+            var linux = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId, _applicationFactory.ManagementCertificate);
+            //linux.AddRolesToExistingDeployment(props, "asos-yarn-spark", null);
+            linux.CreateNewVirtualMachineDeploymentFromTemplateGallery(props, "asos-yarn-spark2");
         }
 
         public void ParseTokens(string[] args)

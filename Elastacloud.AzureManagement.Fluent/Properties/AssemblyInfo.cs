@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Elastacloud Limited")]
 [assembly: AssemblyProduct("Elastacloud.AzureManagement.Fluent")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
+[assembly: AssemblyCopyright("Copyright © 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -49,5 +49,5 @@ using System.Runtime.InteropServices;
 
 // Make internal interfaces visible to Moq and the testing library
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2"), InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
-[assembly: AssemblyVersion("0.4.8.6")]
-[assembly: AssemblyFileVersion("0.4.8.6")]
+[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyFileVersion("0.5.0.0")]

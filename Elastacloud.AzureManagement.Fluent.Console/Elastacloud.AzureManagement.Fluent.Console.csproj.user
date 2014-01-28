@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>mobile create 1c26b36c-88f9-4789-b197-5be9728803de "C:\Projects\June2013.publishsettings" racmobile1 racmobile1 racmobile1 racmobile1</StartArguments>
+    <StartArguments>linux vm e9d3203a-6548-49f6-b293-a352aadf077a "C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings" racmobile1 racmobile1 racmobile1 racmobile1</StartArguments>
   </PropertyGroup>
 </Project>

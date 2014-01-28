@@ -46,7 +46,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Create the storage account if an account by the same name doesn't exist
         /// </summary>
-				public void CreateStorageAccountIfNotExists(string name, string location = LocationConstants.NorthEurope)
+		public void CreateStorageAccountIfNotExists(string name, string location = LocationConstants.NorthEurope)
         {
             if (GetStorageAccountList().All(a => a.Name != name))
             {
@@ -84,6 +84,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             getStorageAccountList.Execute();
             return getStorageAccountList.StorageAccounts;
+        }
+
+        public List<StorageAccount> GetStorageAccountListWithKeys()
+        {
+            var newAccounts = new List<StorageAccount>();
+            var accounts = GetStorageAccountList();
+            foreach (var account in accounts)
+            {
+                var keys = GetStorageAccountKeys(account.Name);
+                account.PrimaryAccessKey = keys[0];
+                account.SecondaryAccessKey = keys[1];
+                newAccounts.Add(account);
+            }
+            return newAccounts;
         }
 
         public StorageStatus GetStorageStatus(string name)
