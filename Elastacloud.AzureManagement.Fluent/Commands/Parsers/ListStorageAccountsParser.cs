@@ -32,7 +32,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                                       Name = (string) hostedService.Element(GetSchema() + "ServiceName"),
                                       Url = (string) hostedService.Element(GetSchema() + "Url"),
                                       Location = (string) hostedService.Element(GetSchema() + "StorageServiceProperties")
-                                                .Element("Location")
+                                                .Element(GetSchema() + "Location")
                                   };
                 CommandResponse.Add(service);
             }
