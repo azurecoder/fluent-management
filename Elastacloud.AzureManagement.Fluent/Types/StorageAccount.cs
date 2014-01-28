@@ -30,5 +30,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// Returns the secondary storage key
         /// </summary>
         public string SecondaryAccessKey { get; set; }
+        /// <summary>
+        /// Gets the correct location of the storage account in the full text format
+        /// </summary>
+        public string Location { get; set; }
     }
 }
