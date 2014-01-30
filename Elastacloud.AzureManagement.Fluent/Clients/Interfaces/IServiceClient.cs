@@ -81,5 +81,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Checks to see whether the cloud service name is available for use
         /// </summary>
         bool IsCloudServiceNameAvailable { get; }
+        /// <summary>
+        /// Gets a list of available locations for the subscription
+        /// </summary>
+        List<LocationInformation> AvailableLocations { get; }
     }
 }

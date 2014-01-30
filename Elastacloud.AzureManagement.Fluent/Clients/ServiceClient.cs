@@ -13,6 +13,7 @@ using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Commands.Subscriptions;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
@@ -76,6 +77,23 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 command.Execute();
 
                 return command.CloudServiceAvailable;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of available locations for the subscription
+        /// </summary>
+        public List<LocationInformation> AvailableLocations
+        {
+            get
+            {
+                var command = new GetSubscriberLocationsCommand
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                return command.Locations;
             }
         }
 
