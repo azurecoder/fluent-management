@@ -209,8 +209,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// This creates a blob container using the default container name "elastadeploy" and uploads the package
         /// </summary>
         private string UploadPackageBlob()
-        {
-            _blobClient.CreatBlobContainer();
+        {    
             _manager.WriteComplete(EventPoint.StorageBlobContainerCreated, "Blob container " + Constants.DefaultBlobContainerName + " created");
             // TODO: this smells really bad fix!!
             if(_manager.LocalPackagePathName == null)
