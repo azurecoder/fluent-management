@@ -46,5 +46,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 		/// Gets the status of a storage account
 		/// </summary>
 		StorageStatus GetStorageStatus(string name);
+        /// <summary>
+        /// Gets a shared access signature given a full blob uri
+        /// </summary>
+	    string GetSaSFromBlobUri(string blobUri);
 	}
 }

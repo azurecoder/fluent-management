@@ -110,5 +110,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             storageAccounts.Execute();
             return storageAccounts.Status;
         }
+
+        /// <summary>
+        /// Gets a shared access signature given a full blob uri
+        /// </summary>
+        public string GetSaSFromBlobUri(string blobUri)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
