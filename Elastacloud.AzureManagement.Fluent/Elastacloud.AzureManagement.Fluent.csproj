@@ -193,6 +193,7 @@
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DownloadWindowsRemoteDesktopCommand.cs" />
     <Compile Include="Commands\Virtual Machines\GetWindowsVirtualMachineContextCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\RegisterImageCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StopVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
@@ -242,8 +243,10 @@
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\ComputeMode.cs" />
     <Compile Include="Types\Mobile Services\ScaleSettings.cs" />
+    <Compile Include="Types\Virtual Machines\ImageProperties.cs" />
     <Compile Include="Types\Virtual Machines\KeyType.cs" />
     <Compile Include="Types\Virtual Machines\LinuxConfigurationSet.cs" />
+    <Compile Include="Types\Virtual Machines\PlatformType.cs" />
     <Compile Include="Types\Virtual Machines\SSHKey.cs" />
     <Compile Include="Types\VirtualDisk.cs" />
     <Compile Include="Types\Websites\MetricsConstants.cs" />

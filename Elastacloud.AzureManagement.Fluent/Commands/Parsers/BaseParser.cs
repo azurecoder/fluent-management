@@ -17,7 +17,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
     /// <summary>
     /// Base class used to parse all XML responses from the fabric
     /// </summary>
-    internal abstract class BaseParser
+    public abstract class BaseParser
     {
         /// <summary>
         /// The command response dynamic object containing the parsed entity

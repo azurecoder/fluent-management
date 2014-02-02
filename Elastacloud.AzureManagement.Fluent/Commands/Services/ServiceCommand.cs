@@ -22,7 +22,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
     /// <summary>
     /// Abstract base class used to encapsulate a command to a hosted service
     /// </summary>
-    internal class ServiceCommand : ICommand
+    public class ServiceCommand : ICommand
     {
         #region private members
 
