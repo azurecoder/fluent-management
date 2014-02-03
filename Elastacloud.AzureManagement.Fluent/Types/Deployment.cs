@@ -22,26 +22,30 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// The name of the deployment
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// The slot taken by the deployment
         /// </summary>
         public DeploymentSlot Slot { get; set; }
+
         /// <summary>
         /// The total role instance belonging to the deployment
         /// </summary>
         public int TotalRoleInstanceCount { get; set; }
+
         /// <summary>
         /// The roleinstances associated with the deployment
         /// </summary>
         public List<RoleInstance> RoleInstances { get; set; }
+
         /// <summary>
         /// The virtual IP address of the deployment
         /// </summary>
         public string IpAddress { get; set; }
-         /// <summary>
+
+        /// <summary>
         /// The slot taken by the deployment
         /// </summary>
-        public string DeploymentID { get; set; }
-        }
+        public string DeploymentId { get; set; }
     }
 }
