@@ -29,7 +29,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Creates a blob container given a valid container name
         /// </summary>
-        void CreatBlobContainer();
+        bool CreatBlobContainer();
 
         /// <summary>
         /// Deletes a blob 

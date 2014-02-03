@@ -13,6 +13,8 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
@@ -20,6 +22,9 @@ using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
+    /// <summary>
+    /// Used to manage the copying and registering of images within a subscription or intra-subscription
+    /// </summary>
     public class ImageManagementClient : IImageManagementClient
     {
         public ImageManagementClient(string subscriptionId, X509Certificate2 certificate)
@@ -36,8 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Used to copy or register an image from one subscription to another
         /// </summary>
         public void CopyAndRegisterImageInNewSubscription(string accountName, string accountKey, string containerName,
-            string imageName,
-            string imageUri)
+            string imageName, string imageUri, ImageProperties imageProperties)
         {
             // get the storage account to copy to and the blob 
             var storageAccount = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
@@ -67,6 +71,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             
             // when the copy process is complete we want to register the image
+            imageProperties.Name = imageProperties.Label = GetFormattedImageName(imageName, index, false);
+            imageProperties.MediaLink = blobImage.Uri.ToString();
+            var registerImageCommand = new RegisterImageCommand(imageProperties)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            registerImageCommand.Execute();
         }
 
         private string GetFormattedImageName(string imageName, int index, bool withVhd)

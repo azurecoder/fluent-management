@@ -15,6 +15,9 @@ using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Storage;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -116,7 +119,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public string GetSaSFromBlobUri(string blobUri)
         {
-            throw new NotImplementedException();
+            int accountPos = blobUri.IndexOf("http://", StringComparison.Ordinal) > 0 ? "http://".Length + 1 : "https://".Length + 1;
+            int firstPeriod = blobUri.IndexOf(".", StringComparison.Ordinal);
+            string accountName = blobUri.Substring(accountPos, firstPeriod - accountPos);
+            string accountKey = GetStorageAccountKeys(accountName)[0];
+            var account = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
+            var blobClient = account.CreateCloudBlobClient();
+            var blobReference = blobClient.GetBlobReferenceFromServer(new Uri(blobUri));
+            string sas = blobReference.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+            {
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(90),
+                SharedAccessStartTime = DateTime.UtcNow.AddMinutes(-5)
+            });
+            return blobUri + sas;
         }
     }
 }

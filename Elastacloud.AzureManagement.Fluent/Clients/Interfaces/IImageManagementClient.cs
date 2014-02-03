@@ -9,6 +9,7 @@
 
 
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 {
@@ -21,6 +22,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Used to copy or register an image from one subscription to another
         /// </summary>
         void CopyAndRegisterImageInNewSubscription(string accountName, string accountKey, string containerName,
-            string imageName, string imageUri);
+            string imageName, string imageUri, ImageProperties properties);
     }
 }

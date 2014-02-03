@@ -75,7 +75,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Creates a blob container given a valid container name
         /// </summary>
-        public void CreatBlobContainer()
+        public bool CreatBlobContainer()
         {
             LoadKeyIfNotExists();
             var blobContainer = new CreateBlobContainerCommand(ContainerName)
@@ -83,7 +83,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 AccountKey = AccountKey,
                 AccountName = AccountName
             };
-            blobContainer.Execute();
+            try
+            {
+                blobContainer.Execute();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
