@@ -119,7 +119,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public string GetSaSFromBlobUri(string blobUri)
         {
-            int accountPos = blobUri.IndexOf("http://", StringComparison.Ordinal) > 0 ? "http://".Length + 1 : "https://".Length + 1;
+            int accountPos = blobUri.IndexOf("http://", StringComparison.Ordinal) == 0 ? "http://".Length : "https://".Length;
             int firstPeriod = blobUri.IndexOf(".", StringComparison.Ordinal);
             string accountName = blobUri.Substring(accountPos, firstPeriod - accountPos);
             string accountKey = GetStorageAccountKeys(accountName)[0];

@@ -74,7 +74,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
                              new XElement(ns + "MediaLink", Properties.MediaLink),
                              new XElement(ns + "Name", Properties.Name),
                              new XElement(ns + "OS", Properties.OperatingSystem.ToString()),
-                             new XElement(ns + "PublishedDate", Properties.PublishedDate.ToString(CultureInfo.InvariantCulture)),
+                             new XElement(ns + "PublishedDate", Properties.PublishedDate.ToString("s")),
                              new XElement(ns + "IsPremium", Properties.IsPremium.ToString().ToLowerInvariant()),
                              new XElement(ns + "ShowInGui", Properties.ShowInGui.ToString().ToLowerInvariant())));
             return doc.ToStringFullXmlDeclaration();

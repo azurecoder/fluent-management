@@ -52,21 +52,22 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             containerReference.CreateIfNotExists();
             // make sure that this image name dis a .vhd
             int index = 0;
-            imageName = imageName.EndsWith(".vhd") ? imageName + ".vhd" : imageName;
-            var blobImage = containerReference.GetBlockBlobReference(GetFormattedImageName(imageName, index, true));
-            while (!blobImage.Exists())
+            //imageName = imageName.EndsWith(".vhd") ? imageName + ".vhd" : imageName;
+            var blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, index, true));
+            while (blobImage.Exists())
             {
                 // eventually we'll find a name we don't have! 
-                blobImage = containerReference.GetBlockBlobReference(GetFormattedImageName(imageName, ++index, true));
+                blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, ++index, true));
             }
             // create a SAS from the source account for the image
-            //var client = new StorageClient(SubscriptionId, ManagementCertificate);
-            //client.
+            var client = new StorageClient(SubscriptionId, ManagementCertificate);
+            imageUri = client.GetSaSFromBlobUri(imageUri);
             // use the copy blob API to copy the image across 
             blobImage.StartCopyFromBlob(new Uri(imageUri));
-            while (blobImage.CopyState.Status != CopyStatus.Success || blobImage.CopyState.Status != CopyStatus.Failed)
+            while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
             {
                 // wait one second until we have the copy status working properly
+                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageName, index, true));
                 Thread.Sleep(1000);
             }
             

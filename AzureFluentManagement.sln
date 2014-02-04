@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.ScriptMapper.Linux", "Elastacloud.AzureManagement.ScriptMapper.Linux\Elastacloud.AzureManagement.ScriptMapper.Linux.csproj", "{5224B49E-B6B8-425B-87FC-FE65A7C85E91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Integration.Tests", "Elastacloud.AzureManagement.Fluent.Integration.Tests\Elastacloud.AzureManagement.Fluent.Integration.Tests.csproj", "{EB46D40C-4FED-4929-8C93-080724C09BB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{5224B49E-B6B8-425B-87FC-FE65A7C85E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5224B49E-B6B8-425B-87FC-FE65A7C85E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5224B49E-B6B8-425B-87FC-FE65A7C85E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB46D40C-4FED-4929-8C93-080724C09BB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB46D40C-4FED-4929-8C93-080724C09BB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB46D40C-4FED-4929-8C93-080724C09BB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB46D40C-4FED-4929-8C93-080724C09BB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
