@@ -9,6 +9,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -41,8 +42,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// Used to copy or register an image from one subscription to another
         /// </summary>
         public void CopyAndRegisterImageInNewSubscription(string accountName, string accountKey, string containerName,
-            string imageName, string imageUri, ImageProperties imageProperties)
+            string imageName, string imageUri, ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true)
         {
+            // by default we won't copy the image if it exists
+            // TODO: need to check this implementation as the index is confusing 
+            int index = 0;
+            if (Exists(GetFormattedImageName(imageName, index, false)) && copyImageOnlyIfNotExists)
+            {
+                return;
+            }
             // get the storage account to copy to and the blob 
             var storageAccount = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
             var blobClient = storageAccount.CreateCloudBlobClient();
@@ -51,7 +59,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var containerReference = blobClient.GetContainerReference(containerName);
             containerReference.CreateIfNotExists();
             // make sure that this image name dis a .vhd
-            int index = 0;
             //imageName = imageName.EndsWith(".vhd") ? imageName + ".vhd" : imageName;
             var blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, index, true));
             while (blobImage.Exists())
@@ -80,6 +87,32 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             registerImageCommand.Execute();
+        }
+
+        /// <summary>
+        /// Gets a list of all of the available images in the subscription
+        /// </summary>
+        public List<ImageProperties> ImageList
+        {
+            get
+            {
+                var listImagesCommand = new ListImagesCommand()
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                listImagesCommand.Execute();
+                return listImagesCommand.Properties;
+            }
+            
+        }
+
+        /// <summary>
+        /// Checks whether a particular named image exists in the collection
+        /// </summary>
+        public bool Exists(string imageName)
+        {
+            return ImageList.Exists(properties => properties.Name == imageName || properties.Label == imageName);
         }
 
         private string GetFormattedImageName(string imageName, int index, bool withVhd)

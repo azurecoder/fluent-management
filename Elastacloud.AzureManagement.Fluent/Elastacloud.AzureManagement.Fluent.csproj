@@ -112,6 +112,7 @@
     <Compile Include="Commands\MobileServices\GetScaleSettingsCommand.cs" />
     <Compile Include="Commands\Parsers\CheckCloudServiceNameAvailableParser.cs" />
     <Compile Include="Commands\Parsers\GetAllDisksParser.cs" />
+    <Compile Include="Commands\Parsers\ListImagesParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteMetricsParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteServerFarmParser.cs" />
     <Compile Include="Commands\Parsers\GetMobileServicesScaleParser.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Commands\Virtual Machines\DeleteVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\DownloadWindowsRemoteDesktopCommand.cs" />
     <Compile Include="Commands\Virtual Machines\GetWindowsVirtualMachineContextCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\ListImagesCommand.cs" />
     <Compile Include="Commands\Virtual Machines\RegisterImageCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StopVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
