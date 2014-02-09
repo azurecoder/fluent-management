@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
@@ -26,7 +27,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     /// <summary>
     /// Used to manage the copying and registering of images within a subscription or intra-subscription
     /// </summary>
-    public class ImageManagementClient : IImageManagementClient
+    public class ImageManagementClient : GenerateEventClientBase, IImageManagementClient
     {
         public ImageManagementClient(string subscriptionId, X509Certificate2 certificate)
         {
@@ -51,6 +52,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             {
                 return;
             }
+            RaiseClientUpdate(5, "Checked for formatted image existence");
             // get the storage account to copy to and the blob 
             var storageAccount = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
             var blobClient = storageAccount.CreateCloudBlobClient();
@@ -66,14 +68,23 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 // eventually we'll find a name we don't have! 
                 blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, ++index, true));
             }
+            RaiseClientUpdate(8, "Checked to see whether images exist with index " + index);
             // create a SAS from the source account for the image
             var client = new StorageClient(SubscriptionId, ManagementCertificate);
             imageUri = client.GetSaSFromBlobUri(imageUri);
+            RaiseClientUpdate(10, "Calculated SaS blob uri");
             // use the copy blob API to copy the image across 
             blobImage.StartCopyFromBlob(new Uri(imageUri));
+            double percentCopied = 0;
             while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
             {
                 // wait one second until we have the copy status working properly
+                double innerPercent = Math.Round(((double) blobImage.CopyState.BytesCopied.Value/(double) blobImage.CopyState.TotalBytes.Value) * 70) + 10;
+                if (innerPercent != percentCopied)
+                {
+                    RaiseClientUpdate(Convert.ToInt32(innerPercent), "Copied part of image file to blob storage");
+                }
+                percentCopied = innerPercent;
                 blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageName, index, true));
                 Thread.Sleep(1000);
             }
@@ -87,6 +98,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             registerImageCommand.Execute();
+            RaiseClientUpdate(100, "Completed registration of image into target account");
         }
 
         /// <summary>
@@ -119,5 +131,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             return imageName + index + (withVhd ? ".vhd" : "");
         }
+
     }
 }
