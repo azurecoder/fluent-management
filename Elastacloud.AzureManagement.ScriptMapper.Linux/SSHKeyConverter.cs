@@ -41,7 +41,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
                 fileContent = reader.ReadToEnd();
             }
             // check to see whether this has worked
-            var key = new SshKey {Password = _password};
+            var key = new SshKey { Password = _password };
             // get the ssh key 
             bool converted = key.FromOpenSshPrivateKey(fileContent);
             // if this hasn't worked then just drop out of this method
@@ -53,11 +53,11 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
             string openSsh2Filename = Path.GetFileNameWithoutExtension(_privateKeyFile) + ".pvk";
             // get the path 
             string openSsh2Directory = Path.GetDirectoryName(_privateKeyFile);
-            
+
             // get the full path 
             KeyFilePath = Path.Combine(openSsh2Directory, openSsh2Filename);
             // create the file
-            using(var writer = new StreamWriter(File.Create(KeyFilePath)))
+            using (var writer = new StreamWriter(File.Create(KeyFilePath)))
             {
                 writer.Write(content);
             }
