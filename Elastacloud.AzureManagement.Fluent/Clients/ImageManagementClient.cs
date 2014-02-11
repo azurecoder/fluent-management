@@ -78,6 +78,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             double percentCopied = 0;
             while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
             {
+                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageName, index, true));
+
+                if (blobImage.CopyState.BytesCopied == null || blobImage.CopyState.TotalBytes == null)
+                    continue;
                 // wait one second until we have the copy status working properly
                 double innerPercent = Math.Round(((double) blobImage.CopyState.BytesCopied.Value/(double) blobImage.CopyState.TotalBytes.Value) * 70) + 10;
                 if (innerPercent != percentCopied)
@@ -85,7 +89,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     RaiseClientUpdate(Convert.ToInt32(innerPercent), "Copied part of image file to blob storage");
                 }
                 percentCopied = innerPercent;
-                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageName, index, true));
                 Thread.Sleep(1000);
             }
             
