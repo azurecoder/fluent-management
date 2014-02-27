@@ -1,4 +1,4 @@
-﻿namespace Elastacloud.AzureManagement.ScriptMapper.Linux
+﻿namespace Elastacloud.AzureManagement.LinuxKeyConverter
 {
     /// <summary>
     /// Converts an SSH key between formats

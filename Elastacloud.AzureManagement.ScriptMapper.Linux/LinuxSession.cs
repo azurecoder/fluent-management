@@ -38,7 +38,38 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// <summary>
         /// Used to construct a linux session command
         /// </summary>
-        public LinuxSession(string host, int port, string userName, string userPassword, bool disablePasswordLogin, string pathToPvkFile = null)
+        public LinuxSession(string host, int port, string userName, string userPassword, bool disablePasswordLogin, string privateKey = null)
+        {
+            var memoryStream = new MemoryStream();
+            if (DisablePasswordLogin = disablePasswordLogin)
+            {
+                if (DisablePasswordLogin)
+                {
+                    var writer = new StreamWriter(memoryStream);
+                    writer.Write(PrivateKey);
+
+                    if (memoryStream.CanSeek)
+                    {
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                    }
+                }
+                PrivateKey = memoryStream;
+            }
+            UserName = userName;
+            Hostname = host;
+            Port = port;
+            UserPassword = userPassword;
+            if (DisablePasswordLogin = disablePasswordLogin)
+            {
+                PrivateKey = memoryStream;
+            }
+            CreateSession();
+        }
+
+        /// <summary>
+        /// Used to construct a linux session command
+        /// </summary>
+        public LinuxSession(string host, int port, string userName, string userPassword, bool disablePasswordLogin, Stream privateKey = null)
         {
             UserName = userName;
             Hostname = host;
@@ -46,7 +77,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
             UserPassword = userPassword;
             if (DisablePasswordLogin = disablePasswordLogin)
             {
-                PathToPrivateKey = pathToPvkFile;
+                PrivateKey = privateKey;
             }
             CreateSession();
         }
@@ -71,7 +102,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// <summary>
         /// The path to the .pem file 
         /// </summary>
-        public string PathToPrivateKey { get; set; }
+        public Stream PrivateKey { get; set; }
         /// <summary>
         /// The working directory to put all files in
         /// </summary>
@@ -92,16 +123,11 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// </summary>
         public void CreateSession()
         {
-            var keyConverter = new SSHKeyConverter(PathToPrivateKey, UserPassword);
-            if (!keyConverter.Convert())
-            {
-                throw new ApplicationException("unable to convert key file");
-            }
             
-            _sshclient = DisablePasswordLogin ? new SshClient(Hostname, Port, UserName, new PrivateKeyFile(keyConverter.KeyFilePath)) : new SshClient(Hostname, Port, UserName, UserPassword);
+            _sshclient = DisablePasswordLogin ? new SshClient(Hostname, Port, UserName, new PrivateKeyFile(PrivateKey, UserPassword)) : new SshClient(Hostname, Port, UserName, UserPassword);
             _sshclient.Connect();
 
-            _sftpClient = DisablePasswordLogin ? new SftpClient(Hostname, Port, UserName, new PrivateKeyFile(keyConverter.KeyFilePath)) : new SftpClient(Hostname, Port, UserName, UserPassword);
+            _sftpClient = DisablePasswordLogin ? new SftpClient(Hostname, Port, UserName, new PrivateKeyFile(PrivateKey)) : new SftpClient(Hostname, Port, UserName, UserPassword);
             _sftpClient.Connect();
         }
 

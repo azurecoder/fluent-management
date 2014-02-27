@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.IO;
+
 namespace Elastacloud.AzureManagement.ScriptMapper.Linux
 {
     /// <summary>
@@ -29,7 +31,7 @@ namespace Elastacloud.AzureManagement.ScriptMapper.Linux
         /// <summary>
         /// The path to the .pem file 
         /// </summary>
-        string PathToPrivateKey { get; set; }
+        Stream PrivateKey { get; set; }
         /// <summary>
         /// The name of the host we're trying to connect with 
         /// </summary>
