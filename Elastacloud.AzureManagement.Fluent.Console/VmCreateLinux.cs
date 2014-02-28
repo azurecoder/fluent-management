@@ -65,7 +65,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             }
             var service = new ServiceClient(_applicationFactory.SubscriptionId,
                 _applicationFactory.ManagementCertificate, "asos-yarn-spark2");
-            var certificate = service.CreateServiceCertificate("elastacert", "password", "C:\\Projects\\cert_export");
+            var certificate = service.CreateServiceCertificateExportToFileSystem("elastacert", "password", "C:\\Projects\\cert_export");
             //var settings =
             //    new PublishSettingsExtractor(@"C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings");
             //var cert = settings.AddPublishSettingsToPersonalMachineStore();

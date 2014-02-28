@@ -91,7 +91,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// </summary>
         public X509Certificate2 Create()
         {
-            return (Certificate = CertificateGenerator.Create(Name, ValidFrom, ValidTo, PvkPassword, true));
+            var generator = new CertificateGenerator();
+            return generator.Create(Name, ValidFrom, ValidTo, PvkPassword, true);
         }
 
         /// <summary>

@@ -85,5 +85,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets a list of available locations for the subscription
         /// </summary>
         List<LocationInformation> AvailableLocations { get; }
+        /// <summary>
+        /// This is the account that will be used for any of the storage interactions 
+        /// </summary>
+        string DefaultStorageAccount { get; set; }
+        /// <summary>
+        /// Used to create a service certificate and export a .cer, .pfx and .pem to the file system 
+        /// </summary>
+        X509Certificate2 CreateServiceCertificateExportToFileSystem(string name, string password, string exportDirectory);
+        /// <summary>
+        /// Exports a service certificate to Windows Azure Storage
+        /// </summary>
+        X509Certificate2 CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName, string container, string folder);
+   
     }
 }
