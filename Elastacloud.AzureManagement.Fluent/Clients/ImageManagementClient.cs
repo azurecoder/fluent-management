@@ -70,7 +70,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             RaiseClientUpdate(8, "Checked to see whether images exist with index " + index);
             // create a SAS from the source account for the image
-            var client = new StorageClient(SubscriptionId, ManagementCertificate);
+            var client = new StorageClient(accountName, accountKey);
             imageUri = client.GetSaSFromBlobUri(imageUri);
             RaiseClientUpdate(10, "Calculated SaS blob uri");
             // use the copy blob API to copy the image across 

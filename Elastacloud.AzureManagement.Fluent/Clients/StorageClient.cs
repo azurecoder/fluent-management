@@ -26,15 +26,36 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     /// </summary>
     public class StorageClient : IStorageClient
     {
+        /// <summary>
+        /// Used to construct a storage client with a subscription id and management certificate
+        /// </summary>
         public StorageClient(string subscriptionId, X509Certificate2 certificate)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
         }
+        /// <summary>
+        /// Used to construct a client with an account name and account key
+        /// </summary>
+        public StorageClient(string accountName, string accountKey)
+        {
+            DefaultAccountName = accountName;
+            DefaultAccountKey = accountKey;
+        }
+        /// <summary>
+        /// This can be used to avoid a subcription id and management certificate
+        /// </summary>
+        public string DefaultAccountKey { get; set; }
+        /// <summary>
+        /// This can be used to avoid a subscription id and management certificate
+        /// </summary>
+        public string DefaultAccountName { get; set; }
 
         protected X509Certificate2 ManagementCertificate { get; set; }
         protected string SubscriptionId { get; set; }
-
+        /// <summary>
+        /// Creates a new storage account given a name and location
+        /// </summary>
         public void CreateNewStorageAccount(string name, string location = LocationConstants.NorthEurope)
         {
             // issue the create storage account command 
@@ -121,8 +142,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             int accountPos = blobUri.IndexOf("http://", StringComparison.Ordinal) == 0 ? "http://".Length : "https://".Length;
             int firstPeriod = blobUri.IndexOf(".", StringComparison.Ordinal);
-            string accountName = blobUri.Substring(accountPos, firstPeriod - accountPos);
-            string accountKey = GetStorageAccountKeys(accountName)[0];
+            string accountName = DefaultAccountName ?? blobUri.Substring(accountPos, firstPeriod - accountPos);
+            string accountKey = DefaultAccountKey ?? GetStorageAccountKeys(accountName)[0];
             var account = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
             var blobClient = account.CreateCloudBlobClient();
             var blobReference = blobClient.GetBlobReferenceFromServer(new Uri(blobUri));

@@ -10,6 +10,7 @@
 using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
@@ -17,6 +18,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 {
     public interface ILinuxVirtualMachineClient : IVirtualMachineClient
     {
+        /// <summary>
+        /// The service certificate that is deployed with the Linux VM
+        /// </summary>
+        byte[] ServiceCertificate { get; }
         /// <summary>
         /// Returns the properties of the associated virtual machine
         /// </summary>

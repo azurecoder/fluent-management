@@ -16,6 +16,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Commands.Subscriptions;
 using Elastacloud.AzureManagement.Fluent.Properties;
 using Elastacloud.AzureManagement.Fluent.Types;
 
@@ -58,6 +59,19 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
         }
 
         /// <summary>
+        /// The indexer takes a subscription id string and returns a Subscription 
+        /// </summary>
+        public Subscription this[string subscriptionId]
+        {
+            get
+            {
+                if (_subscriptions.Count == 0)
+                    GetSubscriptions();
+                return _subscriptions.FirstOrDefault(subscription => subscription.Id == subscriptionId);
+            }
+        }
+
+        /// <summary>
         /// Returns a PublishSettingsExtractor given a valid path 
         /// </summary>
         public static PublishSettingsExtractor GetFromFile(string file)
@@ -89,7 +103,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
                                                         Id = a.Attribute("Id").Value,
                                                         Name = a.Attribute("Name").Value,
                                                         ManagementUrl = "https://management.core.windows.net/",
-                                                        ManagementCertificate = GetCertificateFromFile()
+                                                        ManagementCertificate = GetCertificateFromFile(a.Attribute("ManagementCertificate").Value)
                                                                     }).ToList();
 
         }
@@ -145,6 +159,30 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
         public X509Certificate2 AddPublishSettingsToPersonalMachineStore(StoreLocation location = StoreLocation.CurrentUser)
         {
             return AddPublishSettingsToPersonalMachineStore(_publishSettingsFileXml.ToStringFullXmlDeclaration());
+        }
+        /// <summary>
+        /// Publishsettings file added to the machine store with the subcription id 
+        /// </summary>
+        public List<X509Certificate2> AddAllPublishSettingsCertificatesToPersonalMachineStore(string subscriptionId = null)
+        {
+            var certificates = new List<X509Certificate2>();
+            foreach (var subscription in GetSubscriptions().Where(subscription => String.IsNullOrEmpty(subscriptionId) || subscription.Id == subscriptionId))
+            {
+                try
+                {
+                    FromStore(subscription.ManagementCertificate.Thumbprint);
+                }
+                catch (ApplicationException)
+                {
+                    // if we reach here then it's not in the store and we want to put there!!
+                    var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                    store.Open(OpenFlags.ReadWrite);
+                    store.Add(subscription.ManagementCertificate);
+                    store.Close();
+                }
+                certificates.Add(subscription.ManagementCertificate);
+            }
+            return certificates;
         }
 
         /// <summary>
@@ -227,30 +265,34 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
         /// <summary>
         /// Gets the certificate data from a file - can be a .cer file or publishsettings - exports the private key with the certificate
         /// </summary>
-        public X509Certificate2 GetCertificateFromFile(StoreLocation location = StoreLocation.CurrentUser)
+        public X509Certificate2 GetCertificateFromFile(string managementCertificate = null, StoreLocation location = StoreLocation.CurrentUser)
         {
             var storageFlagKeySet = location == StoreLocation.CurrentUser ? X509KeyStorageFlags.UserKeySet : X509KeyStorageFlags.MachineKeySet;
             // settings downloaded from https://windows.azure.com/download/publishprofile.aspx
             byte[] certBytes = SchemaVersion == 1
-                                   ? Convert.FromBase64String(
-                                       _publishSettingsFileXml.Descendants("PublishProfile")
-                                                              .Single()
-                                                              .Attribute("ManagementCertificate")
-                                                              .Value)
-                                   : Convert.FromBase64String(
-                                       _publishSettingsFileXml.Descendants("Subscription")
-                                                              .FirstOrDefault()
-                                                              .Attribute("ManagementCertificate")
-                                                              .Value);
-
-            return new X509Certificate2(certBytes, string.Empty, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet | storageFlagKeySet);
+                ? Convert.FromBase64String(
+                    _publishSettingsFileXml.Descendants("PublishProfile")
+                        .Single()
+                        .Attribute("ManagementCertificate")
+                        .Value)
+                : Convert.FromBase64String(
+                    _publishSettingsFileXml.Descendants("Subscription")
+                        .FirstOrDefault()
+                        .Attribute("ManagementCertificate")
+                        .Value);
+            // assume password is empty here!
+            if (!String.IsNullOrEmpty(managementCertificate))
+            {
+                certBytes = Convert.FromBase64String(managementCertificate);
+            }
+            return new X509Certificate2(certBytes, string.Empty, X509KeyStorageFlags.Exportable|X509KeyStorageFlags.PersistKeySet|storageFlagKeySet);
         }
 
         //TODO: Set a password at the start don't persist this and treat via a secure string
         public static X509Certificate2 GetCertificateFromXml(string xml, StoreLocation location = StoreLocation.CurrentUser)
         {
             var ps = GetFromXml(xml);
-            return ps.GetCertificateFromFile(location);
+            return ps.GetCertificateFromFile(null, location);
         }
 
         /// <summary>
