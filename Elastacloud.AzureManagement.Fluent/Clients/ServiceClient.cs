@@ -176,27 +176,27 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="name">The name (CN) of the certificate</param>
         /// <param name="password">The password of the certificate</param>
         /// <param name="exportDirectory">Where the .pem, .cer and pfx will be put</param>
-        public X509Certificate2 CreateServiceCertificateExportToFileSystem(string name, string password, string exportDirectory)
+        public CertificateGenerator CreateServiceCertificateExportToFileSystem(string name, string password, string exportDirectory)
         {
             var generator = BuildCertGenerator(name, password); 
             generator.ExportToFileSystem(exportDirectory);
-            return generator.DerEncodedCertificate;
+            return generator;
         }
 
         /// <summary>
         /// Exports a service certificate to Windows Azure Storage
         /// </summary>
-        public X509Certificate2 CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName,
+        public CertificateGenerator CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName,
             string container, string folder)
         {
             var generator = BuildCertGenerator(name, password);
             generator.ExportToStorageAccount(storageAccountName, container, folder);
-            return generator.DerEncodedCertificate;
+            return generator;
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {
-            var generator = new CertificateGenerator();
+            var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate);
             generator.Create(name, DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)), DateTime.UtcNow.AddYears(2), password, true);
             return generator;
         }

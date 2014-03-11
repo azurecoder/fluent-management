@@ -74,7 +74,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             linux.CreateNewVirtualMachineDeploymentFromTemplateGallery(props, "asos-yarn-spark2", new ServiceCertificateModel()
             {
                 Password = "password",
-                ServiceCertificate = certificate
+                ServiceCertificate = certificate.DerEncodedCertificate
             });
         }
 

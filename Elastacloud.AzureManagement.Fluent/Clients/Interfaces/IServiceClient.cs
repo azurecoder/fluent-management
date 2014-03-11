@@ -10,6 +10,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
 
@@ -92,11 +93,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Used to create a service certificate and export a .cer, .pfx and .pem to the file system 
         /// </summary>
-        X509Certificate2 CreateServiceCertificateExportToFileSystem(string name, string password, string exportDirectory);
+        CertificateGenerator CreateServiceCertificateExportToFileSystem(string name, string password, string exportDirectory);
         /// <summary>
         /// Exports a service certificate to Windows Azure Storage
         /// </summary>
-        X509Certificate2 CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName, string container, string folder);
+        CertificateGenerator CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName, string container, string folder);
    
     }
 }
