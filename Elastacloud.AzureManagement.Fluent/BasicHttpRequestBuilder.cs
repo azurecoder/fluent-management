@@ -39,6 +39,9 @@ namespace Elastacloud.AzureManagement.Fluent
 
         public void AddCertificate(X509Certificate certificate)
         {
+            // clear the collection - currently keeps appending and an error ensues around multiple account usage
+            // TODO: refactor this and understand why we're keeping a single instance of of the HttpBuilder 
+            _certificates.Clear();
             _certificates.Add(certificate);
         }
 

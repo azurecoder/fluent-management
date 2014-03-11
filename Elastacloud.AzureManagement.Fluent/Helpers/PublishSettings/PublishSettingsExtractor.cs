@@ -105,7 +105,6 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
                                                         ManagementUrl = "https://management.core.windows.net/",
                                                         ManagementCertificate = GetCertificateFromFile(a.Attribute("ManagementCertificate").Value)
                                                                     }).ToList();
-
         }
 
         /// <summary>
