@@ -42,7 +42,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Used to copy or register an image from one subscription to another
         /// </summary>
-        public void CopyAndRegisterImageInNewSubscription(string accountName, string accountKey, string containerName,
+        public void CopyAndRegisterImageInNewSubscription(string sourceAccountName, string sourceAccountKey, string destinationAccountName, string containerName,
             string imageName, string imageUri, ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true)
         {
             // by default we won't copy the image if it exists
@@ -54,7 +54,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             RaiseClientUpdate(5, "Checked for formatted image existence");
             // get the storage account to copy to and the blob 
-            var storageAccount = new CloudStorageAccount(new StorageCredentials(accountName, accountKey), true);
+            var storageAccountClient = new StorageClient(SubscriptionId, ManagementCertificate);
+            var destinationAccountKeys = storageAccountClient.GetStorageAccountKeys(destinationAccountName);
+            var storageAccount = new CloudStorageAccount(new StorageCredentials(destinationAccountName, destinationAccountKeys[0]), true);
             var blobClient = storageAccount.CreateCloudBlobClient();
             // list all of the containers in the blob - if they are not present then create a new one
             // create this container if it doesn't exist as this will contain the blob which will be registered as the image
@@ -70,7 +72,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             RaiseClientUpdate(8, "Checked to see whether images exist with index " + index);
             // create a SAS from the source account for the image
-            var client = new StorageClient(accountName, accountKey);
+            var client = new StorageClient(sourceAccountName, sourceAccountKey);
             imageUri = client.GetSaSFromBlobUri(imageUri);
             RaiseClientUpdate(10, "Calculated SaS blob uri");
             // use the copy blob API to copy the image across 
