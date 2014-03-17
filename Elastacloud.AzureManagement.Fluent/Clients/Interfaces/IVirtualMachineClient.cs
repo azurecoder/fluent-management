@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
@@ -52,6 +53,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Cleans up any disks which don't have an attached VM
         /// </summary>
         void CleanupUnattachedDisks();
-
+        /// <summary>
+        /// Gets a list of hosts, internal ip addresses and other things
+        /// </summary>
+        List<VmHost> GetAllInternalHostDetails();
     }
 }

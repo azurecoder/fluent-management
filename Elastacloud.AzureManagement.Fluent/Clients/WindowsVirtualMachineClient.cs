@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Linq;
@@ -311,6 +312,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 // delete the underlying blob
                 //blobClient.DeleteBlob(disk.Name);
             }
+        }
+
+        /// <summary>
+        /// Gets a list of hosts, internal ip addresses and other things
+        /// </summary>
+        public List<VmHost> GetAllInternalHostDetails()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
