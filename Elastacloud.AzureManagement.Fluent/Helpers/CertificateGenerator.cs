@@ -149,7 +149,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             }
         }
 
-        private string GetPemData()
+        public string GetPemData()
         {
             var textWriter = new StringWriter();
             var pemWriter = new PemWriter(textWriter);
