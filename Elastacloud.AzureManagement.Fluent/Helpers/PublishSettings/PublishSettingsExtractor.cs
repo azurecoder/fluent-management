@@ -98,6 +98,9 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
             var containsSchema = schemaAttrs.Any();
             SchemaVersion = containsSchema ? (int)double.Parse(schemaAttrs.FirstOrDefault().Value, CultureInfo.InvariantCulture) : 1D;
 
+            if (!containsSchema)
+                return;
+
             _subscriptions = _publishSettingsFileXml.Descendants("Subscription").Select(a => new Subscription()
                                                                     { 
                                                         Id = a.Attribute("Id").Value,
