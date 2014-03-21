@@ -155,6 +155,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return new LinuxVirtualMachineClient(properties, SubscriptionId, ManagementCertificate);
         }
 
+        /// <summary>
+        /// Lists all of the OS images assoiated with Linux that are public within the subscription
+        /// </summary>
+        public List<ImageProperties> ListImages(string filter = "")
+        {
+            var command = new ListImagesCommand()
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+
+            var list = command.Properties.Where(image => image.OperatingSystem == PlatformType.Linux).ToList();
+            if (!String.IsNullOrEmpty(filter))
+            {
+                return list.Where(image => image.Name.Contains(filter)).ToList();
+            }
+            return list;
+        }
+
         private void AddServiceCertificateToRoles(ServiceCertificateModel serviceCertificate, string cloudServiceName, ref List<LinuxVirtualMachineProperties> properties)
         {
             // upload the service certificate if it exists for the ssh keys

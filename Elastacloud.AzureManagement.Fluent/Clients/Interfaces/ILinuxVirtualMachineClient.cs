@@ -41,5 +41,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(
             List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null,
             string location = LocationConstants.NorthEurope, string affinityGroup = "");
+
+        /// <summary>
+        /// Lists all of the OS images assoiated with Linux that are public within the subscription
+        /// </summary>
+        List<ImageProperties> ListImages(string filter = "");
     }
 }

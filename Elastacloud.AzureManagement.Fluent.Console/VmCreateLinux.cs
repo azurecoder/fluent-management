@@ -36,14 +36,14 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             {
                 var properties = new LinuxVirtualMachineProperties()
                 {
-                    CloudServiceName = "asos-yarn-spark3",
+                    CloudServiceName = "asos-yarn-spark4",
                     HostName = "spark-node" + i,
                     RoleName = "spark-node" + i,
                     UserName = "azurecoder",
                     AdministratorPassword = "AsosSp@rk20148yJed",
                     DeploymentName = "spark-master",
-                    CustomTemplateName = "Azure-Data-Analysis",
-                    StorageAccountName = "rmpi",
+                    CustomTemplateName = "elastaspark0",
+                    StorageAccountName = "mtlytics",
                     PublicEndpoints = new List<InputEndpoint>()
                     {
                         new InputEndpoint()
@@ -64,14 +64,14 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                 props.Add(properties);
             }
             var service = new ServiceClient(_applicationFactory.SubscriptionId,
-                _applicationFactory.ManagementCertificate, "asos-yarn-spark3");
+                _applicationFactory.ManagementCertificate, "asos-yarn-spark4");
             var certificate = service.CreateServiceCertificateExportToFileSystem("elastacert", "password", "C:\\Projects\\cert_export");
             //var settings =
             //    new PublishSettingsExtractor(@"C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings");
             //var cert = settings.AddPublishSettingsToPersonalMachineStore();
             var linux = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId, _applicationFactory.ManagementCertificate);
             //linux.AddRolesToExistingDeployment(props, "asos-yarn-spark", null);
-            linux.CreateNewVirtualMachineDeploymentFromTemplateGallery(props, "asos-yarn-spark3", new ServiceCertificateModel()
+            linux.CreateNewVirtualMachineDeploymentFromTemplateGallery(props, "asos-yarn-spark4", new ServiceCertificateModel()
             {
                 Password = "password",
                 ServiceCertificate = certificate.DerEncodedCertificate

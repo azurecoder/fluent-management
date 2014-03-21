@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>linux vm e9d3203a-6548-49f6-b293-a352aadf077a "C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings" racmobile1 racmobile1 racmobile1 racmobile1</StartArguments>
+    <StartArguments>linux vm 5191b16a-673d-426c-8c55-fdd912858e4e "C:\Projects\Elastacloud\clustermanager\Elastacloud.SparkDeploy.ConsoleTest\Spark.publishsettings" racmobile1 racmobile1 racmobile1 racmobile1</StartArguments>
   </PropertyGroup>
 </Project>
