@@ -31,6 +31,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
 
         public void Execute()
         {
+            var linuxClient = new LinuxVirtualMachineClient(_applicationFactory.SubscriptionId,
+                _applicationFactory.ManagementCertificate);
+            var images = linuxClient.ListImages("Ubuntu Server 12.04 LTS");
+            images.ForEach(image => System.Console.WriteLine(image.Label));
             var props = new List<LinuxVirtualMachineProperties>();
             for (int i = 1; i < 2; i++)
             {
@@ -42,7 +46,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
                     UserName = "azurecoder",
                     AdministratorPassword = "AsosSp@rk20148yJed",
                     DeploymentName = "spark-master",
-                    CustomTemplateName = "elastaspark0",
+                    CustomTemplateName = images[0].Name,
                     StorageAccountName = "mtlytics",
                     PublicEndpoints = new List<InputEndpoint>()
                     {
@@ -65,7 +69,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             }
             var service = new ServiceClient(_applicationFactory.SubscriptionId,
                 _applicationFactory.ManagementCertificate, "asos-yarn-spark4");
-            var certificate = service.CreateServiceCertificateExportToFileSystem("elastacert", "password", "C:\\Projects\\cert_export");
+            var certificate = service.CreateServiceCertificateExportToFileSystem("elastacert", "AsosSp@rk20148yJed", "C:\\Projects\\cert_export");
             //var settings =
             //    new PublishSettingsExtractor(@"C:\Projects\ASOS Big Compute-12-30-2013-credentials.publishsettings");
             //var cert = settings.AddPublishSettingsToPersonalMachineStore();
@@ -73,7 +77,7 @@ namespace Elastacloud.AzureManagement.Fluent.Console
             //linux.AddRolesToExistingDeployment(props, "asos-yarn-spark", null);
             linux.CreateNewVirtualMachineDeploymentFromTemplateGallery(props, "asos-yarn-spark4", new ServiceCertificateModel()
             {
-                Password = "password",
+                Password = "AsosSp@rk20148yJed",
                 ServiceCertificate = certificate.DerEncodedCertificate
             });
         }

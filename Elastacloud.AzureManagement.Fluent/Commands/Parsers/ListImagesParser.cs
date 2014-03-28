@@ -58,14 +58,15 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 .Elements(GetSchema() + "OSImage");
             foreach (XElement osDetail in rootElements)
             {
-                if (osDetail.Element(GetSchema() + "MediaLink") == null)
-                {
-                    continue;
-                }
-                if (osDetail.Element(GetSchema() + "MediaLink").Value == String.Empty)
-                {
-                    continue;
-                }
+                //if (osDetail.Element(GetSchema() + "MediaLink") == null)
+                //{
+                //    continue;
+                //}
+
+                //if (osDetail.Element(GetSchema() + "MediaLink").Value == String.Empty)
+                //{
+                //    continue;
+                //}
 
                 if (osDetail.Element(GetSchema() + "ImageFamily") != null)
                 {
@@ -79,6 +80,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                 if (osDetail.Element(GetSchema() + "Description") != null)
                 {
                     imageProperties.Description = osDetail.Element(GetSchema() + "Description").Value;
+                }
+                if (osDetail.Element(GetSchema() + "Name") != null)
+                {
+                    imageProperties.Name = osDetail.Element(GetSchema() + "Name").Value;
                 }
                 if (osDetail.Element(GetSchema() + "Label") != null)
                 {

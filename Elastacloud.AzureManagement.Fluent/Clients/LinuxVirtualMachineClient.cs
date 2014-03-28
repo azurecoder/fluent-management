@@ -167,10 +167,27 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             command.Execute();
 
+            // groups the response back from the image list
+            // and takes the most recent publication of the image from the group
             var list = command.Properties.Where(image => image.OperatingSystem == PlatformType.Linux).ToList();
             if (!String.IsNullOrEmpty(filter))
             {
-                return list.Where(image => image.Name.Contains(filter)).ToList();
+                var newImageList = new List<ImageProperties>();
+                var imageList = list.Where(image => !String.IsNullOrEmpty(image.ImageFamily) && image.ImageFamily.Contains(filter))
+                    .GroupBy(image => image.ImageFamily);
+                foreach (var group in imageList)
+                {
+                    ImageProperties lImageProperties = null;
+                    foreach (var image in group)
+                    {
+                        if (lImageProperties == null)
+                            lImageProperties = image;
+                        if (image.PublishedDate > lImageProperties.PublishedDate)
+                            lImageProperties = image;
+                    }
+                    newImageList.Add(lImageProperties);
+                }
+                return newImageList;
             }
             return list;
         }
@@ -184,16 +201,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 client.UploadServiceCertificate(serviceCertificate.ServiceCertificate, serviceCertificate.Password, true);
                 foreach (var linuxVirtualMachineProperty in properties)
                 {
-                    linuxVirtualMachineProperty.KeyPairs.Add(new SSHKey(KeyType.KeyPair)
-                    {
-                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
-                        Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
-                    });
                     linuxVirtualMachineProperty.PublicKeys.Add(new SSHKey(KeyType.PublicKey)
                     {
                         FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
                         Path = String.Format("/home/{0}/.ssh/authorized_keys", linuxVirtualMachineProperty.UserName)
                     });
+                    linuxVirtualMachineProperty.KeyPairs.Add(new SSHKey(KeyType.KeyPair)
+                    {
+                        FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
+                        Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
+                    });
+                    
                     linuxVirtualMachineProperty.DisableSSHPasswordAuthentication = true;
                 }
             }

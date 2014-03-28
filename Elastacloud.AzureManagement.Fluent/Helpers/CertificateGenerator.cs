@@ -107,7 +107,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             store.Save(stream, UserPassword.ToCharArray(), new SecureRandom());
 
              // Create the equivalent C# representation
-            DerEncodedCertificate = new X509Certificate2(stream.GetBuffer(), userPassword, X509KeyStorageFlags.Exportable);
+            DerEncodedCertificate = new X509Certificate2(stream.GetBuffer(), userPassword, X509KeyStorageFlags.Exportable|X509KeyStorageFlags.PersistKeySet);
            
             // if specified then this add this certificate to the store
             if (addtoStore)

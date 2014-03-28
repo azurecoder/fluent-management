@@ -99,7 +99,20 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings
             SchemaVersion = containsSchema ? (int)double.Parse(schemaAttrs.FirstOrDefault().Value, CultureInfo.InvariantCulture) : 1D;
 
             if (!containsSchema)
+            {
+                var managementCertificate = _publishSettingsFileXml.Descendants("PublishProfile")
+                    .FirstOrDefault()
+                    .Attribute("ManagementCertificate")
+                    .Value;
+                _subscriptions = _publishSettingsFileXml.Descendants("Subscription").Select(a => new Subscription()
+                {
+                    Id = a.Attribute("Id").Value,
+                    Name = a.Attribute("Name").Value,
+                    ManagementUrl = "https://management.core.windows.net/",
+                    ManagementCertificate = GetCertificateFromFile(managementCertificate)
+                }).ToList();
                 return;
+            }
 
             _subscriptions = _publishSettingsFileXml.Descendants("Subscription").Select(a => new Subscription()
                                                                     { 

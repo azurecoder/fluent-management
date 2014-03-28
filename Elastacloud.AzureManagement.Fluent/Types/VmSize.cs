@@ -47,6 +47,16 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// <summary>
         /// A7 (8 x 1.6GHz CPU, 56GB RAM, 2,040GB Storage)
         /// </summary>
-        A7
+        A7,
+
+        /// <summary>
+        /// A8 (4 x 1.6GHz CPU, 56GB RAM, 1,000GB Storage)
+        /// </summary>
+        A8,
+
+        /// <summary>
+        /// A7 (8 x 1.6GHz CPU, 112GB RAM, 2,040GB Storage)
+        /// </summary>
+        A9,
     }
 }
