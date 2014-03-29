@@ -98,6 +98,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Exports a service certificate to Windows Azure Storage
         /// </summary>
         CertificateGenerator CreateServiceCertificateExportToStorage(string name, string password, string storageAccountName, string container, string folder);
-   
+        /// <summary>
+        /// Gets a list of cloud services in the currently subscription
+        /// </summary>
+        List<string> CloudServicesInSubscription { get; }
     }
 }

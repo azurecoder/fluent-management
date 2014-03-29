@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
@@ -192,6 +193,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var generator = BuildCertGenerator(name, password);
             generator.ExportToStorageAccount(storageAccountName, container, folder);
             return generator;
+        }
+
+        /// <summary>
+        /// Gets a list of cloud services in the currently subscription
+        /// </summary>
+        public List<string> CloudServicesInSubscription
+        {
+            get
+            {
+                var command = new GetHostedServiceListCommand()
+                {
+                    Certificate = ManagementCertificate,
+                    SubscriptionId = SubscriptionId
+                };
+                command.Execute();
+                return
+                    command.HostedServices.OrderByDescending(service => service.Name)
+                        .Select(service => service.Name)
+                        .ToList();
+            }
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
