@@ -218,7 +218,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {
             var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate);
-            generator.Create(name, DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)), DateTime.UtcNow.AddYears(2), password, true);
+            generator.Create(name, DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)), DateTime.UtcNow.AddYears(2), password);
             return generator;
         }
 
