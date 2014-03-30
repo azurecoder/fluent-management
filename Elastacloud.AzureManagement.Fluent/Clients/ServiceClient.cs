@@ -227,6 +227,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
+            var csDelete = new DeleteHostedServiceCommand(Name)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            csDelete.Execute();
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
