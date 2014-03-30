@@ -31,6 +31,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             HttpCommand = String.Format("{0}/deployments/{1}?comp=media", Name, DeploymentName);
             ServiceType = "services";
             OperationId = "hostedservices";
+            AdditionalHeaders["x-ms-version"] = "2013-08-01";
         }
 
         /// <summary>
