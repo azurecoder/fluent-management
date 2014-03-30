@@ -102,5 +102,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets a list of cloud services in the currently subscription
         /// </summary>
         List<string> CloudServicesInSubscription { get; }
+        /// <summary>
+        /// Deletes a cloud service and removes all of the .vhds for vms associated with the production deployment
+        /// </summary>
+        /// <param name="deploymentName">The name of the deployment to delete</param>
+        void DeleteCloudServiceAndDeployment(string deploymentName);
     }
 }

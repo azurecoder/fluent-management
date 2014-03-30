@@ -215,6 +215,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
         }
 
+        /// <summary>
+        /// Deletes a cloud service and removes all of the .vhds for vms associated with the production deployment
+        /// </summary>
+        /// <param name="deploymentName">The name of the deployment to delete</param>
+        public void DeleteCloudServiceAndDeployment(string deploymentName)
+        {
+            var command = new DeleteCloudServiceAndDeploymentCommand(Name, deploymentName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+        }
+
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {
             var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate);

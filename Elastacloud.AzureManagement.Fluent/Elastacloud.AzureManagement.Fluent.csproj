@@ -58,9 +58,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files\Microsoft SDKs\Windows Azure\.NET SDK\v2.2\ref\Microsoft.WindowsAzure.Diagnostics.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Storage, Version=3.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=3.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WindowsAzure.Storage.3.0.3.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
+      <HintPath>..\packages\WindowsAzure.Storage.3.1.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -135,6 +135,7 @@
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
     <Compile Include="Commands\Service Bus\CreateServiceBusNamspaceCommand.cs" />
     <Compile Include="Commands\Services\CheckCloudServiceNameAvailableCommand.cs" />
+    <Compile Include="Commands\Services\DeleteCloudServiceAndDeploymentCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
     <Compile Include="Commands\Virtual Machines\AddLinuxVirtualMachineToDeploymentCommand.cs" />
