@@ -107,5 +107,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// </summary>
         /// <param name="deploymentName">The name of the deployment to delete</param>
         void DeleteCloudServiceAndDeployment(string deploymentName);
+        /// <summary>
+        /// Gets the root certificate blob location for the .pem, .pfx and .cer files
+        /// </summary>
+        string CertificateBlobLocation { get; }
     }
 }

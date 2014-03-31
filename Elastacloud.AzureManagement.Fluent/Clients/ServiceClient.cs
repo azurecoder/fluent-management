@@ -191,7 +191,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             string container, string folder)
         {
             var generator = BuildCertGenerator(name, password);
-            generator.ExportToStorageAccount(storageAccountName, container, folder);
+            CertificateBlobLocation = generator.ExportToStorageAccount(storageAccountName, container, folder);
             return generator;
         }
 
@@ -234,6 +234,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             csDelete.Execute();
         }
+
+        /// <summary>
+        /// Gets the root certificate blob location for the .pem, .pfx and .cer files
+        /// </summary>
+        public string CertificateBlobLocation { get; private set; }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {

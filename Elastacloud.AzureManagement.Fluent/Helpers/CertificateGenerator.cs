@@ -169,7 +169,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             return DerEncodedCertificate.Export(X509ContentType.Cert);
         }
 
-        public void ExportToStorageAccount(string account, string container, string folder)
+        public string ExportToStorageAccount(string account, string container, string folder)
         {
             if(String.IsNullOrEmpty(SubscriptionId) && ManagementCertificate == null)
                 throw new FluentManagementException("please provide a subscription id and management certificate to continue", "CertificateGenerator");
@@ -191,6 +191,9 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
 
             var cerBlob = blobContainer.GetBlockBlobReference(String.Format("{0}/{1}.{2}.cer", folder, DerEncodedCertificate.Thumbprint, DateTime.UtcNow.ToString("ddMMyyyy")));
             cerBlob.UploadFromByteArray(GetCerData(), 0, GetCerData().Count());
+
+            return String.Format("http://{0}.blob.core.windows.net/{1}/{2}/{3}.{4}", account, container, folder,
+                DerEncodedCertificate.Thumbprint, DateTime.UtcNow.ToString("ddMMyyyy"));
         }
 
         #region Certificate Store
