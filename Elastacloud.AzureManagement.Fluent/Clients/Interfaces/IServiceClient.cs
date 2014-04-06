@@ -111,5 +111,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets the root certificate blob location for the .pem, .pfx and .cer files
         /// </summary>
         string CertificateBlobLocation { get; }
+        /// <summary>
+        /// Gets information about the current subscription
+        /// </summary>
+        SubscriptionInformation SubscriptionDetails { get; }
     }
 }

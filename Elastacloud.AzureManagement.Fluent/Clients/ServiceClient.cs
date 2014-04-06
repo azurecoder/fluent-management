@@ -240,6 +240,23 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public string CertificateBlobLocation { get; private set; }
 
+        /// <summary>
+        /// Gets information about the current subscription
+        /// </summary>
+        public SubscriptionInformation SubscriptionDetails 
+        {
+            get
+            {
+                var command = new GetSubscriptionCommand()
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                return command.SubscriptionInformation;
+            } 
+        }
+
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {
             var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate);
