@@ -65,6 +65,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     Certificate = ManagementCertificate
                 };
             create.Execute();
+            var status = StorageStatus.Creating;
+            while (status != StorageStatus.Created)
+            {
+                var command = new GetStorageAccountStatusCommand(name)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                status = command.Status;
+            }
         }
 
         /// <summary>
