@@ -22,8 +22,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Used to copy or register an image from one subscription to another
         /// </summary>
-        void CopyAndRegisterImageInNewSubscription(string sourceAccountName, string sourceAccountKey, string destinationAccountName, string containerName,
-            string imageName, string imageUri, ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true);
+        void CopyAndRegisterImageInNewSubscription(ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true);
         /// <summary>
         /// Gets a list of all of the available images in the subscription
         /// </summary>

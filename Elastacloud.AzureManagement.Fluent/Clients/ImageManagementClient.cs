@@ -42,45 +42,44 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Used to copy or register an image from one subscription to another
         /// </summary>
-        public void CopyAndRegisterImageInNewSubscription(string sourceAccountName, string sourceAccountKey, string destinationAccountName, string containerName,
-            string imageName, string imageUri, ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true)
+        public void CopyAndRegisterImageInNewSubscription(ImageProperties imageProperties, bool copyImageOnlyIfNotExists = true)
         {
             // by default we won't copy the image if it exists
             // TODO: need to check this implementation as the index is confusing 
-            int index = 0;
-            if (Exists(GetFormattedImageName(imageName, index, false)) && copyImageOnlyIfNotExists)
+            int index = imageProperties.Version;
+            if (Exists(GetFormattedImageName(imageProperties.ImageNameRoot, imageProperties.Version, false)) && copyImageOnlyIfNotExists)
             {
                 return;
             }
             RaiseClientUpdate(5, "Checked for formatted image existence");
             // get the storage account to copy to and the blob 
             var storageAccountClient = new StorageClient(SubscriptionId, ManagementCertificate);
-            var destinationAccountKeys = storageAccountClient.GetStorageAccountKeys(destinationAccountName);
-            var storageAccount = new CloudStorageAccount(new StorageCredentials(destinationAccountName, destinationAccountKeys[0]), true);
+            var destinationAccountKeys = storageAccountClient.GetStorageAccountKeys(imageProperties.DestinationAccountName);
+            var storageAccount = new CloudStorageAccount(new StorageCredentials(imageProperties.DestinationAccountName, destinationAccountKeys[0]), true);
             var blobClient = storageAccount.CreateCloudBlobClient();
             // list all of the containers in the blob - if they are not present then create a new one
             // create this container if it doesn't exist as this will contain the blob which will be registered as the image
-            var containerReference = blobClient.GetContainerReference(containerName);
+            var containerReference = blobClient.GetContainerReference(imageProperties.DestinationAccountContainer);
             containerReference.CreateIfNotExists();
             // make sure that this image name dis a .vhd
             //imageName = imageName.EndsWith(".vhd") ? imageName + ".vhd" : imageName;
-            var blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, index, true));
+            var blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageProperties.ImageNameRoot, index, true));
             while (blobImage.Exists())
             {
                 // eventually we'll find a name we don't have! 
-                blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageName, ++index, true));
+                blobImage = containerReference.GetPageBlobReference(GetFormattedImageName(imageProperties.ImageNameRoot, ++index, true));
             }
             RaiseClientUpdate(8, "Checked to see whether images exist with index " + index);
             // create a SAS from the source account for the image
-            var client = new StorageClient(sourceAccountName, sourceAccountKey);
-            imageUri = client.GetSaSFromBlobUri(imageUri);
+            var client = new StorageClient(imageProperties.SourceAccountName, imageProperties.SourceAccountKey);
+            imageProperties.ImageCopyLocation = client.GetSaSFromBlobUri(imageProperties.ImageCopyLocation);
             RaiseClientUpdate(10, "Calculated SaS blob uri");
             // use the copy blob API to copy the image across 
-            blobImage.StartCopyFromBlob(new Uri(imageUri));
+            blobImage.StartCopyFromBlob(new Uri(imageProperties.ImageCopyLocation));
             double percentCopied = 0;
             while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
             {
-                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageName, index, true));
+                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageProperties.ImageNameRoot, index, true));
 
                 if (blobImage.CopyState.BytesCopied == null || blobImage.CopyState.TotalBytes == null)
                     continue;
@@ -95,7 +94,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
             
             // when the copy process is complete we want to register the image
-            imageProperties.Name = imageProperties.Label = GetFormattedImageName(imageName, index, false);
+            imageProperties.Name = imageProperties.Label = GetFormattedImageName(imageProperties.ImageNameRoot, index, false);
             imageProperties.MediaLink = blobImage.Uri.ToString();
             var registerImageCommand = new RegisterImageCommand(imageProperties)
             {

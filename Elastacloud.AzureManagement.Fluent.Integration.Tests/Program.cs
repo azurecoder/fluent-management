@@ -37,8 +37,8 @@ namespace Elastacloud.AzureManagement.Fluent.Integration.Tests
             var imageList = client.ImageList;
             imageList.ForEach(image => Console.WriteLine(image.Label));
             Console.WriteLine("Image sparkius exists: {0}", client.Exists("sparkius1"));
-            client.CopyAndRegisterImageInNewSubscription(account_name_destination, account_key_destination, null,
-                "elastaimage", "sparkius", source_image_path, properties);
+            //client.CopyAndRegisterImageInNewSubscription(account_name_destination, account_key_destination, null,
+            //    "elastaimage", "sparkius", source_image_path, properties);
         }
     }
 }
