@@ -120,9 +120,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Trace.WriteLine(String.Format("Cloud service named {0} has been created", cloudServiceName));
             }
             // adds service certificate to the deployment
-            AddServiceCertificateToRoles(serviceCertificate, cloudServiceName, ref properties);
-            Trace.WriteLine("A new service certificate has been added to the cloud service");
-            ServiceCertificate = serviceCertificate.ServiceCertificate.Export(X509ContentType.Pfx);
+            if (serviceCertificate != null)
+            {
+                AddServiceCertificateToRoles(serviceCertificate, cloudServiceName, ref properties);
+                Trace.WriteLine("A new service certificate has been added to the cloud service");
+                ServiceCertificate = serviceCertificate.ServiceCertificate.Export(X509ContentType.Pfx);
+            }
+           
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
             var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[]{properties[0]}), cloudServiceName)
