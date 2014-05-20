@@ -25,6 +25,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Subscriptions
         {
             ServiceType = "locations";
             HttpVerb = HttpVerbGet;
+            AdditionalHeaders["x-ms-version"] = "2014-05-01";
         }
 
         internal List<LocationInformation> Locations { get; set; }

@@ -7,36 +7,33 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System.Collections.Generic;
+using System;
 
 namespace Elastacloud.AzureManagement.Fluent.Types
 {
     /// <summary>
     /// The location of each of the data centres
     /// </summary>
-    public class LocationInformation
+    [Flags]
+    public enum AvailableServices
     {
         /// <summary>
-        /// What the name is internally to Windows Azure
+        /// Whether compute is available for the subscription in the data centre
         /// </summary>
-        public string Name { get; set; }
-
+        Compute = 1,
         /// <summary>
-        /// How this name is displayed to the portal
+        /// Storage is available in the data centre for this subscription
         /// </summary>
-        public string DisplayName { get; set; }
+        Storage = 2,
+// ReSharper disable once InconsistentNaming
         /// <summary>
-        /// Gets a list of all of the availabel virtual machine role sizes
+        /// Virtual Machines are available in the data centre
         /// </summary>
-        public List<VmSize> VirtualMachineRolesSizes { get; set; }
+        PersistentVMRole = 4,
         /// <summary>
-        /// Gets a list of all of the web/worker role sizes
+        /// High memory instances are available in the data centre which include A6-A9 although A8/A9 are not currently
+        /// available in all data centres 
         /// </summary>
-        public List<VmSize> WebWorkerRolesSizes { get; set; }
-        /// <summary>
-        /// The services available to the location in question
-        /// </summary>
-        public AvailableServices AvailableServices { get; set; }
- 
+        HighMemory = 8
     }
 }

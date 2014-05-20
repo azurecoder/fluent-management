@@ -22,8 +22,11 @@ using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
-    public class ServiceClient : IServiceClient 
+    public class ServiceClient : IServiceClient
     {
+
+        private List<LocationInformation> _locations = null;
+
         /// <summary>
         /// Used to construct the ServiceClient
         /// </summary>
@@ -88,13 +91,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             get
             {
+                if (_locations != null)
+                    return _locations;
                 var command = new GetSubscriberLocationsCommand
                 {
                     SubscriptionId = SubscriptionId,
                     Certificate = ManagementCertificate
                 };
                 command.Execute();
-                return command.Locations;
+                return (_locations = command.Locations);
             }
         }
 

@@ -38,6 +38,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// Extra large VM (8 x 1.6GHz CPU, 14GB RAM, 2,040GB Storage)
         /// </summary>
         ExtraLarge,
+        A5,
 
         /// <summary>
         /// A6 (4 x 1.6GHz CPU, 28GB RAM, 1,000GB Storage)
@@ -58,5 +59,17 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// A7 (8 x 1.6GHz CPU, 112GB RAM, 2,040GB Storage)
         /// </summary>
         A9,
+        // this is the basic tariff which doesn't include the load balancing so is cheaper 
+// ReSharper disable InconsistentNaming
+        Basic_A0,
+// ReSharper restore InconsistentNaming
+// ReSharper disable once InconsistentNaming
+        Basic_A1,
+// ReSharper disable once InconsistentNaming
+        Basic_A2,
+// ReSharper disable once InconsistentNaming
+        Basic_A3,
+// ReSharper disable once InconsistentNaming
+        Basic_A4
     }
 }
