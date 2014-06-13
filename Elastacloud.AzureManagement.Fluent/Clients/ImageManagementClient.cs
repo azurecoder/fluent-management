@@ -77,24 +77,32 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 imageProperties.ImageCopyLocation = client.GetSaSFromBlobUri(imageProperties.ImageCopyLocation);
                 RaiseClientUpdate(10, "Calculated SaS blob uri");
             }
-            // use the copy blob API to copy the image across 
-            blobImage.StartCopyFromBlob(new Uri(imageProperties.ImageCopyLocation));
-            double percentCopied = 0;
-            while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
+            try
             {
-                blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageProperties.ImageNameRoot, index, true));
-
-                if (blobImage.CopyState.BytesCopied == null || blobImage.CopyState.TotalBytes == null)
-                    continue;
-                // wait one second until we have the copy status working properly
-                double innerPercent = Math.Round(((double) blobImage.CopyState.BytesCopied.Value/(double) blobImage.CopyState.TotalBytes.Value) * 70) + 10;
-                if (innerPercent != percentCopied)
+                blobImage.StartCopyFromBlob(new Uri(imageProperties.ImageCopyLocation));
+                double percentCopied = 0;
+                while (blobImage.CopyState.Status != CopyStatus.Success && blobImage.CopyState.Status != CopyStatus.Failed)
                 {
-                    RaiseClientUpdate(Convert.ToInt32(innerPercent), "Copied part of image file to blob storage");
+                    blobImage = (CloudPageBlob)containerReference.GetBlobReferenceFromServer(GetFormattedImageName(imageProperties.ImageNameRoot, index, true));
+
+                    if (blobImage.CopyState.BytesCopied == null || blobImage.CopyState.TotalBytes == null)
+                        continue;
+                    // wait one second until we have the copy status working properly
+                    double innerPercent = Math.Round(((double)blobImage.CopyState.BytesCopied.Value / (double)blobImage.CopyState.TotalBytes.Value) * 70) + 10;
+                    if (innerPercent != percentCopied)
+                    {
+                        RaiseClientUpdate(Convert.ToInt32(innerPercent), "Copied part of image file to blob storage");
+                    }
+                    percentCopied = innerPercent;
+                    Thread.Sleep(1000);
                 }
-                percentCopied = innerPercent;
-                Thread.Sleep(1000);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception is: ", ex.ToString());
+            }
+            // use the copy blob API to copy the image across 
+           
             
             // when the copy process is complete we want to register the image
             imageProperties.Name = imageProperties.Label = GetFormattedImageName(imageProperties.ImageNameRoot, index, false);

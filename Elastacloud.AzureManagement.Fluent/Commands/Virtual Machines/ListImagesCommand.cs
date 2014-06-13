@@ -30,7 +30,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         ///  </summary>
         internal ListImagesCommand()
         {
-            AdditionalHeaders["x-ms-version"] = "2012-08-01";
+            AdditionalHeaders["x-ms-version"] = "2014-02-01";
             OperationId = "images";
             ServiceType = "services";
             HttpVerb = HttpVerbGet;
