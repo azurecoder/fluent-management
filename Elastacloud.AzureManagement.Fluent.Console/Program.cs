@@ -1,4 +1,5 @@
 ﻿using System;
+using Elastacloud.AzureManagement.Fluent.Clients;
 using Elastacloud.AzureManagement.Fluent.Console.Properties;
 using System.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;

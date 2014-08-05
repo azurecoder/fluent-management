@@ -22,6 +22,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
             HttpVerb = HttpVerbPut;
         }
 
+        protected override StorageServiceType StorageServiceType
+        {
+            get { return StorageServiceType.Blob; }
+        }
+
         public override void Execute()
         {
             string accessContainer = String.Format("http://{0}.blob.core.windows.net/{1}?restype=container", AccountName,

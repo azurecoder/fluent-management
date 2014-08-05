@@ -38,6 +38,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             ManagementCertificate = certificate;
         }
 
+        /// <summary>
+        /// Used to create a blob client with an account name and key
+        /// </summary>
+        public BlobClient(string accountName, string accountKey)
+        {
+            AccountName = accountName;
+            AccountKey = accountKey;
+        }
+
         protected X509Certificate2 ManagementCertificate { get; set; }
 
         #region Implementation of IBlobClient
@@ -148,6 +157,33 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 AccountName = AccountName
             };
             return command.CheckStorageAccountExists(timeoutInSeconds);
+        }
+
+        /// <summary>
+        /// Used to enable storage analytics for a particular blob type
+        /// </summary>
+        public void EnableStorageAnalytics(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging)
+        {
+            var command = new EnableStorageAnalyticsCommand(StorageServiceType.Blob, metricsType)
+            {
+                AccountName = AccountName,
+                AccountKey = AccountKey
+            };
+            command.Execute();
+        }
+
+        /// <summary>
+        /// Used to enable storage analytics for a particular blob type
+        /// </summary>
+        public bool IsStorageAnalyticsEnabled(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging)
+        {
+            var command = new GetStorageAnalyticsEnabledCommand(StorageServiceType.Blob, metricsType)
+            {
+                AccountName = AccountName,
+                AccountKey = AccountKey
+            };
+            command.Execute();
+            return command.StorageAnalyticsEnabled;
         }
 
         /// <summary>

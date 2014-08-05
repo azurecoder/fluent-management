@@ -19,6 +19,21 @@ using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 {
+    public enum StorageServiceType
+    {
+        Blob,
+        Table,
+        Queue,
+        Analytics
+    }
+
+    [Flags]
+    public enum AnalyticsMetricsType
+    {
+        Logging = 1,
+        Hourly = 2,
+        Minute = 4
+    }
     /// <summary>
     /// Abstract Base class with functions to allow blob handling using the storage services API
     /// </summary>
@@ -47,11 +62,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
         internal string ContainerName { get; set; }
         internal string BlobName { get; set; }
 
+        internal string Version { get; set; }
+
         internal string HttpVerb
         {
             get { return _httpVerb; }
             set { _httpVerb = value; }
         }
+        /// <summary>
+        /// Used to check a payload from a get request and whether there has been a positive response
+        /// </summary>
+        internal Func<string, bool> PayloadAnalyser { set; get; } 
 
         internal string DateHeader { get; set; }
 
@@ -61,6 +82,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
         {
             DateHeader = DateTime.UtcNow.ToString("R", CultureInfo.InvariantCulture);
         }
+
+        protected abstract StorageServiceType StorageServiceType { get; }
 
         /// <summary>
         /// Checks to see whether a storage account exists based on checking every second the operation will either return a 502
@@ -133,13 +156,18 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
             request.Method = HttpVerb;
             request.ContentLength = contentLength;
             request.Headers.Add("x-ms-date", DateHeader);
-            request.Headers.Add("x-ms-version", VersionHeader);
+            request.Headers.Add("x-ms-version", Version ?? VersionHeader);
             request.Headers.Add("Authorization", authHeader);
-            if (contentLength != 0)
+            switch (contentLength)
             {
-                request.Headers.Add("x-ms-blob-type", "BlockBlob");
-                request.GetRequestStream().Write(fileBytes, 0, fileBytes.Length);
+                case 0:
+                    return request;
             }
+            if (StorageServiceType == StorageServiceType.Blob)
+            {
+                request.Headers.Add("x-ms-blob-type", "BlockBlob");                    
+            }
+            request.GetRequestStream().Write(fileBytes, 0, fileBytes.Length);
             return request;
         }
 
@@ -151,6 +179,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
                 HttpWebResponse response;
                 using (response = (HttpWebResponse) request.GetResponse())
                 {
+                    if (HttpVerb == HttpVerbGet && PayloadAnalyser != null)
+                    {
+                        var reader = new StreamReader(response.GetResponseStream());
+                        PayloadAnalyser(reader.ReadToEnd());
+                    }
                     if (response.StatusCode == HttpStatusCode.Created)
                     {
                         Trace.WriteLine("Container or blob has been created!");
@@ -182,7 +215,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
         protected string CreateAuthorizationHeader(String canResource, string options = "", int contentLength = 0)
         {
             string toSign = String.Format("{0}\n\n\n{1}\n\n\n\n\n\n\n\n{5}\nx-ms-date:{2}\nx-ms-version:{3}\n{4}",
-                                          HttpVerb, contentLength, DateHeader, VersionHeader, canResource, options);
+                HttpVerb, HttpVerb == HttpVerbGet ? "" : contentLength.ToString(CultureInfo.InvariantCulture), DateHeader, Version ?? VersionHeader, canResource, options);
 
             string signature;
             using (var hmacSha256 = new HMACSHA256(Convert.FromBase64String(AccountKey)))
@@ -202,6 +235,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
         /// Abstract method used to execute the any command againt blob storage
         /// </summary>
         public abstract void Execute();
+
+        public const string TableService = "table";
+        public const string BlobService = "blob";
+        public const string QueueService = "queue";
 
         #endregion
     }

@@ -31,6 +31,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
         internal string FileNamePath { get; set; }
         internal string DeploymentPath { get; set; }
 
+        protected override StorageServiceType StorageServiceType
+        {
+            get { return StorageServiceType.Blob; }
+        }
+
         public override void Execute()
         {
             string accessContainer = DeploymentPath = String.Format("http://{0}.blob.core.windows.net/{1}/{2}", AccountName, ContainerName, BlobName);

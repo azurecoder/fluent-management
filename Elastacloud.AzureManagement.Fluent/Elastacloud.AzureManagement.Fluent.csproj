@@ -113,10 +113,12 @@
     <Compile Include="Clients\WebsiteClient.cs" />
     <Compile Include="Clients\WindowsVirtualMachineClient.cs" />
     <Compile Include="Commands\Blobs\BlobCommand.cs" />
+    <Compile Include="Commands\Blobs\GetStorageAnalyticsEnabledCommand.cs" />
     <Compile Include="Commands\Blobs\CreateAndUploadBlobCommand.cs" />
     <Compile Include="Commands\Blobs\CreateBlobContainerCommand.cs" />
     <Compile Include="Commands\Blobs\DeleteBlobCommand.cs" />
     <Compile Include="Commands\Blobs\DeleteBlobContainerCommand.cs" />
+    <Compile Include="Commands\Blobs\EnableStorageAnalyticsCommand.cs" />
     <Compile Include="Commands\Certificates\AddServiceCertificateCommand.cs" />
     <Compile Include="Commands\CommandNameMap.cs" />
     <Compile Include="Commands\HDInsight\CreateHDInsightCluster.cs" />

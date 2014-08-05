@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
+
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
 {
     /// <summary>
@@ -51,6 +53,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// </summary>
         /// <returns>A boolean indicating whether the account has been created and resolved</returns>
         bool CheckStorageAccountHasResolved(int timeoutInSeconds = 300);
+        /// <summary>
+        /// Used to enable storage analytics for a particular blob type
+        /// </summary>
+        void EnableStorageAnalytics(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging);
+
+        /// <summary>
+        /// Used to enable storage analytics for a particular blob type
+        /// </summary>
+        bool IsStorageAnalyticsEnabled(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging);
 
         /// <summary>
         /// The name of the container to which the client is bound
