@@ -11,7 +11,6 @@ namespace Elastacloud.AzureManagement.Fluent.Console
     {
         static void Main(string[] args)
         {
-           
             //var executor = ParseTokens(args);
 
             //executor.Execute();

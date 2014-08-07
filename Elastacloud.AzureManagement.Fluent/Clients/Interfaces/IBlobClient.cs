@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 
@@ -65,6 +66,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// </summary>
         bool IsStorageAnalyticsEnabled(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging);
 
+        /// <summary>
+        /// Given the shared access signature of a container generates a set blob SaS's
+        /// </summary>
+        void CopyBlobsFromContainerSas(string containerSas, string destinationContainer);
         /// <summary>
         /// Used to copy an abitrary directory to another directory
         /// </summary>

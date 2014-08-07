@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -190,6 +191,36 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             command.Execute();
             return command.StorageAnalyticsEnabled;
+        }
+
+        /// <summary>
+        /// Given the shared access signature of a container generates a set blob SaS's
+        /// </summary>
+        public void CopyBlobsFromContainerSas(string containerSas, string destinationContainer)
+        {
+            var container = new CloudBlobContainer(new Uri(containerSas));
+            var blobs = container.ListBlobs("blob/2014/08/07", true);
+
+            var destinationAccountStorageCredentials = new StorageCredentials(AccountName, AccountKey);
+            var destinationAccount = new CloudStorageAccount(destinationAccountStorageCredentials, true);
+            var destinationBlobClient = destinationAccount.CreateCloudBlobClient();
+            var destinationContainerInner = destinationBlobClient.GetContainerReference(destinationContainer);
+            foreach (var blob in blobs)
+            {
+                var blockBlob = blob as CloudBlockBlob;
+                using(var reader = new StreamReader(blockBlob.OpenRead()))
+                {
+                    var destinationBlob = destinationContainerInner.GetBlockBlobReference(blockBlob.Name);
+                    string contents = reader.ReadToEnd();
+
+                    using (var writer = new StreamWriter(destinationBlob.OpenWrite()))
+                    {
+                        writer.Write(contents);
+                    }
+                }
+            }
+          
+          
         }
 
         /// <summary>
