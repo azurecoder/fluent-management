@@ -11,9 +11,10 @@ namespace Elastacloud.AzureManagement.Fluent.Console
     {
         static void Main(string[] args)
         {
-            var executor = ParseTokens(args);
+           
+            //var executor = ParseTokens(args);
 
-            executor.Execute();
+            //executor.Execute();
             System.Console.WriteLine();
             System.Console.WriteLine(Resources.Program_Main_Press_any_key_to_exit);
             System.Console.Read();

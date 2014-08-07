@@ -8,11 +8,17 @@
  ************************************************************************************************************/
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 using Elastacloud.AzureManagement.Fluent.Commands.Storage;
 using Elastacloud.AzureManagement.Fluent.Types;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -185,6 +191,91 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             return command.StorageAnalyticsEnabled;
         }
+
+        /// <summary>
+        /// Copies the log directory to the 
+        /// </summary>
+        public async Task<CopyableBlob[]> CopyDirectoryTo(string accountName, string accountKey,
+            string sourceContainerName, string directoryName, string destinationContanerName, string copyDirectoryPrefix = "")
+        {
+            var copyIds = new List<CopyableBlob>();
+            // get a list of the source account blobs
+            var sourceAccountStorageCredentials = new StorageCredentials(AccountName, AccountKey);
+            var account = new CloudStorageAccount(sourceAccountStorageCredentials, true);
+            var client = account.CreateCloudBlobClient();
+            var sourceContainer = client.GetContainerReference(sourceContainerName);
+            var blobs = sourceContainer.ListBlobs(directoryName, true);
+            // get a list of the destination account blobs 
+            var destinationAccountCredentials = new StorageCredentials(accountName, accountKey);
+            var destinationAccount = new CloudStorageAccount(destinationAccountCredentials, true);
+            var destinationClient = destinationAccount.CreateCloudBlobClient();
+            var destinationContainer = destinationClient.GetContainerReference(destinationContanerName);
+            destinationContainer.CreateIfNotExists();
+            foreach (var blob in blobs)
+            {
+                var blockBlob = blob as CloudBlockBlob;
+                var destinationBlockBlob =
+                    destinationContainer.GetBlockBlobReference(String.Format("{0}/{1}", copyDirectoryPrefix, 
+                        String.Join("", blob.Uri.Segments.Skip(3).Take(5).ToArray())));
+                var sas = blockBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+                {
+                    Permissions = SharedAccessBlobPermissions.Read,
+                    SharedAccessStartTime = DateTime.Now.AddMinutes(-15),
+                    SharedAccessExpiryTime = DateTime.Now.AddHours(1)
+                });
+                blockBlob = new CloudBlockBlob(new Uri(blockBlob.Uri.AbsoluteUri + sas));
+  
+                copyIds.Add(new CopyableBlob()
+                {
+                    // the use of a SAS fubars this 
+                    CopyId = await destinationBlockBlob.StartCopyFromBlobAsync(blockBlob),
+                    BlobUri = destinationBlockBlob.Uri,
+                    ContainerName = destinationContanerName,
+                    Size = (double) blockBlob.Properties.Length/1024,
+                    PercentageCopied = 0
+                });
+            }
+            CopyingBlobs = copyIds.ToArray();
+
+            int completed = 0;
+            while (true)
+            {
+                foreach (var blob in copyIds)
+                {
+                    var blockBlob = new CloudBlockBlob(blob.BlobUri, destinationAccountCredentials);
+                    await blockBlob.FetchAttributesAsync();
+                    await Task.Delay(500);
+                    if (blockBlob.CopyState.BytesCopied.HasValue)
+                    {
+                        blob.PercentageCopied =
+                            Convert.ToInt32(
+                                Math.Round(
+                                    (double) blockBlob.CopyState.BytesCopied.Value/blockBlob.CopyState.TotalBytes.Value,
+                                    2)*100);
+                    }
+                    if (blockBlob.CopyState.Status == CopyStatus.Success ||
+                        blockBlob.CopyState.Status == CopyStatus.Failed)
+                    {
+                        completed++;
+                    }
+                    if (completed == copyIds.Count)
+                        return CopyingBlobs;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copies the storage analytics logs to a new storage account
+        /// </summary>
+        public Task<CopyableBlob[]> CopyStorageAnalyticsLogsTo(string accountName, string accountKey, string destinationContainer, string sourceDirectory, string prefix)
+        {
+            return CopyDirectoryTo(accountName, accountKey, "$logs", sourceDirectory, destinationContainer, prefix);
+        }
+
+        /// <summary>
+        /// Gets a list of the blobs that are copying
+        /// </summary>
+        public CopyableBlob[] CopyingBlobs { private set; get; }
 
         /// <summary>
         /// The name of the container to which the client is bound

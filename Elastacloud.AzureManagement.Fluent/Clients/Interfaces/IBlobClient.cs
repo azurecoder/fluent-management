@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
+using System.Threading.Tasks;
 using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -64,6 +66,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         bool IsStorageAnalyticsEnabled(AnalyticsMetricsType metricsType = AnalyticsMetricsType.Logging);
 
         /// <summary>
+        /// Used to copy an abitrary directory to another directory
+        /// </summary>
+        Task<CopyableBlob[]> CopyDirectoryTo(string accountName, string accountKey, string sourceContainerName, string directoryName, string destinationContanerName, string copyDirectoryPrefix = "");
+        /// <summary>
+        /// Copies the storage analytics logs to a new storage account
+        /// </summary>
+        Task<CopyableBlob[]> CopyStorageAnalyticsLogsTo(string accountName, string accountKey, string destinationContainer, string sourceDirectory, string prefix);
+        /// <summary>
         /// The name of the container to which the client is bound
         /// </summary>
         string ContainerName { get; }
@@ -82,5 +92,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// The subscription id that the client is bound to 
         /// </summary>
         string SubscriptionId { get; }
+    }
+
+    public class CopyableBlob
+    {
+        public string ContainerName { get; internal set; }
+        public string CopyId { get; internal set; }
+        public Uri BlobUri { internal set; get; }
+        public int PercentageCopied { get; internal set; }
+        public double Size { get; internal set; }
+        public DateTimeOffset? TimeTakenToComlete { get; internal set; }
     }
 }
