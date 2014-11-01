@@ -36,6 +36,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         public event LinuxPropertiesDelegate LinuxVirtualMachineCreationEvent;
 
+
+
         /// <summary>
         /// Constructs a LinuxVirtualMachineClient and will get the details of a virtual machine given a cloud service
         /// </summary>
