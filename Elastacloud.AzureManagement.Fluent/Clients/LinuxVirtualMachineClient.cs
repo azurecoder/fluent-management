@@ -32,6 +32,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         // The Vm role which is being used to hold the state of the linux virtual machine
         private List<PersistentVMRole> _vmRoles;
 
+        public delegate void LinuxPropertiesDelegate(LinuxVirtualMachineProperties properties);
+
+        public event LinuxPropertiesDelegate LinuxVirtualMachineCreationEvent;
+
         /// <summary>
         /// Constructs a LinuxVirtualMachineClient and will get the details of a virtual machine given a cloud service
         /// </summary>
@@ -135,6 +139,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
+            // raise this event every time we create a VM
+            if (LinuxVirtualMachineCreationEvent != null)
+            {
+                LinuxVirtualMachineCreationEvent(properties[0]);
+            }
             Trace.WriteLine("Deployment created and first virtual machine added");
             // try and add the other concurrently
             // concurrency doesn't work - there is no way to build a fast deployment :-(
@@ -150,6 +159,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         Certificate = ManagementCertificate
                     };
                 startCommand.Execute();
+                // raise this event every time we create a VM
+                if (LinuxVirtualMachineCreationEvent != null)
+                {
+                    LinuxVirtualMachineCreationEvent(theProperty);
+                }
                 Trace.WriteLine(String.Format("New VM added to deployment with hostname {0}", theProperty.HostName));
             }
 
