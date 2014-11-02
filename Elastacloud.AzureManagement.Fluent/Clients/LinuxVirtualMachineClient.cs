@@ -32,7 +32,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         // The Vm role which is being used to hold the state of the linux virtual machine
         private List<PersistentVMRole> _vmRoles;
 
-        public EventHandler<LinuxVirtualMachineProperties> LinuxVirtualMachineCreationEvent;
+        public event EventHandler<LinuxVirtualMachineProperties> LinuxVirtualMachineCreationEvent;
        
         /// <summary>
         /// Constructs a LinuxVirtualMachineClient and will get the details of a virtual machine given a cloud service
