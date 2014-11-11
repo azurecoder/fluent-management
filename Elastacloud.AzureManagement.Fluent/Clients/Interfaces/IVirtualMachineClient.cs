@@ -10,6 +10,7 @@
 using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -57,5 +58,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets a list of hosts, internal ip addresses and other things
         /// </summary>
         List<VmHost> GetAllInternalHostDetails();
+        /// <summary>
+        /// Gets the virtual networks available in the current subscription
+        /// </summary>
+        List<VirtualNetworkSite> GetAvailableVirtualNetworks();
+        // put a placeholder in here to do the same for availability sets
     }
 }

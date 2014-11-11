@@ -126,6 +126,7 @@
     <Compile Include="Commands\MobileServices\GetScaleSettingsCommand.cs" />
     <Compile Include="Commands\Parsers\CheckCloudServiceNameAvailableParser.cs" />
     <Compile Include="Commands\Parsers\GetAllDisksParser.cs" />
+    <Compile Include="Commands\Parsers\ListVirtualNetworksParser.cs" />
     <Compile Include="Commands\Parsers\ListImagesParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteMetricsParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteServerFarmParser.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Virtual Networks\ListVirtualNetworksCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteMetricsCommand.cs" />
     <Compile Include="Commands\Websites\GetServerFarmCommand.cs" />
     <Compile Include="Commands\Websites\CreateWebsiteServerFarmCommand.cs" />
@@ -267,6 +269,7 @@
     <Compile Include="Types\Virtual Machines\PlatformType.cs" />
     <Compile Include="Types\Virtual Machines\SSHKey.cs" />
     <Compile Include="Types\Virtual Machines\VmHost.cs" />
+    <Compile Include="Types\Virtual Networks\VirtualNetworkSite.cs" />
     <Compile Include="Types\VirtualDisk.cs" />
     <Compile Include="Types\Websites\MetricsConstants.cs" />
     <Compile Include="Types\Websites\WebsiteMetric.cs" />

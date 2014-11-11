@@ -20,6 +20,7 @@ using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
@@ -361,6 +362,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             StorageContainerName = helper.Path;
             StorageFileName = helper.File;
             return helper.HostSubDomain;
+        }
+
+        public List<VirtualNetworkSite> GetAvailableVirtualNetworks()
+        {
+            var command = new ListVirtualNetworksCommands()
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return command.VirtualNetworks;
         }
     }
 }

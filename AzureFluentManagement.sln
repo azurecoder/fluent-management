@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent", "Elastacloud.AzureManagement.Fluent\Elastacloud.AzureManagement.Fluent.csproj", "{6119D185-70B4-4137-97ED-876A30E0850B}"
 EndProject
@@ -25,6 +25,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Integration.Tests", "Elastacloud.AzureManagement.Fluent.Integration.Tests\Elastacloud.AzureManagement.Fluent.Integration.Tests.csproj", "{EB46D40C-4FED-4929-8C93-080724C09BB4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.LinuxKeyConverter", "Elastacloud.AzureManagement.LinuxKeyConverter\Elastacloud.AzureManagement.LinuxKeyConverter.csproj", "{A736044F-A7E1-4C3E-81B0-B91E9EF00BE0}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Elastacloud.FluentManagement.FSTest", "Elastacloud.FluentManagement.FSTest\Elastacloud.FluentManagement.FSTest.fsproj", "{BC487296-4DBE-4D9D-B98D-A0A72961AE64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +66,10 @@ Global
 		{A736044F-A7E1-4C3E-81B0-B91E9EF00BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A736044F-A7E1-4C3E-81B0-B91E9EF00BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A736044F-A7E1-4C3E-81B0-B91E9EF00BE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
