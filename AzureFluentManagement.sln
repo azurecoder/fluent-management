@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent", "Elastacloud.AzureManagement.Fluent\Elastacloud.AzureManagement.Fluent.csproj", "{6119D185-70B4-4137-97ED-876A30E0850B}"
 EndProject
@@ -27,6 +27,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.LinuxKeyConverter", "Elastacloud.AzureManagement.LinuxKeyConverter\Elastacloud.AzureManagement.LinuxKeyConverter.csproj", "{A736044F-A7E1-4C3E-81B0-B91E9EF00BE0}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Elastacloud.FluentManagement.FSTest", "Elastacloud.FluentManagement.FSTest\Elastacloud.FluentManagement.FSTest.fsproj", "{BC487296-4DBE-4D9D-B98D-A0A72961AE64}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Elastacloud.AzureManagement.Fluent.Utils", "Elastacloud.AzureManagement.Fluent.Utils\Elastacloud.AzureManagement.Fluent.Utils.fsproj", "{C878BBF5-825A-4B9D-851B-1F9461512BFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Types", "Elastacloud.AzureManagement.Fluent.Types\Elastacloud.AzureManagement.Fluent.Types.csproj", "{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +74,14 @@ Global
 		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC487296-4DBE-4D9D-B98D-A0A72961AE64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C878BBF5-825A-4B9D-851B-1F9461512BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C878BBF5-825A-4B9D-851B-1F9461512BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C878BBF5-825A-4B9D-851B-1F9461512BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C878BBF5-825A-4B9D-851B-1F9461512BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

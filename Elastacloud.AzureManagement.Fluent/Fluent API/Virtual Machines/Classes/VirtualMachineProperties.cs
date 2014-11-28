@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 
 namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
 {
@@ -68,5 +69,16 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
         /// The cloud services name used to deploy to 
         /// </summary>
         public string CloudServiceName { get; set; }
+        /// <summary>
+        /// The virtual network subnet name which 
+        /// </summary>
+        public VirtualNetworkDescriptor VirtualNetwork { get; set; }
+        /// <summary>
+        /// The availability set used to create the virtual machines
+        /// Infinitly useful for zookeeper!!
+        /// </summary>
+        public string AvailabilitySet { get; set; }
     }
+
+
 }

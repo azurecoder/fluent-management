@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
@@ -120,7 +121,24 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                         site.Subnets.Add(subNet);
                     }
                 }
-                
+
+                site.AddressSpaces = new List<AddressSpace>();
+                if (virtualSite.Element(GetSchema() + "AddressSpace") != null)
+                {
+                    foreach (
+                        var space in
+                            virtualSite.Element(GetSchema() + "AddressSpace")
+                                .Element(GetSchema() + "AddressPrefixes")
+                                .Elements(GetSchema() + "AddressPrefix")
+                                .Select(space => new AddressSpace()
+                                {
+                                    CidrAddressRange = space.Value
+                                }))
+                    {
+                        site.AddressSpaces.Add(space);
+                    }
+                }
+
                 CommandResponse.Add(site);
             }
         }

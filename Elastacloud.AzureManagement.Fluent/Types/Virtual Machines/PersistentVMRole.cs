@@ -67,6 +67,14 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The IP address used by the VM
         /// </summary>
         public string IPAddress { get; set; }
+        /// <summary>
+        /// The name of the subnet which the virtual machine is a member of 
+        /// </summary>
+        public string SubnetName { get; set; }
+        /// <summary>
+        /// The name of the virtual network which the virtual machine should be a member of
+        /// </summary>
+        public string VirtualNetworkName { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 
@@ -88,7 +96,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             element.Add(OSHardDisk.GetXmlTree());
             element.Add(new XElement(Namespaces.NsWindowsAzure + "RoleSize", RoleSize.ToString()));
             if (AvailabilityNameSet != null)
-                element.Add(AvailabilityNameSet);
+                element.Add(Namespaces.NsWindowsAzure + "AvailabilitySetName", AvailabilityNameSet);
+            if (SubnetName != null)
+                element.Add(Namespaces.NsWindowsAzure + "SubnetNames",
+                    new XElement(Namespaces.NsWindowsAzure + "SubnetName", SubnetName));
             return element;
         }
 

@@ -39,6 +39,7 @@
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Data.Edm.5.6.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
@@ -91,6 +92,7 @@
     <Compile Include="Clients\Interfaces\IGenerateUpdateEvent.cs" />
     <Compile Include="Clients\Interfaces\IImageManagementClient.cs" />
     <Compile Include="Clients\Interfaces\ILinuxVirtualMachineClient.cs" />
+    <Compile Include="Clients\Interfaces\IVirtualNetworkingClient.cs" />
     <Compile Include="Clients\Interfaces\IWindowsVirtualMachineClient.cs" />
     <Compile Include="Clients\LinuxVirtualMachineClient.cs" />
     <Compile Include="Clients\Interfaces\IServiceBusClient.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Clients\StorageClient.cs" />
     <Compile Include="Clients\Interfaces\IStorageClient.cs" />
     <Compile Include="Clients\Interfaces\IBlobClient.cs" />
+    <Compile Include="Clients\VirtualNetworkClient.cs" />
     <Compile Include="Clients\WebsiteClient.cs" />
     <Compile Include="Clients\WindowsVirtualMachineClient.cs" />
     <Compile Include="Commands\Blobs\BlobCommand.cs" />
@@ -269,7 +272,7 @@
     <Compile Include="Types\Virtual Machines\PlatformType.cs" />
     <Compile Include="Types\Virtual Machines\SSHKey.cs" />
     <Compile Include="Types\Virtual Machines\VmHost.cs" />
-    <Compile Include="Types\Virtual Networks\VirtualNetworkSite.cs" />
+    <Compile Include="Types\Virtual Networks\VirtualNetworkDescriptor.cs" />
     <Compile Include="Types\VirtualDisk.cs" />
     <Compile Include="Types\Websites\MetricsConstants.cs" />
     <Compile Include="Types\Websites\WebsiteMetric.cs" />
@@ -420,6 +423,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent.Types\Elastacloud.AzureManagement.Fluent.Types.csproj">
+      <Project>{07344df3-fb3e-46fd-abf4-19d0eaf31c72}</Project>
+      <Name>Elastacloud.AzureManagement.Fluent.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent.Utils\Elastacloud.AzureManagement.Fluent.Utils.fsproj">
+      <Project>{c878bbf5-825a-4b9d-851b-1f9461512bfc}</Project>
+      <Name>Elastacloud.AzureManagement.Fluent.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
