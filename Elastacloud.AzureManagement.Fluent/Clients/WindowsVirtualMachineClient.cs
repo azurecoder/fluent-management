@@ -366,7 +366,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         public List<VirtualNetworkSite> GetAvailableVirtualNetworks()
         {
-            var command = new ListVirtualNetworksCommands()
+            var command = new ListVirtualNetworksCommand()
             {
                 SubscriptionId = SubscriptionId,
                 Certificate = ManagementCertificate

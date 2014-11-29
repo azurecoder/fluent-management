@@ -129,6 +129,7 @@
     <Compile Include="Commands\MobileServices\GetScaleSettingsCommand.cs" />
     <Compile Include="Commands\Parsers\CheckCloudServiceNameAvailableParser.cs" />
     <Compile Include="Commands\Parsers\GetAllDisksParser.cs" />
+    <Compile Include="Commands\Parsers\AddressAvailabilityResponseParser.cs" />
     <Compile Include="Commands\Parsers\ListVirtualNetworksParser.cs" />
     <Compile Include="Commands\Parsers\ListImagesParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteMetricsParser.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Commands\Virtual Machines\RestartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
+    <Compile Include="Commands\Virtual Networks\GetAvailableIpAddressesCommand.cs" />
     <Compile Include="Commands\Virtual Networks\ListVirtualNetworksCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteMetricsCommand.cs" />
     <Compile Include="Commands\Websites\GetServerFarmCommand.cs" />

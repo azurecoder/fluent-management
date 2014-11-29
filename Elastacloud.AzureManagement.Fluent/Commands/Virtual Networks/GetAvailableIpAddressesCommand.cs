@@ -23,24 +23,28 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
     /// <summary>
     ///   Registers a virtual machine image for either Linux or Windowss     
     ///  </summary>
-    public class ListVirtualNetworksCommand : ServiceCommand
+    public class GetAvailableIpAddressesCommand : ServiceCommand
     {
-        // https://management.core.windows.net/<subscription-id>/services/networking/virtualnetwork     
+        // https://management.core.windows.net/<subscription-id>/services/networking/<virtual-network-name>
         /// <summary>
         ///   Lists all images that are registered in your subscriptions   
         ///  </summary>
-        internal ListVirtualNetworksCommand()
+        internal GetAvailableIpAddressesCommand(string vnetName, string ipAddress)
         {
             AdditionalHeaders["x-ms-version"] = "2014-02-01";
-            OperationId = "networking/virtualnetwork";
+            OperationId = "networking";
             ServiceType = "services";
+            IpAddress = ipAddress;
             HttpVerb = HttpVerbGet;
+            HttpCommand = vnetName + "?op=checkavailability&address=" + ipAddress;
         }
+
+        public string IpAddress { get; set; }
 
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
-        public List<VirtualNetworkSite> VirtualNetworks { get; set; }
+        public AvailableIpAddresses IpAddressCheck { get; set; }
 
         /// <summary>
         /// Initially used via a response callback for commands which expect a async response 
@@ -49,7 +53,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         protected override void ResponseCallback(HttpWebResponse webResponse)
         {
             // get the cloud service deployments
-            VirtualNetworks = Parse(webResponse, "VirtualNetworkSites", new ListVirtualNetworksParser(null));
+            IpAddressCheck = Parse(webResponse, "AddressAvailabilityResponse", new AddressAvailabilityResponseParser(null));
+            IpAddressCheck.RequestedIp = IPAddress.Parse(IpAddress);
             SitAndWait.Set();
         }
 
@@ -58,7 +63,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         public override string ToString()
         {
-            return "ListImagesCommand";
+            return "GetAvailableIpAddressesCommand";
         }
     }
 }

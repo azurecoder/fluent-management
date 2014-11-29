@@ -32,5 +32,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Adds an address range and associated subnets to an existing VNET
         /// </summary>
         List<VirtualNetworkSite> AddNewAddressRange(string name, VirtualNetworkSite site);
+        /// <summary>
+        /// Checks to see whether an IP address in a virtual network is available
+        /// </summary>
+        AvailableIpAddresses IsIpAddressAvailable(string vnet, string ipToCheck);
     }
 }

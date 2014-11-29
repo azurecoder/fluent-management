@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System.Collections.Generic;
+using System.Net;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
 {
@@ -34,5 +35,23 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
     {
         public string Name { get; set; }
         public string CidrAddressRange { get; set; }
+    }
+    /// <summary>
+    /// REturns the available ip addresses from a service management request
+    /// </summary>
+    public class AvailableIpAddresses
+    {
+        /// <summary>
+        /// Checks to see whether the requested ip address is available
+        /// </summary>
+        public bool IpIsAvailable { get; set; }
+        /// <summary>
+        /// The ip that has been requested in the service management request
+        /// </summary>
+        public IPAddress RequestedIp { get; set; }
+        /// <summary>
+        /// The ips that are available if the requested address is not
+        /// </summary>
+        public List<IPAddress> AvailableIps { get; set; }
     }
 }

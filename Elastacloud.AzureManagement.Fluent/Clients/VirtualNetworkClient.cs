@@ -20,6 +20,10 @@ using Elastacloud.AzureManagement.Fluent.VirtualNetwork;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
+    /// <summary>
+    /// Creates a virtual networking client which has the capability to return information about the vnet
+    /// and add things to it
+    /// </summary>
     public class VirtualNetworkClient : IVirtualNetworkingClient
     {
         public VirtualNetworkClient(string subscriptionId, X509Certificate2 managementCertificate)
@@ -31,10 +35,12 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public X509Certificate2 ManagementCertificate { get; set; }
 
         public string SubscriptionId { get; set; }
-
+        /// <summary>
+        /// Gets the available virtual networks in the correct order binding the address ranges to the subnets
+        /// </summary>
         public IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks()
         {
-            var command = new ListVirtualNetworksCommands()
+            var command = new ListVirtualNetworksCommand()
             {
                 SubscriptionId = SubscriptionId,
                 Certificate = ManagementCertificate
@@ -51,6 +57,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public List<VirtualNetworkSite> AddNewAddressRange(string name, VirtualNetworkSite range)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Checks to see whether an IP address in a virtual network is available
+        /// </summary>
+        public AvailableIpAddresses IsIpAddressAvailable(string vnet, string ipToCheck)
+        {
+            var command = new GetAvailableIpAddressesCommand(vnet, ipToCheck)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return command.IpAddressCheck;
         }
     }
 }
