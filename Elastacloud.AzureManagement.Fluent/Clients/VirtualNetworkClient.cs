@@ -70,7 +70,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 SubnetAddressRange = subnetAddress,
                 SubnetName = subnetName
             };
-            return AddXmlSubnetToExistingNetworkingDefinition(subnetTag);
+            string xml = AddXmlSubnetToExistingNetworkingDefinition(subnetTag);
+            var command = new SetVirtualNetworkConfigCommand(xml)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return xml;
         }
 
         /// <summary>

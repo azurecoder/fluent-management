@@ -224,6 +224,7 @@
     <Compile Include="Commands\Virtual Machines\StartVirtualMachineCommand.cs" />
     <Compile Include="Commands\Virtual Machines\CreateWindowsVirtualMachineDeploymentCommand.cs" />
     <Compile Include="Commands\Virtual Networks\GetAvailableIpAddressesCommand.cs" />
+    <Compile Include="Commands\Virtual Networks\SetVirtualNetworkConfigCommand.cs" />
     <Compile Include="Commands\Virtual Networks\GetVirtualNetworkConfigCommand.cs" />
     <Compile Include="Commands\Virtual Networks\ListVirtualNetworksCommand.cs" />
     <Compile Include="Commands\Websites\GetWebsiteMetricsCommand.cs" />
