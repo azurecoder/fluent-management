@@ -1,56 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Elastacloud.AzureManagement.Fluent</id>
-        <version>0.5.0.0</version>
+        <version>0.5.0.72</version>
         <title>Azure Fluent Management Library</title>
-        <authors>Richard Conway</authors>
-        <owners>Richard Conway &amp; Andy Cross (Elastacloud)</owners>
-        <projectUrl>http://fluentmanagement.elastacloud.com/</projectUrl>
+        <authors>Elastacloud Limited (@azurecoder,@andybareweb,@isaac_abraham)</authors>
+        <owners>Elastacloud Limited</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Fluent Azure Management seeks to enable to deployments and database rollouts using the Service Management, Storage and SQL Azure Management APIs, Mobile Services, Virtual Machines and Websites as an alternative to powershell.</description>
-        <releaseNotes>Release 0.4.9.8
----------------
-A ton of fixes and contribs from Kristofer Liljeblad and Pedro Alonso
-
-Release 0.4.9.1
----------------
-Addition of Linux virtual machines
-
-Release 0.4.9.0
----------------
-
-Complete usage of websites in place
-
-Release 0.4.4.5
----------------
-For the most awesome guy in the world (you know who you are Magnus!) an update to include the deployment of Windows Virtual Machines
-
-Release 0.4.1.40
-----------------
-A lot of changes and additions mainly around the PaaS side to allow a very smooth deployment transition for n-tier applications in the cloud.
-A set of "clients" which are stateful and may be better for users than the fluent interface invarious scenarios.
-Overhaul of the config APIs and consolidation of the rebuilding parts and dependencies on msbuild :-(
-Inclusion of a beta of a MobileServiceClient to build mobile service applications.</releaseNotes>
-        <copyright>Copyright Elastacloud 2013</copyright>
-        <language>en-US</language>
-        <tags>Fluent Management, Windows Azure, Storage Services, Service Mobile Azure Websites, Virtual Machines</tags>
+        <description>Library used for management of Windows Azure services, SQL, storage, WASD, WAMS and VM's and networking</description>
+        <releaseNotes>Latest release with a bunch of new features around networking</releaseNotes>
+        <copyright>Copyright © 2014</copyright>
+        <tags>azure, service management api</tags>
         <dependencies>
-            <group targetFramework=".NETFramework4.5">
-                <dependency id="BouncyCastle" version="1.7.0" />
-                <dependency id="Newtonsoft.Json" version="4.5.11" />
-                <dependency id="SSH.NET" version="2013.4.7" />
-                <dependency id="chilkat-win32" version="9.4.1" />
-                <dependency id="WindowsAzure.Storage" version="2.0.5.0" />
-            </group>
+            <dependency id="BouncyCastle" version="1.7.0" />
+            <dependency id="WindowsAzure.Storage" version="3.1.0.0" />
+            <dependency id="FSharp.Data" version="2.1.0" />
+            <dependency id="IPNetwork" version="1.3.1.0" />
         </dependencies>
         <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System.Security" targetFramework=".NETFramework4.0" />
-            <frameworkAssembly assemblyName="System.Configuration" targetFramework=".NETFramework4.0" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="System.Security" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="System.Net" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="FSharp.Core" targetFramework=".NETFramework4.5" />
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="lib\Elastacloud.AzureManagement.Fluent.dll" target="lib\Elastacloud.AzureManagement.Fluent.dll" />
-        <file src="lib\Elastacloud.AzureManagement.ScriptMapper.Linux.dll" target="lib\Elastacloud.AzureManagement.ScriptMapper.Linux.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent.Types.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Types.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent.Utils.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Utils.dll" />
     </files>
 </package>
