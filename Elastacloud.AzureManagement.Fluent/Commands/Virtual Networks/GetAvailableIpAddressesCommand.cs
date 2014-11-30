@@ -7,18 +7,12 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
-using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 
-namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
+namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
 {
     /// <summary>
     ///   Registers a virtual machine image for either Linux or Windowss     

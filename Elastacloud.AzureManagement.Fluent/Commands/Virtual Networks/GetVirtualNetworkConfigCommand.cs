@@ -7,10 +7,16 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Net;
+using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
@@ -18,16 +24,16 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
     /// <summary>
     ///   Registers a virtual machine image for either Linux or Windowss     
     ///  </summary>
-    public class ListVirtualNetworksCommand : ServiceCommand
+    public class GetVirtualNetworkConfigCommand : ServiceCommand
     {
-        // https://management.core.windows.net/<subscription-id>/services/networking/virtualnetwork     
+        // https://management.core.windows.net/<subscription-id>/services/networking/media     
         /// <summary>
-        ///   Lists all images that are registered in your subscriptions   
+        ///   Gets the net config for the specific virtual network
         ///  </summary>
-        internal ListVirtualNetworksCommand()
+        internal GetVirtualNetworkConfigCommand()
         {
             AdditionalHeaders["x-ms-version"] = "2014-02-01";
-            OperationId = "networking/virtualnetwork";
+            OperationId = "networking/media";
             ServiceType = "services";
             HttpVerb = HttpVerbGet;
         }
@@ -35,7 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
-        public List<VirtualNetworkSite> VirtualNetworks { get; set; }
+        public string VirtualNetworkConfig { get; set; }
 
         /// <summary>
         /// Initially used via a response callback for commands which expect a async response 
@@ -44,7 +50,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
         protected override void ResponseCallback(HttpWebResponse webResponse)
         {
             // get the cloud service deployments
-            VirtualNetworks = Parse(webResponse, "VirtualNetworkSites", new ListVirtualNetworksParser(null));
+            using(var streamingResponse = new StreamReader(webResponse.GetResponseStream()))
+            {
+                VirtualNetworkConfig = streamingResponse.ReadToEnd();
+            }
             SitAndWait.Set();
         }
 
@@ -53,7 +62,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks
         /// </summary>
         public override string ToString()
         {
-            return "ListImagesCommand";
+            return "GetAllVirtualNetworkConfigCommand";
         }
     }
 }

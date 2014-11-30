@@ -11,10 +11,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
-using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualNetwork;
 
@@ -49,14 +51,26 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return VirtualNetworkingUtils.ConvertVNetToHierarchicalModel(command.VirtualNetworks);
         }
 
-        public void CreateNamedVirtualNetwork(string networkName)
+        /// <summary>
+        /// Creates an empty VNET to add address ranges and subnets 
+        /// </summary>
+        public string AddSubnetToAddressRange(string networkName, string addressRange, string subnetName)
         {
-            throw new NotImplementedException();
-        }
-
-        public List<VirtualNetworkSite> AddNewAddressRange(string name, VirtualNetworkSite range)
-        {
-            throw new NotImplementedException();
+            var networkResponse = GetAvailableVirtualNetworks();
+            var vNetSpecific = networkResponse.FirstOrDefault(vnet => vnet.Name == networkName);
+            var subnetAddress = VirtualNetworkingUtils.NextAvailableSubnet(addressRange, vNetSpecific);
+            if (subnetAddress == null)
+            {
+                throw new FluentManagementException("there is no space in the selected address range to create a new subnet", "VirtualNetworkClient");
+            }
+            var subnetTag = new SubnetTag()
+            {
+                NetworkName = networkName,
+                AddressPrefix = addressRange,
+                SubnetAddressRange = subnetAddress,
+                SubnetName = subnetName
+            };
+            return AddXmlSubnetToExistingNetworkingDefinition(subnetTag);
         }
 
         /// <summary>
@@ -72,5 +86,49 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             return command.IpAddressCheck;
         }
+
+        /// <summary>
+        /// Gets all of the networking config for the entire set of vnets
+        /// </summary>
+        public string GetAllNetworkingConfig()
+        {
+            var command = new GetVirtualNetworkConfigCommand()
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return command.VirtualNetworkConfig;
+        }
+
+        #region Network Details 
+        public class SubnetTag
+        {
+            public string NetworkName { get; set; }
+            public string AddressPrefix { get; set; }
+            public string SubnetName { get; set; }
+            public string SubnetAddressRange { get; set; }
+        }
+
+        public XNamespace Namespace = "http://schemas.microsoft.com/ServiceHosting/2011/07/NetworkConfiguration";
+
+        private string AddXmlSubnetToExistingNetworkingDefinition(SubnetTag tag)
+        {
+            var xml = GetAllNetworkingConfig();
+            var document = XDocument.Parse(xml);
+            var virtualSites = document.Element(Namespace + "NetworkConfiguration")
+                .Element(Namespace + "VirtualNetworkConfiguration")
+                .Element(Namespace + "VirtualNetworkSites")
+                .Elements(Namespace + "VirtualNetworkSite")
+                .FirstOrDefault(site => site.Attributes("name").FirstOrDefault().Value == tag.NetworkName);
+            var addedSubnetTag = new XElement(Namespace + "Subnet",
+                new XAttribute("name", tag.SubnetName),
+                new XElement(Namespace + "AddressPrefix", tag.SubnetAddressRange)
+                );
+            virtualSites.Element(Namespace + "Subnets").Add(addedSubnetTag);
+            return document.ToStringFullXmlDeclaration();
+        }
+
+        #endregion
     }
 }
