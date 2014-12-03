@@ -38,7 +38,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The list of role that will be deployed in this deployment
         /// </summary>
         public RoleList RoleList { get; set; }
-
+        /// <summary>
+        /// the name of the virtual network to which the deployment is bound
+        /// </summary>
+        public string VirtualNetworkName { get; set; }
         /// <summary>
         /// Gets an ad-hoc deployment for a Windows templated VM instance
         /// </summary>
@@ -75,6 +78,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 //                                     Label = Convert.ToBase64String(Encoding.UTF8.GetBytes(cloudServiceName))
                                      Label = properties.DeploymentName
                                  };
+            if (properties.VirtualNetwork != null)
+                deployment.VirtualNetworkName = properties.VirtualNetwork.VirtualNetworkName;
             var roleList = new RoleList();
 
             foreach (var role in roles)
@@ -100,7 +105,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             return new XElement(Namespaces.NsWindowsAzure + "Deployment",
                                 new XElement(Namespaces.NsWindowsAzure + "Name", Name),
                                 new XElement(Namespaces.NsWindowsAzure + "DeploymentSlot", "Production"),
-                                new XElement(Namespaces.NsWindowsAzure + "Label", Label), RoleList.GetXmlTree());
+                                new XElement(Namespaces.NsWindowsAzure + "Label", Label), RoleList.GetXmlTree(),
+                                new XElement(Namespaces.NsWindowsAzure + "VirtualNetworkName", VirtualNetworkName));
         }
 
         #endregion

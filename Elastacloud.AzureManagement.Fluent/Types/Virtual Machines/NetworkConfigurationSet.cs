@@ -15,13 +15,16 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
     /// <summary>
     /// Is the network configuration set for the vm instance
     /// </summary>
-    // TODO: Update this class to include the serialization of subnets
     public class NetworkConfigurationSet : ConfigurationSet
     {
         /// <summary>
         /// Contains the InputEndpoints for the network configuration set
         /// </summary>
         public InputEndpoints InputEndpoints { get; set; }
+        /// <summary>
+        /// The name of a valid subnet associated with a vnet
+        /// </summary>
+        public string SubnetName { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 
@@ -33,6 +36,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         {
             var element = new XElement(Namespaces.NsWindowsAzure + "ConfigurationSet", InputEndpoints.GetXmlTree());
             element.Add(new XElement(Namespaces.NsWindowsAzure + "ConfigurationSetType", ConfigurationSetType.ToString()));
+            if (SubnetName != null)
+            {
+                element.Add(new XElement(Namespaces.NsWindowsAzure + "SubnetNames", new XElement(Namespaces.NsWindowsAzure + "SubnetName", SubnetName)));
+            }
             return element;
         }
 

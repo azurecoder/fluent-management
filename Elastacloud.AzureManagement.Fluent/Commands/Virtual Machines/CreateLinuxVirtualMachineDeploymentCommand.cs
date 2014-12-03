@@ -11,8 +11,6 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 using Deployment = Elastacloud.AzureManagement.Fluent.Types.VirtualMachines.Deployment;
 

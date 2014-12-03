@@ -68,11 +68,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// </summary>
         public string IPAddress { get; set; }
         /// <summary>
-        /// The name of the subnet which the virtual machine is a member of 
-        /// </summary>
-        public string SubnetName { get; set; }
-        /// <summary>
-        /// The name of the virtual network which the virtual machine should be a member of
+        /// The name of the virtual network with which the subnet is part of
         /// </summary>
         public string VirtualNetworkName { get; set; }
 
@@ -96,10 +92,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             element.Add(OSHardDisk.GetXmlTree());
             element.Add(new XElement(Namespaces.NsWindowsAzure + "RoleSize", RoleSize.ToString()));
             if (AvailabilityNameSet != null)
-                element.Add(Namespaces.NsWindowsAzure + "AvailabilitySetName", AvailabilityNameSet);
-            if (SubnetName != null)
-                element.Add(Namespaces.NsWindowsAzure + "SubnetNames",
-                    new XElement(Namespaces.NsWindowsAzure + "SubnetName", SubnetName));
+                element.Add(new XElement(Namespaces.NsWindowsAzure + "AvailabilitySetName", AvailabilityNameSet));
             return element;
         }
 
@@ -165,6 +158,11 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 InputEndpoints = inputEndpoints
             };
 
+            if (properties.VirtualNetwork != null)
+            {
+                network.SubnetName = properties.VirtualNetwork.SubnetName;
+            }
+
             OSVirtualHardDisk osDisk = OSVirtualHardDisk.GetOSImageFromTemplate(properties);
             var disks = new DataVirtualHardDisks();
             if (properties.DataDisks != null)
@@ -180,7 +178,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     disks.HardDiskCollection.Add(disk);
                 }
             }
-            return new PersistentVMRole
+            var pvm = new PersistentVMRole
             {
                 NetworkConfigurationSet = network,
                 OperatingSystemConfigurationSet = operatingSystemConfigurationSet,
@@ -189,6 +187,13 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 HardDisks = disks,
                 OSHardDisk = osDisk
             };
+
+            if (properties.AvailabilitySet != null)
+            {
+                pvm.AvailabilityNameSet = properties.AvailabilitySet;
+            }
+          
+            return pvm;
         }
     }
 }

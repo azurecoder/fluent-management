@@ -63,6 +63,7 @@
     <Content Include="packages.config" />
     <Content Include="app.config" />
     <None Include="VirtualNetworking.fsx" />
+    <None Include="VirtualMachines.fsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent.Types\Elastacloud.AzureManagement.Fluent.Types.csproj">
