@@ -157,6 +157,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             {
                 InputEndpoints = inputEndpoints
             };
+            if (properties.EndpointAclRules != null)
+            {
+                network.EndpointAcl = new EndpointAcl(new EndpointAclRules(properties.EndpointAclRules));
+            }
 
             if (properties.VirtualNetwork != null)
             {

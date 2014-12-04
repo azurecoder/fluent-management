@@ -7,8 +7,10 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Collections.Generic;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using FSharp.Data.Runtime;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
@@ -25,6 +27,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The name of a valid subnet associated with a vnet
         /// </summary>
         public string SubnetName { get; set; }
+        /// <summary>
+        /// The set of permit deny rules available between subnets
+        /// </summary>
+        public EndpointAcl EndpointAcl { get; set; }
 
         #region Implementation of ICustomXmlSerializer
 
@@ -39,6 +45,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             if (SubnetName != null)
             {
                 element.Add(new XElement(Namespaces.NsWindowsAzure + "SubnetNames", new XElement(Namespaces.NsWindowsAzure + "SubnetName", SubnetName)));
+            }
+            if (EndpointAcl != null)
+            {
+                element.Add(EndpointAcl.GetXmlTree());
             }
             return element;
         }

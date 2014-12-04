@@ -28,6 +28,10 @@ let settingCert fileName subscriptionId =
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
 
+let storageClient = StorageClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+let accounts = storageClient.GetStorageAccountList()
+let account = accounts |> Seq.filter (fun account -> account.Name = "azurecoder11")
+
 let vmClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
 let sshEndpoint = InputEndpoint(EndpointName = "ssh",
                                 LocalPort = 22,

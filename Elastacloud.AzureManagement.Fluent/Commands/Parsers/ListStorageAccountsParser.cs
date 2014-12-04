@@ -34,6 +34,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                                       Location = (string) hostedService.Element(GetSchema() + "StorageServiceProperties")
                                                 .Element(GetSchema() + "Location")
                                   };
+                // this can happen if there is an affinity group - then there is no location -
+                // we get a primary geolocation though
+                if (service.Location == null)
+                {
+                    service.Location = (string) hostedService.Element(GetSchema() + "StorageServiceProperties")
+                        .Element(GetSchema() + "GeoPrimaryRegion");
+                }
                 CommandResponse.Add(service);
             }
         }

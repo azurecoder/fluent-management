@@ -274,6 +274,7 @@
     <Compile Include="Types\AvailableServices.cs" />
     <Compile Include="Types\Mobile Services\ScaleSettings.cs" />
     <Compile Include="Types\Virtual Machines\ImageProperties.cs" />
+    <Compile Include="Types\Virtual Machines\EndpointAclRule.cs" />
     <Compile Include="Types\Virtual Machines\KeyType.cs" />
     <Compile Include="Types\Virtual Machines\LinuxConfigurationSet.cs" />
     <Compile Include="Types\Virtual Machines\PlatformType.cs" />

@@ -78,6 +78,10 @@ namespace Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes
         /// Infinitly useful for zookeeper!!
         /// </summary>
         public string AvailabilitySet { get; set; }
+        /// <summary>
+        /// The subnets that are allowed through permit and deny rules 
+        /// </summary>
+        public List<EndpointAclRule> EndpointAclRules { get; set; }
     }
 
 
