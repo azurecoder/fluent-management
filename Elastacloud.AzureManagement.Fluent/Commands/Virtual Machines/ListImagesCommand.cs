@@ -7,14 +7,10 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
-using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
@@ -30,7 +26,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         ///  </summary>
         internal ListImagesCommand()
         {
-            AdditionalHeaders["x-ms-version"] = "2014-02-01";
+            AdditionalHeaders["x-ms-version"] = "2014-05-01";
+            //OperationId = "images" + (publisherFilter == null ? "" : "?publisher=" + publisherFilter);
             OperationId = "images";
             ServiceType = "services";
             HttpVerb = HttpVerbGet;

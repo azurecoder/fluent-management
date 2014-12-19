@@ -56,3 +56,5 @@ let properties = new LinuxVirtualMachineProperties(
 vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
                                                               List<LinuxVirtualMachineProperties>([|properties|]),
                                                               "briskit1000")
+
+let images = vmClient.GetCurrentUbuntuImage()

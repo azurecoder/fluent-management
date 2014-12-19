@@ -173,6 +173,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return new LinuxVirtualMachineClient(properties, SubscriptionId, ManagementCertificate);
         }
 
+
         /// <summary>
         /// Lists all of the OS images assoiated with Linux that are public within the subscription
         /// </summary>
@@ -504,6 +505,16 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 RoleName = vm.RoleName
             }));
             return hosts;
+        }
+        /// <summary>
+        /// This returns all of the available ubuntu images in the gallery
+        /// </summary>
+        public ImageProperties GetCurrentUbuntuImage()
+        {
+            return ListImages("Ubuntu").Where(
+                image => image.Label.Contains("Ubuntu Server 14.10") && !image.Label.Contains("DAILY"))
+                .Take(1)
+                .FirstOrDefault();
         }
 
         public List<VirtualNetworkSite> GetAvailableVirtualNetworks()
