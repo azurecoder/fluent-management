@@ -4,7 +4,7 @@
 #r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.Utils.dll"
 #r "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.5\\System.Xml.Linq.dll"
 #r @"..\packages\IPNetwork.1.3.1.0\lib\LukeSkywalker.IPNetwork.dll"
-#r @"..\packages\FSharp.Data.2.1.0\lib\net40\FSharp.Data.dll"
+#r @"..\packages\FSharp.Data.2.0.14\lib\net40\FSharp.Data.dll"
 
 open Elastacloud.AzureManagement.Fluent
 open Elastacloud.AzureManagement.Fluent.Types
