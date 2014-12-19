@@ -26,8 +26,8 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="Elastacloud.AzureManagement.Fluent.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.dll" />
-        <file src="Elastacloud.AzureManagement.Fluent.Types.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Types.dll" />
-        <file src="Elastacloud.AzureManagement.Fluent.Utils.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Utils.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.Types.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Types.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.Utils.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Utils.dll" />
     </files>
 </package>
