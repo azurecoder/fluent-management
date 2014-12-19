@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Elastacloud.AzureManagement.Fluent</id>
@@ -14,7 +14,7 @@
         <dependencies>
             <dependency id="BouncyCastle" version="1.7.0" />
             <dependency id="WindowsAzure.Storage" version="3.1.0.0" />
-            <dependency id="FSharp.Data" version="2.0.14" />
+            <dependency id="FSharp.Data" version="2.1.0" />
             <dependency id="IPNetwork" version="1.3.1.0" />
         </dependencies>
         <frameworkAssemblies>
@@ -26,8 +26,8 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.dll" />
-        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.Types.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Types.dll" />
-        <file src="Elastacloud.AzureManagement.Fluent\bin\Debug\Elastacloud.AzureManagement.Fluent.Utils.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Utils.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Release\Elastacloud.AzureManagement.Fluent.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Release\Elastacloud.AzureManagement.Fluent.Types.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Types.dll" />
+        <file src="Elastacloud.AzureManagement.Fluent\bin\Release\Elastacloud.AzureManagement.Fluent.Utils.dll" target="lib\net45\Elastacloud.AzureManagement.Fluent.Utils.dll" />
     </files>
 </package>
