@@ -12,6 +12,7 @@ using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -49,6 +50,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Gets a list of virtual machine subnets that the vms in the cloud service belong to
         /// </summary>
-        List<string> GetVirtualMachineSubnetCollection(string cloudServiceName);
+        CloudServiceNetworking GetVirtualMachineSubnetCollection(string cloudServiceName);
     }
 }

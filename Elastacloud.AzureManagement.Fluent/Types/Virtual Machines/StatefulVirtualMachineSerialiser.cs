@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Microsoft.Data.Edm.Validation;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 {
@@ -35,6 +36,13 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             var listVm = new List<PersistentVMRole>();
             // get all of the root properties
             var roots = _document.Descendants(Namespace + "RoleList").Elements(Namespace + "Role");
+            // get the virtual network name if it exists
+            var network = _document.Element(Namespace + "VirtualNetworkName");
+            string virtualNetwork = null;
+            if (network != null)
+            {
+                virtualNetwork = network.Value;
+            }
             foreach (var root in roots)
             {
                 var persistentVirtualMachine = new PersistentVMRole();
@@ -44,6 +52,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 
                 persistentVirtualMachine.AvailabilityNameSet =
                     GetStringValue(root.Element(Namespace + "AvailabilitySetName"));
+                persistentVirtualMachine.VirtualNetworkName = virtualNetwork;
 
                 persistentVirtualMachine.RoleSize = GetEnumValue<VmSize>(root.Element(Namespace + "RoleSize"));
                 persistentVirtualMachine.RoleName = GetStringValue(root.Element(Namespace + "RoleName"));
