@@ -25,6 +25,19 @@ let settingCert fileName subscriptionId =
     let settings = PublishSettingsExtractor fileName
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
 
+let bspCertificate = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings" subscriptionId
+
+open Elastacloud.AzureManagement.Fluent.Subscriptions    
+let getCoreCountAvailability subscriptionId bspCertificate = 
+    let info = SubscriptionManager(subscriptionId)
+                .GetSubscriptionDetailsManager()
+                .AddCertificate(bspCertificate)
+                .GetSubscriptionInformation()
+    info.CurrentCoreCount, info.MaxCoreCount
+    
+getCoreCountAvailability subscriptionId bspCertificate
+    
+
 // Return all of the virtual networks and their subnets here
 
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"

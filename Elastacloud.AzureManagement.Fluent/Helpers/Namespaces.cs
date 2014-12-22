@@ -47,6 +47,11 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
         /// Used to manage Sql Azure 
         /// </summary>
         public static XNamespace NsSqlServiceManagement = XNamespace.Get(SqlServiceManagement);
+        /// <summary>
+        /// The networking config namespace schema 
+        /// </summary>
+        public static XNamespace NetworkingConfig =
+            "http://schemas.microsoft.com/ServiceHosting/2011/07/NetworkConfiguration";
 
     }
 }

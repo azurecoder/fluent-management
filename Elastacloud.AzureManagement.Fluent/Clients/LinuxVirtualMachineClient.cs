@@ -211,6 +211,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return list;
         }
 
+        /// <summary>
+        /// Gets a list of virtual machine subnets that the vms in the cloud service belong to
+        /// </summary>
+        public List<string> GetVirtualMachineSubnetCollection(string cloudServiceName)
+        {
+            Properties = new List<LinuxVirtualMachineProperties>
+            {
+                new LinuxVirtualMachineProperties() {CloudServiceName = cloudServiceName}
+            };
+            return VirtualMachine.Select(vm => vm.NetworkConfigurationSet.SubnetName).ToList();
+        }
+
         private void AddServiceCertificateToRoles(ServiceCertificateModel serviceCertificate, string cloudServiceName, ref List<LinuxVirtualMachineProperties> properties)
         {
             // upload the service certificate if it exists for the ssh keys

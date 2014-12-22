@@ -1,5 +1,4 @@
-﻿
-#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.dll"
+﻿#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.dll"
 #r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.Types.dll"
 #r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.Utils.dll"
 #r "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.5\\System.Xml.Linq.dll"
@@ -25,6 +24,12 @@ let settingCert fileName subscriptionId =
     let settings = PublishSettingsExtractor fileName
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
+/// remove a subnet from a virtual network
+let vnetClient = VirtualNetworkClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+vnetClient.RemoveSubnet("fsnet", "Subnet-2")
+
+let linuxClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+let subnets = linuxClient.GetVirtualMachineSubnetCollection("sbspark");
 let getMinimumNetworkSubnetAddressWithNetmask (s : string) = 
     IPAddress.Parse(s.Trim()).GetAddressBytes() 
     |> Array.rev

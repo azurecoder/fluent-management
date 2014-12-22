@@ -44,6 +44,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 
                 persistentVirtualMachine.AvailabilityNameSet =
                     GetStringValue(root.Element(Namespace + "AvailabilitySetName"));
+
                 persistentVirtualMachine.RoleSize = GetEnumValue<VmSize>(root.Element(Namespace + "RoleSize"));
                 persistentVirtualMachine.RoleName = GetStringValue(root.Element(Namespace + "RoleName"));
                 // get the roleinstance from the list
@@ -86,6 +87,15 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             if (configurationSet.Element(Namespace + "ConfigurationSetType").Value == "NetworkConfiguration")
             {
                 networkConfigurationSet = new NetworkConfigurationSet();
+                var subnets = configurationSet.Element(Namespace + "SubnetNames");
+                if (subnets != null)
+                {
+                    var subnet = configurationSet.Element(Namespace + "SubnetName");
+                    if (subnet != null)
+                    {
+                        networkConfigurationSet.SubnetName = (string) subnet;
+                    }
+                }
                 networkConfigurationSet.InputEndpoints= new InputEndpoints();
                 var endpoints = configurationSet.Descendants(Namespace + "InputEndpoint");
                 foreach (var endpoint in endpoints)
