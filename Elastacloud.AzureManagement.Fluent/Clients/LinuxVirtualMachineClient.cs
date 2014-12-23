@@ -225,8 +225,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
             if (virtualNetwork == null)
             {
-                throw new FluentManagementException("The cloud service deployment does not belong to a virtual network", "LinuxVirtualMachineClient");
+                return null;
             }
+
             var subnets = VirtualMachine.Select(vm => vm.NetworkConfigurationSet.SubnetName).ToList();
             return new CloudServiceNetworking()
             {
