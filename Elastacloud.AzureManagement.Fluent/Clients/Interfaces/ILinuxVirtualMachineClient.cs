@@ -10,8 +10,8 @@
 using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -46,5 +46,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Lists all of the OS images assoiated with Linux that are public within the subscription
         /// </summary>
         List<ImageProperties> ListImages(string filter = "");
+        /// <summary>
+        /// Gets a list of virtual machine subnets that the vms in the cloud service belong to
+        /// </summary>
+        CloudServiceNetworking GetVirtualMachineSubnetCollection(string cloudServiceName);
     }
 }

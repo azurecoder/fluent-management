@@ -22,6 +22,7 @@ using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
@@ -209,6 +210,29 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 return newImageList;
             }
             return list;
+        }
+
+        /// <summary>
+        /// Gets a list of virtual machine subnets that the vms in the cloud service belong to
+        /// </summary>
+        public CloudServiceNetworking GetVirtualMachineSubnetCollection(string cloudServiceName)
+        {
+            Properties = new List<LinuxVirtualMachineProperties>
+            {
+                new LinuxVirtualMachineProperties() {CloudServiceName = cloudServiceName}
+            };
+            string virtualNetwork = VirtualMachine[0].VirtualNetworkName;
+
+            if (virtualNetwork == null)
+            {
+                throw new FluentManagementException("The cloud service deployment does not belong to a virtual network", "LinuxVirtualMachineClient");
+            }
+            var subnets = VirtualMachine.Select(vm => vm.NetworkConfigurationSet.SubnetName).ToList();
+            return new CloudServiceNetworking()
+            {
+                VirtualNetworkName = virtualNetwork,
+                Subnets = subnets
+            };
         }
 
         private void AddServiceCertificateToRoles(ServiceCertificateModel serviceCertificate, string cloudServiceName, ref List<LinuxVirtualMachineProperties> properties)

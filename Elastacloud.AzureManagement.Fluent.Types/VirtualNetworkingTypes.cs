@@ -54,4 +54,10 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
         /// </summary>
         public List<IPAddress> AvailableIps { get; set; }
     }
+
+    public class CloudServiceNetworking
+    {
+        public string VirtualNetworkName { get; set; }
+        public List<string> Subnets { get; set; } 
+    }
 }

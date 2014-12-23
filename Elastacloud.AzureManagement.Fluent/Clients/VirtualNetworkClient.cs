@@ -19,6 +19,7 @@ using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualNetwork;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -106,6 +107,38 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             };
             command.Execute();
             return command.VirtualNetworkConfig;
+        }
+
+        /// <summary>
+        /// Removes a subnet from the network configuration 
+        /// </summary>
+        public void RemoveSubnet(string networkName, string subnetName)
+        {
+            var networkResponse = GetAllNetworkingConfig();
+            var document = XDocument.Parse(networkResponse);
+
+            var networks = document.Descendants(Namespaces.NetworkingConfig + "VirtualNetworkSite");
+            var vnet = networks.FirstOrDefault(network => network.Attribute("name").Value == networkName);
+            if (vnet == null)
+            {
+                throw new FluentManagementException("VirtualNetworkClient", "Virtual Network not found");
+            }
+
+            var subnets = vnet.Descendants(Namespaces.NetworkingConfig + "Subnet");
+            var subnet = subnets.FirstOrDefault(element => element.Attribute("name").Value == subnetName);
+
+            if (subnet == null)
+            {
+                throw new FluentManagementException("VirtualNetworkClient", "Subnet not found");
+            }
+            subnet.Remove();
+            
+            var command = new SetVirtualNetworkConfigCommand(document.ToStringFullXmlDeclaration())
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
         }
 
         #region Network Details 
