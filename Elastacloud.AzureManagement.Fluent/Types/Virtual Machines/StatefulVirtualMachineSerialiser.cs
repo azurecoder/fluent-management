@@ -37,7 +37,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
             // get all of the root properties
             var roots = _document.Descendants(Namespace + "RoleList").Elements(Namespace + "Role");
             // get the virtual network name if it exists
-            var network = _document.Element(Namespace + "VirtualNetworkName");
+            var network = _document.Element(Namespace + "Deployment").Element(Namespace + "VirtualNetworkName");
             string virtualNetwork = null;
             if (network != null)
             {
@@ -99,7 +99,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                 var subnets = configurationSet.Element(Namespace + "SubnetNames");
                 if (subnets != null)
                 {
-                    var subnet = configurationSet.Element(Namespace + "SubnetName");
+                    var subnet = subnets.Element(Namespace + "SubnetName");
                     if (subnet != null)
                     {
                         networkConfigurationSet.SubnetName = (string) subnet;

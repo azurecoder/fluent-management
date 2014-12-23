@@ -10,7 +10,6 @@
 using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;

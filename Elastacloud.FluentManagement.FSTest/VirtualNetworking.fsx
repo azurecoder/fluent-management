@@ -29,7 +29,8 @@ let vnetClient = VirtualNetworkClient(subscriptionId, getFromBizsparkPlus subscr
 vnetClient.RemoveSubnet("fsnet", "Subnet-2")
 
 let linuxClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
-let subnets = linuxClient.GetVirtualMachineSubnetCollection("sbspark");
+let subnets = linuxClient.GetVirtualMachineSubnetCollection("biscuitbriskit")
+
 let getMinimumNetworkSubnetAddressWithNetmask (s : string) = 
     IPAddress.Parse(s.Trim()).GetAddressBytes() 
     |> Array.rev
