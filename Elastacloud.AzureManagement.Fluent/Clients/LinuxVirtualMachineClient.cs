@@ -1,4 +1,4 @@
-﻿/************************************************************************************************************
+﻿/*****************************************************************`*******************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -36,6 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         private List<PersistentVMRole> _vmRoles;
 
         public event EventHandler<LinuxVirtualMachineProperties> LinuxVirtualMachineCreationEvent;
+        public event EventHandler<VirtualMachineStatus> LinuxVirtualMachineStatusEvent;
        
         /// <summary>
         /// Constructs a LinuxVirtualMachineClient and will get the details of a virtual machine given a cloud service
@@ -90,6 +91,47 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             }
         }
 
+        private void CheckVmDeploymentIsRunning(List<LinuxVirtualMachineProperties> properties)
+        {
+            // 1. Get the number of vms in the role and create a binary list 
+            var linuxProperties = new Dictionary<string, RoleInstanceStatus>();
+            properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.RoleStateUnknown));
+            var vmProperties = new LinuxVirtualMachineProperties() {CloudServiceName = properties[0].CloudServiceName};
+            // 2. Set the value to if the vm is running or not 
+            int index = 0;
+            // time this out just in case after an hour?
+            while (linuxProperties.Any(role => role.Value != RoleInstanceStatus.ReadyRole) || index == 360)
+            {
+                var command = new GetVirtualMachineContextCommand(vmProperties)
+                {
+                    SubscriptionId = SubscriptionId,
+                    Certificate = ManagementCertificate
+                };
+                command.Execute();
+                command.PersistentVm.ForEach(vm =>
+                {
+                    if (linuxProperties[vm.RoleName] == vm.Status) return;
+                    // raise the event with the old and new status
+                    LinuxVirtualMachineStatusEvent(this, new VirtualMachineStatus()
+                    {
+                        NewStatus = vm.Status,
+                        OldStatus = linuxProperties[vm.RoleName],
+                        VirtualMachineInstanceName = vm.RoleName,
+                        CloudService = vmProperties.CloudServiceName
+                    });
+                    // update the status in the dictionary
+                    linuxProperties[vm.RoleName] = vm.Status;
+                });
+                
+                Task.Delay(TimeSpan.FromSeconds(10)).RunSynchronously();
+                index++;
+            }
+
+            if (index == 100)
+            {
+                throw new FluentManagementException("timed out listening for status changes - check vms are running correctly", "LinuxVirtualMachineClient");       
+            }
+        }
 
         /// <summary>
         /// Creates a new virtual machine from a gallery template
@@ -167,6 +209,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 }
                 Trace.WriteLine(String.Format("New VM added to deployment with hostname {0}", theProperty.HostName));
             }
+            Task.Factory.StartNew(() => CheckVmDeploymentIsRunning(properties));
 
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
             Properties = properties;
@@ -228,7 +271,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 return null;
             }
 
-            var subnets = VirtualMachine.Select(vm => vm.NetworkConfigurationSet.SubnetName).ToList();
+            var subnets = VirtualMachine.Select(vm => vm.NetworkConfigurationSet.SubnetName).Distinct().ToList();
             return new CloudServiceNetworking()
             {
                 VirtualNetworkName = virtualNetwork,
@@ -555,4 +598,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         #endregion
     }
+
+
 }

@@ -60,11 +60,13 @@ module VirtualNetworkingUtils =
         if not containsIp then None
         else Some(requestedNetwork.ToString())
     let NextAvailableSubnet addressSpaceWithCidr (vNet : VirtualNetwork) = 
-        let singleSubnet = vNet.AddressRanges 
+        let subnetCollection = vNet.AddressRanges 
                                     |> Seq.where (fun addr -> addr.AddressPrefix = addressSpaceWithCidr)
-                                    |> Seq.map (fun addr -> addr.Subnets)
-                                    |> Seq.last |> Seq.last
-        let validator = validateNextAvailableSubnetAddress singleSubnet.LastIp addressSpaceWithCidr
+                                    |> Seq.collect (fun addr -> addr.Subnets)
+        let singleSubnet = match subnetCollection |> Seq.isEmpty with
+                           | true -> IPNetwork.Parse(addressSpaceWithCidr).FirstUsable.ToString()
+                           | false -> (subnetCollection |> Seq.last).LastIp                                     
+        let validator = validateNextAvailableSubnetAddress singleSubnet addressSpaceWithCidr
         match validator with  
         | Some(ipAddress) -> ipAddress
         | _ -> null

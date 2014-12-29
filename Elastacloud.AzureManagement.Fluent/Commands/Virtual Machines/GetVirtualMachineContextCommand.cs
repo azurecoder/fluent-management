@@ -36,6 +36,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
             HttpVerb = HttpVerbGet;
         }
 
+        internal GetVirtualMachineContextCommand(string cloudServiceName)
+            : this(new LinuxVirtualMachineProperties() {CloudServiceName = cloudServiceName})
+        {            
+        }
+
         
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed

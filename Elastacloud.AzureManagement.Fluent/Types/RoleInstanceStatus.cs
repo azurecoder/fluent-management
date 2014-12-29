@@ -37,7 +37,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types
 // ReSharper disable InconsistentNaming
         FailedStartingVM,
 // ReSharper restore InconsistentNaming
-        UnresponsiveRole 
-
+        UnresponsiveRole, 
+        StoppedDeallocated,
+        Preparing,
+        Unknown
     }
 }

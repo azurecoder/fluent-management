@@ -280,6 +280,7 @@
     <Compile Include="Types\Virtual Machines\LinuxConfigurationSet.cs" />
     <Compile Include="Types\Virtual Machines\PlatformType.cs" />
     <Compile Include="Types\Virtual Machines\SSHKey.cs" />
+    <Compile Include="Types\Virtual Machines\VirtualMachineStatus.cs" />
     <Compile Include="Types\Virtual Machines\VmHost.cs" />
     <Compile Include="Types\Virtual Networks\VirtualNetworkDescriptor.cs" />
     <Compile Include="Types\VirtualDisk.cs" />

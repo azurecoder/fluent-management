@@ -61,7 +61,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
                     a => a.Element(Namespace + "RoleName").Value == persistentVirtualMachine.RoleName);
                 // add the ip address
                 persistentVirtualMachine.IPAddress = GetStringValue(roleInstance.Element(Namespace + "IpAddress"));
-
+                persistentVirtualMachine.Status = GetEnumValue<RoleInstanceStatus>(roleInstance.Element(Namespace + "InstanceStatus"));
                 // get the networkconfiguration
                 var configurationSets = root.Descendants(Namespace + "ConfigurationSet");
                 foreach (var configurationSet in configurationSets)

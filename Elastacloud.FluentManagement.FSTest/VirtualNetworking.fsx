@@ -26,7 +26,7 @@ let settingCert fileName subscriptionId =
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
 /// remove a subnet from a virtual network
 let vnetClient = VirtualNetworkClient(subscriptionId, getFromBizsparkPlus subscriptionId)
-vnetClient.RemoveSubnet("fsnet", "Subnet-2")
+vnetClient.RemoveSubnet("skynet", "subnet-1")
 
 let linuxClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
 let subnets = linuxClient.GetVirtualMachineSubnetCollection("biscuitbriskit")

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
@@ -71,6 +72,22 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The name of the virtual network with which the subnet is part of
         /// </summary>
         public string VirtualNetworkName { get; set; }
+        /// <summary>
+        /// Sets the role instance status of the pvm
+        /// </summary>
+        public RoleInstanceStatus Status { get; set; }
+        /// <summary>
+        /// Reusable conversion function to convert to a status object
+        /// </summary>
+        public static RoleInstanceStatus ConvertToRoleInstanceStatus(string status)
+        {
+            RoleInstanceStatus newStatus;
+            if (!Enum.TryParse(status, true, out newStatus))
+            {
+                throw new FluentManagementException("unable to parse role instance status " + status, "PersistentVMRole");
+            }
+            return newStatus;
+        }
 
         #region Implementation of ICustomXmlSerializer
 
