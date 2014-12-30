@@ -11,7 +11,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Xml;
 using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 {
@@ -32,13 +34,32 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// <returns>An OperationStatus value</returns>
         internal OperationStatus GetOperationStatus()
         {
-            if (XmlResponsePayload == null)
-                throw new ApplicationException("unable to determine response for async operation");
-            XDocument document = XDocument.Parse(XmlResponsePayload, LoadOptions.None);
+            var document = GetXmlAsyncPayload();
             string services =
                 (from item in document.Descendants(QueryManager.BuildDefaultNamespaceXmlEntity("Operation"))
                  select (string) item.Element(QueryManager.BuildDefaultNamespaceXmlEntity("Status"))).FirstOrDefault();
             return (OperationStatus) Enum.Parse(typeof (OperationStatus), services);
+        }
+        /// <summary>
+        /// Used to get the basic payload for the request in XML
+        /// </summary>
+        private XDocument GetXmlAsyncPayload()
+        {
+            if (XmlResponsePayload == null)
+                throw new ApplicationException("unable to determine response for async operation");
+            XDocument document = XDocument.Parse(XmlResponsePayload, LoadOptions.None);
+            return document;
+        }
+        /// <summary>
+        /// Used to get the failure text from an async request-response
+        /// </summary>
+        internal string GetFailureText()
+        {
+            var document = GetXmlAsyncPayload();
+            return document.Element(Namespaces.NsWindowsAzure + "Operation")
+                .Element(Namespaces.NsWindowsAzure + "Error")
+                .Element(Namespaces.NsWindowsAzure + "Message")
+                .Value;
         }
 
         /// <summary>

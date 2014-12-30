@@ -16,6 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Commands.Parsers;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 {
@@ -30,6 +31,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         private static IQueryManager _queryManager;
         private string _subscriptionId;
         private WebException _exception;
+        private string _lastFailureResponse = null;
 
         #endregion
 
@@ -81,6 +83,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                         break;
                     case OperationStatus.Failed:
                         //Trace.WriteLine(String.Format("Hosted Service Response Id: {0}", MsftAsyncResponseId);
+                        _lastFailureResponse = asyncCommand.GetFailureText();
                         SitAndWait.Set();
                         return;
                     case OperationStatus.Succeeded:
@@ -267,10 +270,13 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                    RequestWithoutCertificate =
                                                        !(UseCertificate.HasValue && UseCertificate.Value)
                                                };
+
             CurrentQueryManager = CurrentQueryManager ?? new QueryManager();
             CurrentQueryManager.MakeASyncRequest(serviceManagementRequest, ResponseCallback, ErrorResponseCallback);
             // wait for up to 30 minutes - if a deployment takes longer than that ... it's probably HPC!
             SitAndWait.WaitOne(200000);
+            if(_lastFailureResponse != null)
+                throw new FluentManagementException(_lastFailureResponse, "ServiceCommand");
             if (_exception != null)
                 throw _exception;
         }

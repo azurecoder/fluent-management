@@ -56,5 +56,10 @@ let properties = new LinuxVirtualMachineProperties(
 vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
                                                               List<LinuxVirtualMachineProperties>([|properties|]),
                                                               "briskit1000")
-
+// test 1: Ensure that above contains no subnets when it's created and returns the address range + 1 ip
+// test 2: Receive events on state changes and ensure readyrole
+vmClient.LinuxVirtualMachineStatusEvent.Subscribe(fun vmstatus -> printfn "from %s to %s" (vmstatus.OldStatus.ToString()) (vmstatus.NewStatus.ToString()))
+// test 3: When created delete the subnet from the vnet - should generate a subnet busy exception of some sort
+let vnClient = VirtualNetworkClient(subscriptionId, (getFromBizsparkPlus subscriptionId))
+vnClient.RemoveSubnet("fsnet", "Subnet-3")
 let images = vmClient.GetCurrentUbuntuImage()
