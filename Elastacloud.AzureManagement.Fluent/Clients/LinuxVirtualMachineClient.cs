@@ -122,9 +122,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     // update the status in the dictionary
                     linuxProperties[vm.RoleName] = vm.Status;
                 });
-                
-                Task.Delay(TimeSpan.FromSeconds(10)).RunSynchronously();
                 index++;
+                Task.Delay(TimeSpan.FromSeconds(10)).RunSynchronously();
             }
 
             if (index == 100)
@@ -209,7 +208,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 }
                 Trace.WriteLine(String.Format("New VM added to deployment with hostname {0}", theProperty.HostName));
             }
-            Task.Factory.StartNew(() => CheckVmDeploymentIsRunning(properties));
+            if (LinuxVirtualMachineStatusEvent != null)
+            {
+                Task.Factory.StartNew(() => CheckVmDeploymentIsRunning(properties));
+            }
 
             // important here to force a refresh - just in case someone to conduct an operation on the VM in a single step
             Properties = properties;
