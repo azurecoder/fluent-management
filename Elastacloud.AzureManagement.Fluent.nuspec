@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Elastacloud.AzureManagement.Fluent</id>
-        <version>0.5.0.94</version>
+        <version>0.5.0.95</version>
         <title>Azure Fluent Management Library</title>
         <authors>Elastacloud Limited (@azurecoder,@andybareweb,@isaac_abraham)</authors>
         <owners>Elastacloud Limited</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Library used for management of Windows Azure services, SQL, storage, WASD, WAMS and VM's and networking</description>
         <releaseNotes>Latest release with a bunch of new features around networking</releaseNotes>
-        <copyright>Copyright © 2014</copyright>
+        <copyright>Copyright © 2015</copyright>
         <tags>azure, service management api</tags>
         <dependencies>
             <dependency id="BouncyCastle" version="1.7.0" />
