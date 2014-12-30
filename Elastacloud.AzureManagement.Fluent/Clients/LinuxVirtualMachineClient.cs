@@ -95,7 +95,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             // 1. Get the number of vms in the role and create a binary list 
             var linuxProperties = new Dictionary<string, RoleInstanceStatus>();
-            properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.RoleStateUnknown));
+            properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.Unknown));
             var vmProperties = new LinuxVirtualMachineProperties() {CloudServiceName = properties[0].CloudServiceName};
             // 2. Set the value to if the vm is running or not 
             int index = 0;
