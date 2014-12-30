@@ -165,6 +165,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 new XAttribute("name", tag.SubnetName),
                 new XElement(Namespace + "AddressPrefix", tag.SubnetAddressRange)
                 );
+            if (virtualSites.Element(Namespace + "Subnets") == null)
+            {
+                virtualSites.Add(new XElement(Namespace + "Subnets"));
+            }
             virtualSites.Element(Namespace + "Subnets").Add(addedSubnetTag);
             return document.ToStringFullXmlDeclaration();
         }

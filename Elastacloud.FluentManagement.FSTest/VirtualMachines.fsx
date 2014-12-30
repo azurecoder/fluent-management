@@ -61,5 +61,6 @@ vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
 vmClient.LinuxVirtualMachineStatusEvent.Subscribe(fun vmstatus -> printfn "from %s to %s" (vmstatus.OldStatus.ToString()) (vmstatus.NewStatus.ToString()))
 // test 3: When created delete the subnet from the vnet - should generate a subnet busy exception of some sort
 let vnClient = VirtualNetworkClient(subscriptionId, (getFromBizsparkPlus subscriptionId))
-vnClient.RemoveSubnet("fsnet", "Subnet-3")
+vnClient.AddSubnetToAddressRange("bigbadbeetleborgs", "10.0.0.0/20", "max-1")
+vnClient.RemoveSubnet("bigbadbeetleborgs", "max-1")
 let images = vmClient.GetCurrentUbuntuImage()
