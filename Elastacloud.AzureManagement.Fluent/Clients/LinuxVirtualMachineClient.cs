@@ -1,4 +1,15 @@
-﻿/*****************************************************************`*******************************************
+﻿using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
+using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
+using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
+/*****************************************************************`*******************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -9,24 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
-using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
-using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
-using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
-using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
-using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types;
-using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
-using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -37,7 +34,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         public event EventHandler<LinuxVirtualMachineProperties> LinuxVirtualMachineCreationEvent;
         public event EventHandler<VirtualMachineStatus> LinuxVirtualMachineStatusEvent;
-       
+
         /// <summary>
         /// Constructs a LinuxVirtualMachineClient and will get the details of a virtual machine given a cloud service
         /// </summary>
@@ -96,7 +93,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             // 1. Get the number of vms in the role and create a binary list 
             var linuxProperties = new Dictionary<string, RoleInstanceStatus>();
             properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.RoleStateUnknown));
-            var vmProperties = new LinuxVirtualMachineProperties() {CloudServiceName = properties[0].CloudServiceName};
+            var vmProperties = new LinuxVirtualMachineProperties() { CloudServiceName = properties[0].CloudServiceName };
             // 2. Set the value to if the vm is running or not 
             int index = 0;
             // time this out just in case after an hour?
@@ -112,24 +109,25 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 {
                     if (linuxProperties[vm.RoleName] == vm.Status) return;
                     // raise the event with the old and new status
-                    LinuxVirtualMachineStatusEvent(this, new VirtualMachineStatus()
-                    {
-                        NewStatus = vm.Status,
-                        OldStatus = linuxProperties[vm.RoleName],
-                        VirtualMachineInstanceName = vm.RoleName,
-                        CloudService = vmProperties.CloudServiceName
-                    });
+                    if (LinuxVirtualMachineStatusEvent != null)
+                        LinuxVirtualMachineStatusEvent(this, new VirtualMachineStatus()
+                        {
+                            NewStatus = vm.Status,
+                            OldStatus = linuxProperties[vm.RoleName],
+                            VirtualMachineInstanceName = vm.RoleName,
+                            CloudService = vmProperties.CloudServiceName
+                        });
                     // update the status in the dictionary
                     linuxProperties[vm.RoleName] = vm.Status;
                 });
-                
+
                 Task.Delay(TimeSpan.FromSeconds(10)).RunSynchronously();
                 index++;
             }
 
             if (index == 100)
             {
-                throw new FluentManagementException("timed out listening for status changes - check vms are running correctly", "LinuxVirtualMachineClient");       
+                throw new FluentManagementException("timed out listening for status changes - check vms are running correctly", "LinuxVirtualMachineClient");
             }
         }
 
@@ -143,9 +141,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="affinityGroup">Affinity group that this service will live in</param>
         public IVirtualMachineClient CreateNewVirtualMachineDeploymentFromTemplateGallery(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, ServiceCertificateModel serviceCertificate = null, string location = LocationConstants.NorthEurope, string affinityGroup = "")
         {
-            if(String.IsNullOrEmpty(cloudServiceName))
+            if (String.IsNullOrEmpty(cloudServiceName))
                 throw new FluentManagementException("Cloud service name cannot be empty", "LinuxVirtualMachineClient");
-            
+
             // if the cloud service doesn't exist we'll create it
             // first check that the service is available
             var checkCloudServiceAvailabilityCommand = new CheckCloudServiceNameAvailableCommand(cloudServiceName)
@@ -173,10 +171,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Trace.WriteLine("A new service certificate has been added to the cloud service");
                 ServiceCertificate = serviceCertificate.ServiceCertificate.Export(X509ContentType.Pfx);
             }
-           
+
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
-            var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[]{properties[0]}), cloudServiceName)
+            var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[] { properties[0] }), cloudServiceName)
             {
                 SubscriptionId = SubscriptionId,
                 Certificate = ManagementCertificate
@@ -298,7 +296,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                         FingerPrint = serviceCertificate.ServiceCertificate.GetCertHashString(),
                         Path = String.Format("/home/{0}/.ssh/id_rsa", linuxVirtualMachineProperty.UserName)
                     });
-                    
+
                     linuxVirtualMachineProperty.DisableSSHPasswordAuthentication = true;
                 }
             }
@@ -332,7 +330,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         protected string SubscriptionId { get; set; }
 
-      
+
         #region Implementation of IVirtualMachineClient
 
         /// <summary>
@@ -486,7 +484,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 restartCommand.Execute();
                 Trace.WriteLine(String.Format("VM restarted with hostname {0}", linuxVirtualMachineProperty.HostName));
             }
-            
+
         }
 
         /// <summary>
@@ -494,13 +492,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public void Stop()
         {
-            Trace.WriteLine(String.Format("Stopping {0} virtual machines in deployment {1} in cloud service {2}", 
+            Trace.WriteLine(String.Format("Stopping {0} virtual machines in deployment {1} in cloud service {2}",
                 Properties.Count, Properties.First().DeploymentName, Properties.First().CloudServiceName));
             foreach (LinuxVirtualMachineProperties linuxVirtualMachineProperties in Properties)
             {
                 var stopCommand = new StopVirtualMachineCommand(linuxVirtualMachineProperties)
                     {
-                        SubscriptionId = SubscriptionId, 
+                        SubscriptionId = SubscriptionId,
                         Certificate = ManagementCertificate
                     };
                 stopCommand.Execute();
