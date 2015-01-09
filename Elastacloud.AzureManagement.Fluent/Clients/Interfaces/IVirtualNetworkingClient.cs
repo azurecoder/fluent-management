@@ -24,6 +24,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// </summary>
         IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks();
         /// <summary>
+        /// Gets the virtual networks available in the current subscription
+        /// </summary>
+        /// <param name="location">Location of the vnet e.g. North Europe</param>
+        IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks(string location);
+        /// <summary>
         /// Creates an empty VNET to add address ranges and subnets to
         /// </summary>
         string AddSubnetToAddressRange(string networkName, string addressRange, string subnetName);

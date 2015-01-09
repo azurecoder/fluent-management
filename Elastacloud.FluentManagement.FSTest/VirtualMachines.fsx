@@ -43,24 +43,26 @@ let properties = new LinuxVirtualMachineProperties(
                                                     AdministratorPassword = "P@ssword761",
                                                     HostName = "briskit",
                                                     RoleName = "briskit",
-                                                    CloudServiceName = "briskit1000",
+                                                    CloudServiceName = "briskit1003",
                                                     PublicEndpoints = List<InputEndpoint>([|sshEndpoint|]),
-                                                    CustomTemplateName = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu_DAILY_BUILD-trusty-14_04_1-LTS-amd64-server-20141202.1-en-us-30GB",
-                                                    DeploymentName = "briskit1000",
-                                                    StorageAccountName = "clustered",
-                                                    AvailabilitySet = "clustered",
-                                                    VirtualNetwork = VirtualNetworkDescriptor(
-                                                                                              VirtualNetworkName = "fsnet",
-                                                                                              SubnetName = "fred"))
+                                                    CustomTemplateName = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_10-amd64-server-20141204-en-us-30GB",
+                                                    DeploymentName = "briskit1003",
+                                                    StorageAccountName = "clustered")//,
+                                                    //VirtualNetwork = VirtualNetworkDescriptor(
+                                                     //                                         VirtualNetworkName = "fsnet",
+                                                     //                                         SubnetName = "fred"))
 
+vmClient.LinuxVirtualMachineStatusEvent.Subscribe(fun vmstatus -> printfn "from %s to %s" (vmstatus.OldStatus.ToString()) (vmstatus.NewStatus.ToString()))
 vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
                                                               List<LinuxVirtualMachineProperties>([|properties|]),
-                                                              "briskit1000")
+                                                              "briskit1003")
 // test 1: Ensure that above contains no subnets when it's created and returns the address range + 1 ip
 // test 2: Receive events on state changes and ensure readyrole
-vmClient.LinuxVirtualMachineStatusEvent.Subscribe(fun vmstatus -> printfn "from %s to %s" (vmstatus.OldStatus.ToString()) (vmstatus.NewStatus.ToString()))
 // test 3: When created delete the subnet from the vnet - should generate a subnet busy exception of some sort
 let vnClient = VirtualNetworkClient(subscriptionId, (getFromBizsparkPlus subscriptionId))
+let all = vnClient.GetAvailableVirtualNetworks()
+let we = vnClient.GetAvailableVirtualNetworks("West Europe")
+let ne = vnClient.GetAvailableVirtualNetworks("North Europe")
 vnClient.AddSubnetToAddressRange("bigbadbeetleborgs", "10.0.0.0/20", "max-1")
-vnClient.RemoveSubnet("bigbadbeetleborgs", "max-1")
+vnClient.RemoveSubnet("skynet", "cluster")
 let images = vmClient.GetCurrentUbuntuImage()

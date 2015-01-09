@@ -49,5 +49,5 @@ using System.Runtime.InteropServices;
 
 // Make internal interfaces visible to Moq and the testing library
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2"), InternalsVisibleTo("Elastacloud.AzureManagement.Fluent.Tests")]
-[assembly: AssemblyVersion("0.5.0.96")]
-[assembly: AssemblyFileVersion("0.5.0.96")]
+[assembly: AssemblyVersion("0.5.0.97")]
+[assembly: AssemblyFileVersion("0.5.0.97")]

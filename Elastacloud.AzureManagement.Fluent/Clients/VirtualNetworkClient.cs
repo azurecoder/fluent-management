@@ -41,7 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets the available virtual networks in the correct order binding the address ranges to the subnets
         /// </summary>
-        public IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks()
+        public IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks(string location)
         {
             var command = new ListVirtualNetworksCommand()
             {
@@ -49,7 +49,20 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
-            return VirtualNetworkingUtils.ConvertVNetToHierarchicalModel(command.VirtualNetworks);
+            List<VirtualNetworkSite> virtualNetworks = command.VirtualNetworks;
+            if (location != null)
+            {
+                virtualNetworks = command.VirtualNetworks.Where(network => network.Location == location).ToList();
+            }
+
+            return VirtualNetworkingUtils.ConvertVNetToHierarchicalModel(virtualNetworks);
+        }
+        /// <summary>
+        /// Used if all the locations should be returned instead of a single location
+        /// </summary>
+        public IEnumerable<VirtualNetworkingUtils.VirtualNetwork> GetAvailableVirtualNetworks()
+        {
+            return GetAvailableVirtualNetworks(null);
         }
 
         /// <summary>

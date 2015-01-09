@@ -95,7 +95,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         {
             // 1. Get the number of vms in the role and create a binary list 
             var linuxProperties = new Dictionary<string, RoleInstanceStatus>();
-            properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.Unknown));
+            properties.ForEach(property => linuxProperties.Add(property.HostName, RoleInstanceStatus.RoleStateUnknown));
             var vmProperties = new LinuxVirtualMachineProperties() {CloudServiceName = properties[0].CloudServiceName};
             // 2. Set the value to if the vm is running or not 
             int index = 0;
@@ -123,10 +123,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                     linuxProperties[vm.RoleName] = vm.Status;
                 });
                 index++;
-                Task.Delay(TimeSpan.FromSeconds(10)).RunSynchronously();
+                // TODO: advice from Zak on the best way to use task.delay instead
+                Thread.Sleep(TimeSpan.FromSeconds(10));
             }
 
-            if (index == 100)
+            if (index == 360)
             {
                 throw new FluentManagementException("timed out listening for status changes - check vms are running correctly", "LinuxVirtualMachineClient");       
             }
