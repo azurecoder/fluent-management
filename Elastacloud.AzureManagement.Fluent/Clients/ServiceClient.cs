@@ -17,6 +17,7 @@ using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Commands.Subscriptions;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
+using Elastacloud.AzureManagement.Fluent.Services;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
 
@@ -260,6 +261,24 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 command.Execute();
                 return command.SubscriptionInformation;
             } 
+        }
+
+        /// <summary>
+        /// Used to deploy a cloud service package to Azure 
+        /// </summary>
+        public void DeployServiceToAzure(PaaSDeploymentSettings settings)
+        {
+            var manager = new SubscriptionManager(SubscriptionId);
+            manager.GetDeploymentManager()
+                .AddCertificate(ManagementCertificate)
+                .ForNewDeployment(settings.CloudServiceName)
+                .SetCspkgEndpoint(settings.CspkgStorageEndpoint)
+                .WithNewHostedService(settings.CscfgConfig)
+                .WithStorageAccount(settings.StorageAccountName)
+                .AddEnvironment(DeploymentSlot.Production)
+                .AddLocation(settings.Location)
+                .AddParams(DeploymentParams.StartImmediately)
+                .WaitUntilAllRoleInstancesAreRunning();
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)

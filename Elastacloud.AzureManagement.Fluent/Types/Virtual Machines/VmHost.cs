@@ -23,6 +23,9 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// The internal Ip address of the host
         /// </summary>
         public string IpAddress { get; internal set; }
-
+        /// <summary>
+        /// The internal endpoints referenced by this virtual machine
+        /// </summary>
+        public InputEndpoints Endpoints { get; internal set; }
     }
 }

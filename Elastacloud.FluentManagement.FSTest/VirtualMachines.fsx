@@ -1,6 +1,6 @@
-﻿#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.dll"
-#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.Types.dll"
-#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Debug\\Elastacloud.AzureManagement.Fluent.Utils.dll"
+﻿#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.dll"
+#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Types.dll"
+#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Utils.dll"
 #r "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.5\\System.Xml.Linq.dll"
 #r @"..\packages\IPNetwork.1.3.1.0\lib\LukeSkywalker.IPNetwork.dll"
 #r @"..\packages\FSharp.Data.2.0.14\lib\net40\FSharp.Data.dll"
@@ -66,3 +66,5 @@ let ne = vnClient.GetAvailableVirtualNetworks("North Europe")
 vnClient.AddSubnetToAddressRange("bigbadbeetleborgs", "10.0.0.0/20", "max-1")
 vnClient.RemoveSubnet("skynet", "cluster")
 let images = vmClient.GetCurrentUbuntuImage()
+let attack = vmClient.GetHostDetails("sparkattack")
+attack.[0].Endpoints.Item 1

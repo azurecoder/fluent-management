@@ -61,8 +61,9 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
   <ItemGroup>
-    <Compile Include="Resources.fs" />
+    <Compile Include="ResourceXml.fs" />
     <Compile Include="VirtualNetworkUtils.fs" />
+    <Compile Include="PaaSConfiguration.fs" />
     <None Include="Script.fsx" />
     <Content Include="packages.config" />
     <Content Include="app.config" />

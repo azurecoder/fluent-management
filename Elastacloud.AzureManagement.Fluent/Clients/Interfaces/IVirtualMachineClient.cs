@@ -57,7 +57,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Gets a list of hosts, internal ip addresses and other things
         /// </summary>
-        List<VmHost> GetAllInternalHostDetails();
+        List<VmHost> GetHostDetails(string cloudServiceName);
         /// <summary>
         /// Gets the virtual networks available in the current subscription
         /// </summary>

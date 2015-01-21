@@ -319,7 +319,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets a list of hosts, internal ip addresses and other things
         /// </summary>
-        public List<VmHost> GetAllInternalHostDetails()
+        public List<VmHost> GetHostDetails(string cloudServiceName)
         {
             throw new NotImplementedException();
         }

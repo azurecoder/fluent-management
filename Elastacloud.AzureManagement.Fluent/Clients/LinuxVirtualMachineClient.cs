@@ -566,14 +566,24 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Gets a list of hosts, internal ip addresses and other things
         /// </summary>
-        public List<VmHost> GetAllInternalHostDetails()
+        public List<VmHost> GetHostDetails(string cloudServiceName)
         {
             var hosts = new List<VmHost>();
-            VirtualMachine.ForEach(vm => hosts.Add(new VmHost()
+
+            var command = new GetVirtualMachineContextCommand(cloudServiceName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            var persistentHosts = command.PersistentVm.ToList();
+
+            persistentHosts.ForEach(vm => hosts.Add(new VmHost()
             {
                 HostName = vm.RoleName,
                 IpAddress = vm.IPAddress,
-                RoleName = vm.RoleName
+                RoleName = vm.RoleName,
+                Endpoints = vm.NetworkConfigurationSet.InputEndpoints
             }));
             return hosts;
         }

@@ -115,5 +115,51 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets information about the current subscription
         /// </summary>
         SubscriptionInformation SubscriptionDetails { get; }
+        /// <summary>
+        /// Used to deploy a cloud service package to Azure 
+        /// </summary>
+        void DeployServiceToAzure(PaaSDeploymentSettings settings);
+    }
+    /// <summary>
+    /// Used to build up the deployment for a packaged paas application
+    /// </summary>
+    public class PaaSDeploymentSettings
+    {
+        public PaaSDeploymentSettings(string cspkgStorageEndpoint, string cloudServiceName, 
+            string cscfgConfig, int? instanceCount, string storageAccountName, string roleName, string location)
+        {
+            CspkgStorageEndpoint = cspkgStorageEndpoint;
+            CloudServiceName = cloudServiceName;
+            CscfgConfig = cscfgConfig;
+            InstanceCount = instanceCount;
+            StorageAccountName = storageAccountName;
+            RoleName = roleName;
+            Location = location;
+        }
+        /// <summary>
+        /// The exact endpoint where the Cspkg is deployed to 
+        /// </summary>
+        public string CspkgStorageEndpoint { get; private set; } 
+        /// <summary>
+        /// The name of the cloud service that will be created
+        /// </summary>
+        public string CloudServiceName { get; private set; }
+        /// <summary>
+        /// The config that will be deployed 
+        /// </summary>
+        public string CscfgConfig { get; private set; }
+        /// <summary>
+        /// Any changes to the number of instances that will be deployed 
+        /// </summary>
+        public int? InstanceCount { get; set; }
+        /// <summary>
+        /// The storage account that will be used for the operation
+        /// </summary>
+        public string StorageAccountName { get; private set; }
+        /// <summary>
+        /// The name of the singular role that will be updated
+        /// </summary>
+        public string RoleName { get; private set; }
+        public string Location { get; private set; }
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace Elastacloud.AzureManagement.Fluent.VirtualNetwork
 
 open LukeSkywalker.IPNetwork
+open Elastacloud.AzureManagement.Fluent
+open Elastacloud.AzureManagement.Fluent.Utils
 open Elastacloud.AzureManagement.Fluent.Types
 open FSharp.Data
 open System
@@ -44,7 +46,7 @@ module VirtualNetworkingUtils =
         |> Seq.map (fun vNet -> vNet.Name, BuildAddressRanges vNet.AddressSpaces vNet.Subnets)
         |> Seq.map toVNet
     /// Functions for the addition of subnets into an existing vnet
-    type vNetDocument = XmlProvider<Resources.networkingConfig>
+    type vNetDocument = XmlProvider<ResourceXml.networkingConfig>
 
     let private getMinimumNetworkSubnetAddressWithNetmask (s : string) = 
         IPAddress.Parse(s.Trim()).GetAddressBytes() 
