@@ -1,4 +1,15 @@
-﻿/*****************************************************************`*******************************************
+﻿using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
+using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
+using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Types;
+using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
+using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
+/*****************************************************************`*******************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -9,24 +20,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
-using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
-using Elastacloud.AzureManagement.Fluent.Commands.Blobs;
-using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
-using Elastacloud.AzureManagement.Fluent.Commands.VirtualNetworks;
-using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Types;
-using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
-using Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks;
-using Elastacloud.AzureManagement.Fluent.VirtualMachines.Classes;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -583,7 +580,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 HostName = vm.RoleName,
                 IpAddress = vm.IPAddress,
                 RoleName = vm.RoleName,
-                Endpoints = vm.NetworkConfigurationSet.InputEndpoints
+                Endpoints = vm.NetworkConfigurationSet.InputEndpoints.Endpoints.AsReadOnly()
             }));
             return hosts;
         }

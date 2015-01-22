@@ -26,6 +26,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <summary>
         /// The internal endpoints referenced by this virtual machine
         /// </summary>
-        public InputEndpoints Endpoints { get; internal set; }
+        public IEnumerable<InputEndpoint> Endpoints { get; internal set; }
     }
 }

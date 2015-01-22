@@ -23,14 +23,14 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         /// <summary>
         /// The local collection of InputEndpoint values
         /// </summary>
-        private readonly List<InputEndpoint> _endpoints;
+        public List<InputEndpoint> Endpoints { get; private set; }
 
         /// <summary>
         /// Creates a new instance of the InputEndpoints collection class
         /// </summary>
         public InputEndpoints()
         {
-            _endpoints = new List<InputEndpoint>();
+            Endpoints = new List<InputEndpoint>();
         }
 
         /// <summary>
@@ -41,22 +41,22 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         {
             // check to see whether the endpoint exists or not
             IEnumerable<InputEndpoint> endpoints =
-                _endpoints.Where(a => a.LocalPort == endpoint.LocalPort || (a.Port == endpoint.LocalPort && a.Port != 0)
+                Endpoints.Where(a => a.LocalPort == endpoint.LocalPort || (a.Port == endpoint.LocalPort && a.Port != 0)
                                       || a.EndpointName == endpoint.EndpointName);
             if (endpoints.Any())
                 throw new ApplicationException(
                     "An endpoint containing the Local/Remote port and/or endpoint name already exists");
             // continue if it doesn't
-            _endpoints.Add(endpoint);
+            Endpoints.Add(endpoint);
         }
 
         public InputEndpoint this[int index]
         {
             get
             {
-                if(index < 0 || index >= _endpoints.Count)
+                if(index < 0 || index >= Endpoints.Count)
                     throw new ArgumentOutOfRangeException("endpoint index out of range");
-                return _endpoints[index];
+                return Endpoints[index];
             }
         }
 
@@ -70,7 +70,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         {
             var inputEndpoints = new XElement(Namespaces.NsWindowsAzure + "InputEndpoints");
             // iterate through all of the various input endpoints and 
-            foreach (InputEndpoint inputEndpoint in _endpoints)
+            foreach (InputEndpoint inputEndpoint in Endpoints)
             {
                 inputEndpoints.Add(inputEndpoint.GetXmlTree());
             }
