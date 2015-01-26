@@ -92,6 +92,8 @@
     <Compile Include="Clients\Helpers\FluentManagementEventArgs.cs" />
     <Compile Include="Clients\Helpers\GenerateEventClientBase.cs" />
     <Compile Include="Clients\Helpers\ServiceCertificateModel.cs" />
+    <Compile Include="Clients\Helpers\StorageManagementOptions.cs" />
+    <Compile Include="Clients\Helpers\StorageType.cs" />
     <Compile Include="Clients\ImageManagementClient.cs" />
     <Compile Include="Clients\Interfaces\IGenerateUpdateEvent.cs" />
     <Compile Include="Clients\Interfaces\IImageManagementClient.cs" />

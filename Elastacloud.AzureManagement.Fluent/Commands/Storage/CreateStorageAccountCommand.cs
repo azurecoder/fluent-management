@@ -10,6 +10,7 @@
 using System;
 using System.Text;
 using System.Xml.Linq;
+using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 
@@ -20,7 +21,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
     /// </summary>
     internal class CreateStorageAccountCommand : ServiceCommand
     {
-			internal CreateStorageAccountCommand(string name, string description, string location = LocationConstants.NorthEurope)
+			internal CreateStorageAccountCommand(string name, string description, 
+                StorageManagementOptions options,
+                string location = LocationConstants.NorthEurope
+                )
         {
             Name = name.ToLower();
             Description = description;
@@ -28,7 +32,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
             HttpVerb = HttpVerbPost;
             ServiceType = "services";
             OperationId = "storageservices";
+			StorageOptions = options;
         }
+
+        public StorageManagementOptions StorageOptions { get; set; }
 
         protected override string CreatePayload()
         {
@@ -47,7 +54,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Storage
                              new XElement(ns + "ServiceName", Name),
                              new XElement(ns + "Description", Description),
                              new XElement(ns + "Label", Convert.ToBase64String(Encoding.UTF8.GetBytes(Name))),
-                             new XElement(ns + "Location", Location)));
+                             new XElement(ns + "Location", Location),
+                             new XElement(ns + "SecondaryReadEnabled", StorageOptions.SecondaryReadOnly),
+                             new XElement(ns + "AccountType", StorageOptions.StorageType.ToString())
+                             ));
             return doc.ToStringFullXmlDeclaration();
         }
     }

@@ -1,4 +1,4 @@
-﻿/************************************************************************************************************
+/************************************************************************************************************
  * This software is distributed under a GNU Lesser License by Elastacloud Limited and it is free to         *
  * modify and distribute providing the terms of the license are followed. From the root of the source the   *
  * license can be found in /Resources/license.txt                                                           * 
@@ -7,28 +7,35 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-
 namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
 {
     /// <summary>
-    /// Used to make requests to the website or various helper classes
+    /// The storage details that the account will enable
     /// </summary>
-    public interface IWebsiteRequestHelper
+    public class StorageManagementOptions
     {
         /// <summary>
-        /// Used to get a string response given a uri, username and password
+        /// Whether or not the storage supported is secondary read only as well 
         /// </summary>
-        string GetStringResponse(string username, string password, string uri);
+        public bool SecondaryReadOnly { get; set; }
         /// <summary>
-        /// Used to get a return value from a post request
+        /// The type of storage account whether GRS, LRS or premium
         /// </summary>
-        string PostStringResponse(string username, string password, string uri, string content);
+        public StorageType StorageType { get; set; }
 
         /// <summary>
-        /// Executes a command request and doesn't wait or process the response but checks the status and throws an exception if not acheived
+        /// Defaults enabled for the 
         /// </summary>
-        /// <param name="uri">the uri requested</param>
-        /// <param name="status">The Http Status response code expected</param>
-        void ExecuteCommand(string uri, int status);
+        public static StorageManagementOptions GetDefaultOptions
+        {
+            get
+            {
+                return new StorageManagementOptions()
+                {
+                    SecondaryReadOnly = false,
+                    StorageType = StorageType.Standard_LRS
+                };
+            }   
+        }
     }
 }

@@ -6,16 +6,19 @@
  * Web at: www.elastacloud.com                                                                              *
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
-
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Elastacloud.AzureManagement.Fluent.Clients.Helpers
 {
-    public class ServiceCertificateModel
+    public enum StorageType
     {
-        public string Password { get; set; }
-        public X509Certificate2 ServiceCertificate { get; set; }
+// ReSharper disable once InconsistentNaming
+        Standard_LRS,
+// ReSharper disable once InconsistentNaming
+        Standard_ZRS,
+// ReSharper disable once InconsistentNaming
+        Standard_GRS,
+// ReSharper disable once InconsistentNaming
+        Standard_RAGRS,
+// ReSharper disable once InconsistentNaming
+        Premium_LRS
     }
 }
