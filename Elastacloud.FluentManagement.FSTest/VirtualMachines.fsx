@@ -27,12 +27,14 @@ let settingCert fileName subscriptionId =
     let settings = PublishSettingsExtractor fileName
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
+let vmClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+
 
 let storageClient = StorageClient(subscriptionId, getFromBizsparkPlus subscriptionId)
 let accounts = storageClient.GetStorageAccountList()
 let account = accounts |> Seq.filter (fun account -> account.Name = "azurecoder11")
 
-let vmClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+
 let sshEndpoint = InputEndpoint(EndpointName = "ssh",
                                 LocalPort = 22,
                                 Port = Nullable(22),
@@ -66,5 +68,5 @@ let ne = vnClient.GetAvailableVirtualNetworks("North Europe")
 vnClient.AddSubnetToAddressRange("bigbadbeetleborgs", "10.0.0.0/20", "max-1")
 vnClient.RemoveSubnet("skynet", "cluster")
 let images = vmClient.GetCurrentUbuntuImage()
-let attack = vmClient.GetHostDetails("sparkattack")
-attack.[0].Endpoints.Item 1
+let attack = vmClient.GetHostDetails("isaacsample2")
+attack.[0].Endpoints
