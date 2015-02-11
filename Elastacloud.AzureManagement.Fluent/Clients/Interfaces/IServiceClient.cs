@@ -144,6 +144,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// The name of the cloud service that will be created
         /// </summary>
         public string CloudServiceName { get; private set; }
+
         /// <summary>
         /// The config that will be deployed 
         /// </summary>

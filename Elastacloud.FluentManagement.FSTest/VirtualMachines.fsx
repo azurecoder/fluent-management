@@ -68,5 +68,7 @@ let ne = vnClient.GetAvailableVirtualNetworks("North Europe")
 vnClient.AddSubnetToAddressRange("bigbadbeetleborgs", "10.0.0.0/20", "max-1")
 vnClient.RemoveSubnet("skynet", "cluster")
 let images = vmClient.GetCurrentUbuntuImage()
-let attack = vmClient.GetHostDetails("isaacsample2")
+let attack = vmClient.GetHostDetails("sparkattack")
+let attack1 = vmClient.GetHostDetails("briskapiv2")
 attack.[0].Endpoints
+

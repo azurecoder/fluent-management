@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Threading.Tasks;
+
 namespace Elastacloud.AzureManagement.Fluent.Commands
 {
     internal interface ICommand

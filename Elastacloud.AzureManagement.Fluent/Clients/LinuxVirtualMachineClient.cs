@@ -573,6 +573,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = ManagementCertificate
             };
             command.Execute();
+            if (command.PersistentVm == null && command.ResponseStackTrace != null)
+            {
+                throw new FluentManagementException(command.ResponseStackTrace, "LinuxVirtualMachineClient");
+            }
             var persistentHosts = command.PersistentVm.ToList();
 
             persistentHosts.ForEach(vm => hosts.Add(new VmHost()

@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -59,7 +60,15 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
                 vmDocument = XDocument.Parse(reader.ReadToEnd());
             }
             var virtualMachine = new StatefulVirtualMachineSerialiser(vmDocument);
-            PersistentVm = virtualMachine.GetVmRoles();
+            // issue occurring here which is not bubbling up the exception
+            try
+            {
+                PersistentVm = virtualMachine.GetVmRoles();
+            }
+            catch (Exception ex)
+            {
+                ResponseStackTrace = ex.ToString();
+            }
             SitAndWait.Set();
         }
 
@@ -67,6 +76,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// The container vm for the reponse xml
         /// </summary>
         public List<PersistentVMRole> PersistentVm { get; set; }
+
+        public string ResponseStackTrace { get; private set; }
 
         /// <summary>
         /// returns the name of the command
