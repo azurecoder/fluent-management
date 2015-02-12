@@ -29,6 +29,7 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         UnresponsiveRole,
         StoppedDeallocated,
         Preparing,
+        Provisioning
     }
 
 
