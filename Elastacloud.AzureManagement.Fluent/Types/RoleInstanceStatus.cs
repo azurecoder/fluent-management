@@ -11,7 +11,6 @@ namespace Elastacloud.AzureManagement.Fluent.Types
     public enum RoleInstanceStatus
     {
         Unknown,
-        RoleStateUnknown,
         CreatingVM,
         StartingVM,
         CreatingRole,
@@ -29,7 +28,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         UnresponsiveRole,
         StoppedDeallocated,
         Preparing,
-        Provisioning
+        Provisioning,
+        RoleStateUnknown,
     }
 
 

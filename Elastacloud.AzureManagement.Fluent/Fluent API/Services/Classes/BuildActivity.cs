@@ -7,10 +7,11 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using Elastacloud.AzureManagement.Fluent.Types;
 using System;
 using System.Diagnostics;
 using System.IO;
-using Elastacloud.AzureManagement.Fluent.Types;
+using System.Xml.Linq;
 
 namespace Elastacloud.AzureManagement.Fluent.Services.Classes
 {
@@ -61,6 +62,14 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
                 ((IDeploymentConfigurationFileActivity)activity).WithPackageConfigDirectory(uriEndpoint);
             }
             
+            return _manager;
+        }
+
+        public IHostedServiceActivity SetCspkgEndpoint(Uri uriEndpoint, XDocument configuration)
+        {
+            UseExistingBuild = true;
+            _manager.CspkgEndpoint = uriEndpoint.ToString();
+            _manager.CscfgFileInstance = CscfgFile.GetAdHocInstance(configuration);
             return _manager;
         }
 
@@ -209,5 +218,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
             msbuildProcess.WaitForExit();
             return msbuildProcess;
         }
+
+
     }
 }

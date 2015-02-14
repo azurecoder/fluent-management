@@ -7,17 +7,17 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using Elastacloud.AzureManagement.Fluent.Commands.Services;
+using Elastacloud.AzureManagement.Fluent.Helpers;
+using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
+using Elastacloud.AzureManagement.Fluent.Services.Classes;
+using Elastacloud.AzureManagement.Fluent.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Xml.Linq;
-using Elastacloud.AzureManagement.Fluent.Commands.Services;
-using Elastacloud.AzureManagement.Fluent.Helpers;
-using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
-using Elastacloud.AzureManagement.Fluent.Services.Classes;
-using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Services
 {
@@ -596,6 +596,14 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             return this;
         }
 
+        public IHostedServiceActivity SetCspkgEndpoint(Uri uriEndpoint, XDocument configuration)
+        {
+            if (BuildActivity == null)
+                BuildActivity = new BuildActivity(this);
+            ((IBuildActivity)BuildActivity).SetCspkgEndpoint(uriEndpoint, configuration);
+            return this;
+        }
+
         /// <summary>
         /// Sets the root path to .ccproj 
         /// </summary>
@@ -625,6 +633,5 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         }
 
         #endregion
-
     }
 }

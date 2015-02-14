@@ -7,10 +7,6 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
@@ -20,6 +16,10 @@ using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Services;
 using Elastacloud.AzureManagement.Fluent.Services.Classes;
 using Elastacloud.AzureManagement.Fluent.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -272,13 +272,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             manager.GetDeploymentManager()
                 .AddCertificate(ManagementCertificate)
                 .ForNewDeployment(settings.CloudServiceName)
-                .SetCspkgEndpoint(settings.CspkgStorageEndpoint)
-                .WithNewHostedService(settings.CscfgConfig)
+                .SetCspkgEndpoint(settings.CspkgStorageEndpoint, settings.CscfgConfig)
+                .WithNewHostedService(settings.CloudServiceName)
                 .WithStorageAccount(settings.StorageAccountName)
                 .AddEnvironment(DeploymentSlot.Production)
                 .AddLocation(settings.Location)
                 .AddParams(DeploymentParams.StartImmediately)
-                .WaitUntilAllRoleInstancesAreRunning();
+                .WaitUntilAllRoleInstancesAreRunning()
+                .Go()
+                .Commit();
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
