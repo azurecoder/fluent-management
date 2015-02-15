@@ -146,7 +146,9 @@
     <Compile Include="Commands\Parsers\WebsiteConfigParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
-    <Compile Include="Commands\Service Bus\CreateServiceBusNamspaceCommand.cs" />
+    <Compile Include="Commands\Service Bus\CreateServiceBusNamespaceCommand.cs" />
+    <Compile Include="Commands\Service Bus\CheckServiceBusNamespaceAvailabilityCommand.cs" />
+    <Compile Include="Commands\Service Bus\DeleteServiceBusNamspaceCommand.cs" />
     <Compile Include="Commands\Services\CheckCloudServiceNameAvailableCommand.cs" />
     <Compile Include="Commands\Services\DeleteCloudServiceAndDeploymentCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />

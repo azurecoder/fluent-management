@@ -54,6 +54,33 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         }
 
         /// <summary>
+        /// Checks to see whether a given namespace exists
+        /// </summary>
+        public bool CheckNamespaceExists(string name)
+        {
+            var command = new CheckServiceBusNamespaceAvailabilityCommand(name)
+            {
+                SubscriptionId = _subscriptionId,
+                Certificate = _managementCertificate
+            };
+            command.Execute();
+            return command.IsAvailable;
+        }
+
+        /// <summary>
+        /// Deletes a namespace and throws an exception if the namespace doesn't exist
+        /// </summary>
+        public void DeleteNamespace(string name)
+        {
+            var command = new DeleteServiceBusNamespaceCommand(name)
+            {
+                SubscriptionId = _subscriptionId,
+                Certificate = _managementCertificate
+            };
+            command.Execute();
+        }
+
+        /// <summary>
         /// The name of the service bus namespace
         /// </summary>
         public string Namespace { get; set; }

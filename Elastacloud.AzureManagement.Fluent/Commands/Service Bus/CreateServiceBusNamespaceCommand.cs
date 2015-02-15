@@ -53,10 +53,5 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                                        new XElement(serviceBusSchema + "Region", Location)))));
 			return doc.ToStringFullXmlDeclaration();
 		}
-
-        protected override void ResponseCallback(System.Net.HttpWebResponse webResponse)
-        {
-            base.ResponseCallback(webResponse);
-        }
 	}
 }

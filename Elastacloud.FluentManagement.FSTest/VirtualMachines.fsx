@@ -71,4 +71,15 @@ let images = vmClient.GetCurrentUbuntuImage()
 let attack = vmClient.GetHostDetails("sparkattack")
 let attack1 = vmClient.GetHostDetails("isaacfliptest1")
 attack.[0].Endpoints
-
+// take a look at the testing of the service bus namespace create 
+let sbClient = ServiceBusClient(subscriptionId, (getFromBizsparkPlus subscriptionId))
+// this is available 
+let bobbydavro = sbClient.CheckNamespaceExists("bobbydavro")
+// this will always return false - it violates the rules but we haven't put a rules check in so should return false
+let fred = sbClient.CheckNamespaceExists("fred")
+// create a namespace which violates the rules
+let fred2 = sbClient.CreateNamespace("fred")
+// create a valid namespace - bug in the service managemet api - returns a 403 downstream service access
+let toolscheck = sbClient.CheckNamespaceExists("elastatools")
+let elastacloud = sbClient.CreateNamespace("elastatools3")
+let clouddelete = sbClient.DeleteNamespace("elastatools1")

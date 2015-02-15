@@ -23,6 +23,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <param name="location">The location of the namespace default to N. Europe</param>
         void CreateNamespace(string name, string location = LocationConstants.NorthEurope);
         /// <summary>
+        /// Checks to see whether a given namespace exists
+        /// </summary>
+        bool CheckNamespaceExists(string name);
+        /// <summary>
+        /// Deletes a namespace and throws an exception if the namespace doesn't exist
+        /// </summary>
+        void DeleteNamespace(string name);
+        /// <summary>
         /// The name of the service bus namespace
         /// </summary>
         string Namespace { get; set; }
