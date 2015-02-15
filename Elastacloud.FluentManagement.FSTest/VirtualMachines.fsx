@@ -80,6 +80,6 @@ let fred = sbClient.CheckNamespaceExists("fred")
 // create a namespace which violates the rules
 let fred2 = sbClient.CreateNamespace("fred")
 // create a valid namespace - bug in the service managemet api - returns a 403 downstream service access
-let toolscheck = sbClient.CheckNamespaceExists("elastatools")
+let toolscheck = sbClient.CheckNamespaceExists("elastatools3")
 let elastacloud = sbClient.CreateNamespace("elastatools3")
-let clouddelete = sbClient.DeleteNamespace("elastatools1")
+let clouddelete = sbClient.DeleteNamespace("elastatools3")

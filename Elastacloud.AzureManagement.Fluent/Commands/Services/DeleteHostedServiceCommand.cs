@@ -24,9 +24,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             Name = name;
             HttpVerb = HttpVerbDelete;
-            HttpCommand = Name;
+            HttpCommand = Name + "?comp=media";
             ServiceType = "services";
             OperationId = "hostedservices";
+            AdditionalHeaders["x-ms-version"] = "2013-08-01";
         }
 
         /// <summary>
