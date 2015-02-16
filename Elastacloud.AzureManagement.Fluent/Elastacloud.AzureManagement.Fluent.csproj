@@ -146,6 +146,8 @@
     <Compile Include="Commands\Parsers\WebsiteConfigParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteParser.cs" />
     <Compile Include="Commands\Parsers\WebsiteListParser.cs" />
+    <Compile Include="Commands\Service Bus\GetServiceBusPolicyConnectionStringCommand.cs" />
+    <Compile Include="Commands\Service Bus\GetServiceBusNamespaceListCommand.cs" />
     <Compile Include="Commands\Service Bus\CreateServiceBusNamespaceCommand.cs" />
     <Compile Include="Commands\Service Bus\CheckServiceBusNamespaceAvailabilityCommand.cs" />
     <Compile Include="Commands\Service Bus\DeleteServiceBusNamspaceCommand.cs" />

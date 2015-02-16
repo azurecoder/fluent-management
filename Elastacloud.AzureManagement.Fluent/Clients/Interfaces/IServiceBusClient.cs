@@ -7,6 +7,8 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Collections;
+using System.Collections.Generic;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
@@ -30,6 +32,14 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Deletes a namespace and throws an exception if the namespace doesn't exist
         /// </summary>
         void DeleteNamespace(string name);
+        /// <summary>
+        /// Returns a list of service bus namespaces
+        /// </summary>
+        IEnumerable<string> GetServiceBusNamspaceList();
+        /// <summary>
+        /// Gets a service bus connection string given a namespace name
+        /// </summary>
+        string GetServiceBusConnectionString(string @namespace, string ruleName);
         /// <summary>
         /// The name of the service bus namespace
         /// </summary>

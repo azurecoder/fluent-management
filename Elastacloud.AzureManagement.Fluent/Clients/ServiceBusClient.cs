@@ -7,6 +7,9 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
@@ -78,6 +81,38 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 Certificate = _managementCertificate
             };
             command.Execute();
+        }
+
+        /// <summary>
+        /// Returns a list of service bus namespaces
+        /// </summary>
+        public IEnumerable<string> GetServiceBusNamspaceList()
+        {
+            var command = new GetServiceBusNamespaceListCommand()
+            {
+                SubscriptionId = _subscriptionId,
+                Certificate = _managementCertificate
+            };
+            command.Execute();
+            return command.Namespaces;
+        }
+
+        /// <summary>
+        /// Gets a service bus connection string given a namespace name
+        /// </summary>
+        public string GetServiceBusConnectionString(string @namespace, string ruleName)
+        {
+            var command = new GetServiceBusPolicyConnectionStringCommand(@namespace, ruleName)
+            {
+                SubscriptionId = _subscriptionId,
+                Certificate = _managementCertificate
+            };
+            command.Execute();
+            if (command.ConnectionString == null)
+            {
+                throw new FluentManagementException("unable to get SAS policy with rulename: " + ruleName, "ServiceBusClient");
+            }
+            return command.ConnectionString;
         }
 
         /// <summary>

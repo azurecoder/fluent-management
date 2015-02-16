@@ -83,3 +83,6 @@ let fred2 = sbClient.CreateNamespace("fred")
 let toolscheck = sbClient.CheckNamespaceExists("elastatools3")
 let elastacloud = sbClient.CreateNamespace("elastatools3")
 let clouddelete = sbClient.DeleteNamespace("elastatools3")
+let sblist = sbClient.GetServiceBusNamspaceList()
+let sbpolicy = sbClient.GetServiceBusConnectionString("briskuidev", "RootManageSharedAccessKey")
+
