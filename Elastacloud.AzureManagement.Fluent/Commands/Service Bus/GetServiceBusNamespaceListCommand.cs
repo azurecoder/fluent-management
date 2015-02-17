@@ -22,6 +22,7 @@ using System.Xml.XPath;
 using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 using FSharp.Data.Runtime;
+using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Services
 {
@@ -30,9 +31,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
     /// </summary>
     internal class GetServiceBusNamespaceListCommand : ServiceCommand
     {
-        internal GetServiceBusNamespaceListCommand()
+        internal GetServiceBusNamespaceListCommand(string location)
         {
             HttpVerb = HttpVerbGet;
+            Location = location;
             ServiceType = "services";
             OperationId = "ServiceBus";
             HttpCommand = "Namespaces";
@@ -47,13 +49,21 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             XNamespace netservices = "http://schemas.microsoft.com/netservices/2010/10/servicebus/connect";
             XDocument document;
 
+            var list = new List<string>();
+
             using (var reader = new StreamReader(webResponse.GetResponseStream()))
             {
                 document = XDocument.Parse(reader.ReadToEnd());
             }
-            var root = document.Descendants(netservices + "Name");
-            Namespaces = root.Select(item => item.Value);
-
+            var root = document.Descendants(netservices + "NamespaceDescription");
+            root.ToList().ForEach(item =>
+            {
+                if (item.Element(netservices + "Region").Value == Location)
+                {
+                    list.Add(item.Element(netservices + "Name").Value);
+                }
+            });
+            Namespaces = list;
             SitAndWait.Set();
         }
     }

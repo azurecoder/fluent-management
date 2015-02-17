@@ -86,9 +86,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Returns a list of service bus namespaces
         /// </summary>
-        public IEnumerable<string> GetServiceBusNamspaceList()
+        public IEnumerable<string> GetServiceBusNamspaceList(string location)
         {
-            var command = new GetServiceBusNamespaceListCommand()
+            var command = new GetServiceBusNamespaceListCommand(location)
             {
                 SubscriptionId = _subscriptionId,
                 Certificate = _managementCertificate

@@ -35,7 +35,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// <summary>
         /// Returns a list of service bus namespaces
         /// </summary>
-        IEnumerable<string> GetServiceBusNamspaceList();
+        IEnumerable<string> GetServiceBusNamspaceList(string location);
         /// <summary>
         /// Gets a service bus connection string given a namespace name
         /// </summary>
