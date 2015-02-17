@@ -44,5 +44,6 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Removes a subnet from the network configuration 
         /// </summary>
         void RemoveSubnet(string networkName, string subnetName);
+        CloudServiceNetworking GetCloudServiceSubnetCollection(string cloudServiceName);
     }
 }

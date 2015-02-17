@@ -154,6 +154,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
         }
 
+        public CloudServiceNetworking GetCloudServiceSubnetCollection(string cloudServiceName)
+        {
+            var command = new GetVirtualNetworkAndSubnetsFromCloudServiceCommand(cloudServiceName)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return command.NetworkDetails;
+        }
+
         #region Network Details 
         public class SubnetTag
         {

@@ -70,6 +70,7 @@ vnClient.RemoveSubnet("skynet", "cluster")
 let images = vmClient.GetCurrentUbuntuImage()
 let attack = vmClient.GetHostDetails("sparkattack")
 let attack1 = vmClient.GetHostDetails("isaacfliptest1")
+let csnetwork = vnClient.GetCloudServiceSubnetCollection("isaacfliptest7")
 attack.[0].Endpoints
 // take a look at the testing of the service bus namespace create 
 let sbClient = ServiceBusClient(subscriptionId, (getFromBizsparkPlus subscriptionId))
