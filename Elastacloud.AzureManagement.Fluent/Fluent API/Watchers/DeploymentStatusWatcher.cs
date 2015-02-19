@@ -1,16 +1,10 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Types;
 
 namespace Elastacloud.AzureManagement.Fluent.Watchers
 {
-    /// <summary>
-    /// Used to connect a status change event for user consumption
-    /// </summary>
-    /// <param name="newStatus">The DeploymentStatus depicting the change</param>
-    /// <param name="oldStatus">The deployment status it has transitioned from</param>
-    public delegate void StatusChange(DeploymentStatus newStatus, DeploymentStatus oldStatus);
-
     /// <summary>
     /// The watcher class used to monitor whether a role has had a status change
     /// </summary>
@@ -56,7 +50,7 @@ namespace Elastacloud.AzureManagement.Fluent.Watchers
             command.Execute();
             DeploymentStatus status = command.DeploymentStatus;
             if (status != CurrentState && RoleStatusChangeHandler != null)
-                RoleStatusChangeHandler(status, CurrentState);
+                RoleStatusChangeHandler(this, new CloudServiceState(CurrentState, status));
             CurrentState = status;
         }
 
@@ -74,6 +68,19 @@ namespace Elastacloud.AzureManagement.Fluent.Watchers
         /// <summary>
         /// The event that should be subscribed to get role status change information back
         /// </summary>
-        public event StatusChange RoleStatusChangeHandler;
+        public event EventHandler<CloudServiceState> RoleStatusChangeHandler;
+
+    }
+
+    public class CloudServiceState
+    {
+        public CloudServiceState(DeploymentStatus oldState, DeploymentStatus newState)
+        {
+            OldState = oldState;
+            NewState = newState;
+        }
+
+        public DeploymentStatus OldState { get; private set; }
+        public DeploymentStatus NewState { get; private set; }
     }
 }

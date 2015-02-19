@@ -20,6 +20,7 @@ open Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
 open System.Collections.Generic
 open System.Security.Cryptography.X509Certificates
 open Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
+open Elastacloud.AzureManagement.Fluent.Watchers
 
 let subscriptionId = "84bf11d2-7751-4ce7-b22d-ac44bf33cbe9"
 /// Start Fuctions 
@@ -86,4 +87,12 @@ let elastacloud = sbClient.CreateNamespace("elastatools3")
 let clouddelete = sbClient.DeleteNamespace("elastatools3")
 let sblist = sbClient.GetServiceBusNamspaceList("West US")
 let sbpolicy = sbClient.GetServiceBusConnectionString("briskuidev", "RootManageSharedAccessKey")
+
+
+let manager = new SubscriptionManager(subscriptionId)
+let watcher = manager.GetRoleStatusChangedWatcher("isaacfoobar", 
+                                                  "isaacfoobar", 
+                                                  DeploymentSlot.Production, 
+                                                  (getFromBizsparkPlus subscriptionId).Thumbprint) 
+watcher.RoleStatusChangeHandler.Add(fun status -> printfn "from %s to %s" (status.OldState.ToString()) (status.NewState.ToString()))
 

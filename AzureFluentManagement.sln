@@ -28,6 +28,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Elastacloud.AzureManagement
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastacloud.AzureManagement.Fluent.Types", "Elastacloud.AzureManagement.Fluent.Types\Elastacloud.AzureManagement.Fluent.Types.csproj", "{07344DF3-FB3E-46FD-ABF4-19D0EAF31C72}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F178076F-431B-4C34-B399-F207553B22E7}"
+	ProjectSection(SolutionItems) = preProject
+		package.fsx = package.fsx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
