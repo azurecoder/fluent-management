@@ -7,6 +7,7 @@
  * Email: info@elastacloud.com                                                                              *
  ************************************************************************************************************/
 
+using System.Configuration;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
@@ -20,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using Elastacloud.AzureManagement.Fluent.Types.Websites;
 
 namespace Elastacloud.AzureManagement.Fluent.Clients
 {
@@ -281,6 +283,21 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 .WaitUntilAllRoleInstancesAreRunning()
                 .Go()
                 .Commit();
+        }
+
+        /// <summary>
+        /// Gets the status of all role instances in a deployment
+        /// </summary>
+        public IEnumerable<RoleInstance> GetRoleInstances()
+        {
+            var command = new GetCloudServicePropertiesCommand(Name)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+            return command.CloudServiceDeployments.First(slot => slot.Slot == Slot)
+                .RoleInstances.ToList();
         }
 
         private CertificateGenerator BuildCertGenerator(string name, string password)

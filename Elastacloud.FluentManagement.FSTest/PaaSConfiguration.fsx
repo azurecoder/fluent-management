@@ -21,6 +21,7 @@ open System.Collections.Generic
 open System.Security.Cryptography.X509Certificates
 open Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
 open Elastacloud.AzureManagement.Fluent.Utils
+open Elastacloud.AzureManagement.Fluent.Services
 
 let xml = """<?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="WindowsAzure1" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="3" osVersion="*" schemaVersion="2012-10.1.8">
@@ -38,5 +39,49 @@ let xml = """<?xml version="1.0" encoding="utf-8"?>
 </ServiceConfiguration>
 """
 
-let configTracker = PaaSUtils.Cscfg(xml)
-let config = configTracker.AmmendConfigForVNets("vnet", "subnet", "role")
+//let configTracker = PaaSUtils.Cscfg(xml)
+//let config = configTracker.AmmendConfigForVNets("vnet", "subnet", "role")
+
+
+/// Start Fuctions 
+let settingCert fileName subscriptionId =
+    let settings = PublishSettingsExtractor fileName
+    settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
+let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
+
+let csconfig = """<ServiceConfiguration serviceName="azurecodermbrace" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
+  <Role name="MBraceWorkerRole">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="StorageConnection" value="DefaultEndpointsProtocol=https;AccountName=clustered;AccountKey=3xsSRETv0iTPQfoIjeoTqyJ7v0UR74FS0XFJCCzJAy3q5QEElSUOimSo5cONnQPI/TeO5WZ8hDgSWFk8SW6uKQ==" />
+      <Setting name="ServiceBusConnection" value="Endpoint=sb://isaactest.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=tXcgGrZMU5G1xGBcVgO2V3s+FJc2NN8tu+edRyX4ZLo=" />
+    </ConfigurationSettings>
+  </Role>
+</ServiceConfiguration>"""
+let subscriptionId = "84bf11d2-7751-4ce7-b22d-ac44bf33cbe9"
+let submanager = new SubscriptionManager(subscriptionId)
+let manager = submanager.GetDeploymentManager()
+
+open System.Xml
+open System.Xml.Linq
+
+let xdoc = XDocument.Parse(csconfig)
+let deployer = manager
+                    .AddPublishSettingsFromFile("D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings")
+                    .ForNewDeployment("azurecodermbrace")
+                    .SetCspkgEndpoint(new Uri("https://neelasta84bf11d277514ce7.blob.core.windows.net/packages/mbrace.cspkg"), xdoc)
+                    .WithNewHostedService("azurecodermbrace")
+                    .WithStorageAccount("clustered")
+                    .AddEnvironment(DeploymentSlot.Production)
+                    .AddLocation("North Europe")
+                    .AddParams(Nullable DeploymentParams.StartImmediately)
+                    .Go()
+                    .Commit()
+let client = new ServiceClient(subscriptionId, (getFromBizsparkPlus subscriptionId), "azurecodermbrace", DeploymentSlot.Production)
+let status = client.GetRoleInstances()
+                |> Seq.map(fun status -> status.Status)
+let checker = submanager.GetRoleStatusChangedWatcher("azurecodermbrace", 
+                                                     "MBraceWorkerRole", 
+                                                     DeploymentSlot.Production, 
+                                                     (getFromBizsparkPlus subscriptionId).Thumbprint)
+checker.RoleStatusChangeHandler.Add(fun status -> printfn "from %s to %s" (status.OldState.ToString()) (status.NewState.ToString()))

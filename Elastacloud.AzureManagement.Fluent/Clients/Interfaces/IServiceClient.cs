@@ -119,6 +119,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Used to deploy a cloud service package to Azure 
         /// </summary>
         void DeployServiceToAzure(PaaSDeploymentSettings settings);
+        /// <summary>
+        /// Gets the status of all role instances in a deployment
+        /// </summary>
+        IEnumerable<RoleInstance> GetRoleInstances();
     }
     /// <summary>
     /// Used to build up the deployment for a packaged paas application

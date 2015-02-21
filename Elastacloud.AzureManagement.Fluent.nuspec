@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Elastacloud.AzureManagement.Fluent</id>
-        <version>0.5.1.5</version>
+        <version>@build.number@</version>
         <title>Azure Fluent Management Library</title>
         <authors>Elastacloud Limited (@azurecoder,@andybareweb,@isaac_abraham)</authors>
         <owners>Elastacloud Limited</owners>

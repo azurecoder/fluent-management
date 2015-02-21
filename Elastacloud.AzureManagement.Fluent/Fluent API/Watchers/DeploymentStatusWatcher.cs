@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Services;
 using Elastacloud.AzureManagement.Fluent.Types;
@@ -42,13 +43,23 @@ namespace Elastacloud.AzureManagement.Fluent.Watchers
         /// <param name="state">an object state containing details of the command response</param>
         protected override void Pingback(object state)
         {
+            DeploymentStatus status;
             var command = new GetDeploymentStatusCommand(HostedServiceName, ProductionOrStaging)
                               {
                                   SubscriptionId = SubscriptionId,
                                   Certificate = ManagementCertificate
                               };
-            command.Execute();
-            DeploymentStatus status = command.DeploymentStatus;
+            try
+            {
+                command.Execute();
+                status = command.DeploymentStatus;
+            }
+            catch (WebException webx)
+            {
+                // put this in if we can't get a reading back from this!!
+                status = DeploymentStatus.Unknown;
+            }
+            
             if (status != CurrentState && RoleStatusChangeHandler != null)
                 RoleStatusChangeHandler(this, new CloudServiceState(CurrentState, status));
             CurrentState = status;

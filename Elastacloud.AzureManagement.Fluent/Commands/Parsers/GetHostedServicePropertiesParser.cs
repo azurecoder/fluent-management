@@ -50,8 +50,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                             IpAddress = (string) xElement.Element(GetSchema() + "IpAddress"), 
                             Size = (VmSize) Enum.Parse(typeof (VmSize), (string) xElement.Element(GetSchema() + "InstanceSize")),
                             Status = (RoleInstanceStatus)Enum.Parse(typeof(RoleInstanceStatus), (string)xElement.Element(GetSchema() + "InstanceStatus")),
-                            VirtualIpAddress = (string)xElement.Element(GetSchema() + "InstanceEndpoints").Elements(GetSchema() + "InstanceEndpoint").First()
-                                            .Element(GetSchema() + "Vip")
+                            //VirtualIpAddress = (string)xElement.Element(GetSchema() + "InstanceEndpoints").Elements(GetSchema() + "InstanceEndpoint").First()
+                            //                .Element(GetSchema() + "Vip")
                         }).ToList();
                     objDeployment.RoleInstances = instanceList;
                 }
