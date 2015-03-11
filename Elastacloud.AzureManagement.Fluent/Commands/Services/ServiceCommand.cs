@@ -63,6 +63,11 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         {
             //Track and throw up the X-ms request id (x-ms-request-id)
             MsftAsyncResponseId = webResponse.GetResponseHeader("x-ms-request-id");
+            // We need to know whether we are using Mooncake or not
+            string region = webResponse.GetResponseHeader("x-ms-servedbyregion");
+            string location = (region == "chinanorth" || region == "chinaeast")
+                ? LocationConstants.ChinaNorth
+                : LocationConstants.NorthEurope;
            // Trace.WriteLine("Hosted Service Response Id: {0}", MsftAsyncResponseId);
             for (;;)
             {
@@ -72,7 +77,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
                                            SubscriptionId = SubscriptionId,
                                            OperationId = MsftAsyncResponseId,
                                            ServiceType = "operations",
-                                           Certificate = Certificate
+                                           Certificate = Certificate,
+                                           Location = location
                                        };
                 asyncCommand.Execute();
                 Thread.Sleep(1000);
@@ -211,6 +217,14 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// </summary>
         internal bool IsManagement { get; set; }
 
+        /// <summary>
+        ///  Whether to use China which has a seperate service management api
+        /// </summary>
+        internal bool UseMooncake
+        {
+            get { return (Location == LocationConstants.ChinaEast || Location == LocationConstants.ChinaNorth); }
+        }
+
         #endregion
 
         #region Constants
@@ -219,6 +233,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
         /// The core management Uri
         /// </summary>
         internal const string BaseUri = "https://management.core.windows.net";
+
+        internal const string ChinaUri = "https://management.core.chinacloudapi.cn";
 
         #endregion
 
@@ -256,7 +272,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             _exception = null;
             var serviceManagementRequest = new ServiceManagementRequest
                                                {
-                                                   BaseUri = BaseRequestUri + (IsManagement ? ":8443" : ""),
+                                                   BaseUri = (UseMooncake ? ChinaUri : BaseRequestUri) + (IsManagement ? ":8443" : ""),
                                                    HttpVerb = HttpVerb,
                                                    OptionalData = HttpCommand,
                                                    ServiceType = ServiceType,

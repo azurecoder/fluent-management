@@ -57,10 +57,12 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             }
             var root = document.Descendants(netservices + "SharedAccessAuthorizationRule");
             var keyNode = root.FirstOrDefault(item => item.Element(netservices + "KeyName").Value == RuleName);
-
+            var region = webResponse.GetResponseHeader("x-ms-servedbyregion");
+            var useMooncake = (region == "chinanorth" || region == "chinaeast");
+            string postfix = useMooncake ? "chinacloudapi.cn" : "windows.net";
             ConnectionString = keyNode == null ? null :
-                String.Format("Endpoint=sb://{0}.servicebus.windows.net/;SharedAccessKeyName={1};SharedAccessKey={2}",
-                    Namespace, keyNode.Element(netservices + "KeyName").Value, keyNode.Element(netservices + "PrimaryKey").Value);
+                String.Format("Endpoint=sb://{0}.servicebus.{1}/;SharedAccessKeyName={2};SharedAccessKey={3}",
+                    Namespace, postfix, keyNode.Element(netservices + "KeyName").Value, keyNode.Element(netservices + "PrimaryKey").Value);
             SitAndWait.Set();
         }
     }

@@ -40,11 +40,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         /// <param name="subscriptionId">the subscription id </param>
         /// <param name="certificate">A management certificate for the subscription</param>
-        public LinuxVirtualMachineClient(string subscriptionId, X509Certificate2 certificate)
+        /// <param name="defaultLocation">The location to which service management request is sent to</param>
+        public LinuxVirtualMachineClient(string subscriptionId, X509Certificate2 certificate, string defaultLocation = LocationConstants.NorthEurope)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
+            Location = defaultLocation;
         }
+        /// <summary>
+        /// The default location that the service management api is being called from
+        /// </summary>
+        public string Location { get; set; }
 
         /// <summary>
         /// Constructs a VirtualMachinenClient
@@ -52,10 +58,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <param name="properties">A valid VirtualMachineProperties object</param>
         /// <param name="subscriptionId">The susbcription id for the subscription</param>
         /// <param name="certificate">The susbcription id for the subscription</param>
-        public LinuxVirtualMachineClient(List<LinuxVirtualMachineProperties> properties, string subscriptionId, X509Certificate2 certificate)
+        public LinuxVirtualMachineClient(List<LinuxVirtualMachineProperties> properties, string subscriptionId, X509Certificate2 certificate, string defaultLocation = LocationConstants.NorthEurope)
             : this(subscriptionId, certificate)
         {
             Properties = properties;
+            Location = defaultLocation;
         }
 
         /// <summary>
@@ -81,7 +88,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetVirtualMachineContextCommand(Properties.First())
                     {
                         SubscriptionId = SubscriptionId,
-                        Certificate = ManagementCertificate
+                        Certificate = ManagementCertificate,
+                        Location = Location 
                     };
                 command.Execute();
                 return (_vmRoles = command.PersistentVm.ToList());
@@ -102,7 +110,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetVirtualMachineContextCommand(vmProperties)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
                 command.Execute();
                 command.PersistentVm.ForEach(vm =>
@@ -148,7 +157,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var checkCloudServiceAvailabilityCommand = new CheckCloudServiceNameAvailableCommand(cloudServiceName)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
             checkCloudServiceAvailabilityCommand.Execute();
             Trace.WriteLine(String.Format("Checked cloud service availability - is available: {0}", checkCloudServiceAvailabilityCommand.CloudServiceAvailable));
@@ -158,7 +168,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var cloudServiceCommand = new CreateCloudServiceCommand(cloudServiceName, "Created by Fluent Management", location, affinityGroup)
                     {
                         SubscriptionId = SubscriptionId,
-                        Certificate = ManagementCertificate
+                        Certificate = ManagementCertificate,
+                        Location = Location
                     };
                 cloudServiceCommand.Execute();
                 Trace.WriteLine(String.Format("Cloud service named {0} has been created", cloudServiceName));
@@ -173,10 +184,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
            
             // This is really unfortunate and not documented anywhere - unable to add multiple roles to a rolelist!!!
             // continue to the create the virtual machine in the cloud service
-            var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[]{properties[0]}), cloudServiceName)
+            var command = new CreateLinuxVirtualMachineDeploymentCommand(new List<LinuxVirtualMachineProperties>(new[]{properties[0]}), cloudServiceName, Location)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             // raise this event every time we create a VM
@@ -196,7 +208,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var startCommand = new AddLinuxVirtualMachineToDeploymentCommand(theProperty, cloudServiceName)
                     {
                         SubscriptionId = SubscriptionId,
-                        Certificate = ManagementCertificate
+                        Certificate = ManagementCertificate,
+                        Location = Location 
                     };
                 startCommand.Execute();
                 // raise this event every time we create a VM

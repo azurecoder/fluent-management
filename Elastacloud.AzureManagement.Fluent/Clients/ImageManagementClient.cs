@@ -16,6 +16,7 @@ using System.Threading;
 using Elastacloud.AzureManagement.Fluent.Clients.Helpers;
 using Elastacloud.AzureManagement.Fluent.Clients.Interfaces;
 using Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.VirtualMachines;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
@@ -29,15 +30,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     /// </summary>
     public class ImageManagementClient : GenerateEventClientBase, IImageManagementClient
     {
-        public ImageManagementClient(string subscriptionId, X509Certificate2 certificate)
+        public ImageManagementClient(string subscriptionId, X509Certificate2 certificate, string defaultLocation = LocationConstants.NorthEurope)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
+            Location = defaultLocation;
         }
 
         public X509Certificate2 ManagementCertificate { get; set; }
 
         public string SubscriptionId { get; set; }
+
+        public string Location { get; set; }
 
         /// <summary>
         /// Used to copy or register an image from one subscription to another
@@ -110,7 +114,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var registerImageCommand = new RegisterImageCommand(imageProperties)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             registerImageCommand.Execute();
             RaiseClientUpdate(100, "Completed registration of image into target account");
@@ -126,7 +131,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var listImagesCommand = new ListImagesCommand()
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
                 listImagesCommand.Execute();
                 return listImagesCommand.Properties;

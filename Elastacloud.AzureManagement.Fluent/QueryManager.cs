@@ -16,6 +16,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Elastacloud.AzureManagement.Fluent.Helpers;
+using FSharp.Data;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Elastacloud.AzureManagement.Fluent
 {
@@ -93,9 +95,15 @@ namespace Elastacloud.AzureManagement.Fluent
                                           return null;
                                       }
                                       var response = (HttpWebResponse)task.Result;
+                                      // we can get a 307 from Azure sometimes so important to react with the new location
                                       parser(response);
                                       return response;
                                   });
+        }
+
+        public string ExtractLocation(HttpWebResponse response)
+        {
+            return response.Headers[HttpResponseHeaders.Location];
         }
 
         public void MakeASyncRequest(ServiceManagementRequest serviceManagementRequest, ServiceManager.AsyncResponseParser parser)

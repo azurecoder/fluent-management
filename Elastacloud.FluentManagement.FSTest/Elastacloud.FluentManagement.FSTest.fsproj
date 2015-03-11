@@ -64,6 +64,7 @@
     <None Include="VirtualNetworking.fsx" />
     <None Include="VirtualMachines.fsx" />
     <None Include="PaaSConfiguration.fsx" />
+    <None Include="Mooncake.fsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Elastacloud.AzureManagement.Fluent.Types\Elastacloud.AzureManagement.Fluent.Types.csproj">

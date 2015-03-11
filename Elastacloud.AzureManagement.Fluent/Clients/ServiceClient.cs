@@ -33,12 +33,13 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Used to construct the ServiceClient
         /// </summary>
-        public ServiceClient(string subscriptionId, X509Certificate2 certificate, string cloudService, DeploymentSlot slot = DeploymentSlot.Production)
+        public ServiceClient(string subscriptionId, X509Certificate2 certificate, string cloudService, string defaultLocation = LocationConstants.NorthEurope, DeploymentSlot slot = DeploymentSlot.Production)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
             Name = cloudService;
             Slot = slot;
+            Location = defaultLocation;
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new UpdateRoleStatusCommand(Name, Slot, UpdateDeploymentStatus.Running)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
             command.Execute();
         }
@@ -67,7 +69,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new UpdateRoleStatusCommand(Name, Slot, UpdateDeploymentStatus.Suspended)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
         }
@@ -79,7 +82,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new CheckCloudServiceNameAvailableCommand(Name)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location 
                 };
                 command.Execute();
 
@@ -99,7 +103,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetSubscriberLocationsCommand
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location 
                 };
                 command.Execute();
                 return (_locations = command.Locations);
@@ -124,6 +129,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Used to determine whether this is Mooncake or otherwise
+        /// </summary>
+        public string Location { get; set; }
+        /// <summary>
         /// Gets the deployment name of the current deployment
         /// </summary>
         public string DeploymentName
@@ -133,7 +142,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetCloudServicePropertiesCommand(Name)
                     {
                         SubscriptionId = SubscriptionId,
-                        Certificate = ManagementCertificate
+                        Certificate = ManagementCertificate,
+                        Location = Location
                     };
                 command.Execute();
                 return command.CloudServiceDeployments[0].Name;
@@ -174,7 +184,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var cert = new AddServiceCertificateCommand(certBytes, password, Name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             cert.Execute();
         }
@@ -213,7 +224,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetHostedServiceListCommand()
                 {
                     Certificate = ManagementCertificate,
-                    SubscriptionId = SubscriptionId
+                    SubscriptionId = SubscriptionId,
+                    Location = Location
                 };
                 command.Execute();
                 return
@@ -232,13 +244,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new DeleteCloudServiceAndDeploymentCommand(Name, deploymentName)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             var csDelete = new DeleteHostedServiceCommand(Name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             csDelete.Execute();
         }
@@ -258,7 +272,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetSubscriptionCommand()
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location 
                 };
                 command.Execute();
                 return command.SubscriptionInformation;
@@ -293,7 +308,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetCloudServicePropertiesCommand(Name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.CloudServiceDeployments.First(slot => slot.Slot == Slot)
@@ -302,7 +318,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
 
         private CertificateGenerator BuildCertGenerator(string name, string password)
         {
-            var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate);
+            var generator = new CertificateGenerator(SubscriptionId, ManagementCertificate, Location);
             generator.Create(name, DateTime.UtcNow.Subtract(TimeSpan.FromDays(1)), DateTime.UtcNow.AddYears(2), password);
             return generator;
         }
@@ -317,7 +333,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var hostedServiceCreate = new CreateCloudServiceCommand(Name, description, location)
             {
                 Certificate = ManagementCertificate,
-                SubscriptionId = SubscriptionId
+                SubscriptionId = SubscriptionId,
+                Location = Location
             };
             hostedServiceCreate.Execute();
         }
@@ -331,7 +348,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var deleteService = new DeleteHostedServiceCommand(Name)
             {
                 Certificate = ManagementCertificate,
-                SubscriptionId = SubscriptionId
+                SubscriptionId = SubscriptionId,
+                Location = Location
             };
             deleteService.Execute();
         }
@@ -345,7 +363,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var deleteDeployment = new DeleteDeploymentCommand(Name, slot)
             {
                 Certificate = ManagementCertificate,
-                SubscriptionId = SubscriptionId
+                SubscriptionId = SubscriptionId,
+                Location = Location 
             };
             deleteDeployment.Execute();
         }
@@ -358,14 +377,17 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var config = new GetDeploymenConfigurationCommand(Name)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location 
                 };
             config.Execute();
             config.Configuration.SetInstanceCountForRole(roleName, instanceCount);
             var update = new SetDeploymenConfigurationCommand(Name, config.Configuration)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location 
+
                 };
             update.Execute();
         }
@@ -376,7 +398,7 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         public ServiceCertificate CreateServiceCertificateAndAddRemoteDesktop(string username, string password, ref CscfgFile file)
         {
             var certificate = new ServiceCertificate(username, password);
-            certificate.Create();
+            certificate.Create(Location);
 
             var desktop = new RemoteDesktop(certificate)
                               {
@@ -397,7 +419,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetDeploymenRoleNamesCommand(Name, Slot)
                     {
                         SubscriptionId = SubscriptionId,
-                        Certificate = ManagementCertificate
+                        Certificate = ManagementCertificate,
+                        Location = Location 
                     };
                 command.Execute();
                 return command.RoleNames;

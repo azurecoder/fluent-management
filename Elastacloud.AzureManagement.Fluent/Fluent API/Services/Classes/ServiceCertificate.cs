@@ -89,9 +89,9 @@ namespace Elastacloud.AzureManagement.Fluent.Services.Classes
         /// <summary>
         /// Used to create the Cert
         /// </summary>
-        public X509Certificate2 Create()
+        public X509Certificate2 Create(string location)
         {
-            var generator = new CertificateGenerator();
+            var generator = new CertificateGenerator(location);
             return generator.Create(Name, ValidFrom, ValidTo, PvkPassword, true);
         }
 

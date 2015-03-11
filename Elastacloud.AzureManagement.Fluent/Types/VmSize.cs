@@ -59,6 +59,8 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         /// A7 (8 x 1.6GHz CPU, 112GB RAM, 2,040GB Storage)
         /// </summary>
         A9,
+        A10,
+        A11,
         // this is the basic tariff which doesn't include the load balancing so is cheaper 
 // ReSharper disable InconsistentNaming
         Basic_A0,
@@ -73,66 +75,66 @@ namespace Elastacloud.AzureManagement.Fluent.Types
         Basic_A4,
         // <summary>1 core, 3.5G, 127 OS, 50G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D1,
+        Standard_D1,
         // <summary>2 core, 7G, 127 OS, 100G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D2,
+        Standard_D2,
         // <summary>4 core, 14G, 127 OS, 200G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D3,
+        Standard_D3,
         // <summary>8 core, 28G, 127 OS, 400G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D4,
+        Standard_D4,
         // <summary>2 core, 14G, 127 OS, 100G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D11,
+        Standard_D11,
         // <summary>4 core, 28G, 127 OS, 200G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D12,
+        Standard_D12,
         // <summary>8 core, 56G, 127 OS, 400G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D13,
+        Standard_D13,
         // <summary>1 core, 112G, 127 OS, 800G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_D14,
+        Standard_D14,
         // <summary>1 core, 3.5G, 127 OS, 7G SSD, 3200/32MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS1,
+        Standard_DS1,
         // <summary>2 core, 7G, 127 OS, 14G SSD, 6400/64MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS2,
+        Standard_DS2,
         // <summary>4 core, 14G, 127 OS, 28G SSD, 12800/128MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS3,
+        Standard_DS3,
         // <summary>8 core, 28G, 127 OS, 56G SSD, 25600/256MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS4,
+        Standard_DS4,
         // <summary>1 core, 28G, 127 OS, 28G SSD, 6400/64MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS11,
+        Standard_DS11,
         // <summary>2 core, 56G, 127 OS, 56G SSD, 12800/128MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS12,
+        Standard_DS12,
         // <summary>4 core, 112G, 127 OS, 112G SSD, 25600/256MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS13,
+        Standard_DS13,
         // <summary>8 core, 224G, 127 OS, 224G SSD, 56200/512MBsec</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_DS14,
+        Standard_DS14,
         // <summary>2 core, 28G, 127 OS, 384G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_G1,
+        Standard_G1,
         // <summary>4 core, 56G, 127 OS, 768G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_G2,
+        Standard_G2,
         // <summary>8 core, 112G, 127 OS, 1536G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_G3,
+        Standard_G3,
         // <summary>16 core, 224G, 127 OS, 3072G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_G4,
+        Standard_G4,
         // <summary>32 core, 448G, 127 OS, 6144G SSD</summary>
         // ReSharper disable once InconsistentNaming
-        STANDARD_G5
+        Standard_G5
     }
 }

@@ -30,10 +30,11 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         /// <summary>
         /// Used to construct a storage client with a subscription id and management certificate
         /// </summary>
-        public StorageClient(string subscriptionId, X509Certificate2 certificate)
+        public StorageClient(string subscriptionId, X509Certificate2 certificate, string defaultLocation = LocationConstants.NorthEurope)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = certificate;
+            Location = defaultLocation;
         }
         /// <summary>
         /// Used to construct a client with an account name and account key
@@ -55,6 +56,10 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         protected X509Certificate2 ManagementCertificate { get; set; }
         protected string SubscriptionId { get; set; }
         /// <summary>
+        /// The default location for the storage accounts
+        /// </summary>
+        protected string Location { get; set; }
+        /// <summary>
         /// Creates a new storage account given a name and location
         /// </summary>
         public void CreateNewStorageAccount(string name, string location = LocationConstants.NorthEurope
@@ -67,7 +72,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var create = new CreateStorageAccountCommand(name, "Created with Fluent Management", options, location)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
             create.Execute();
             var status = StorageStatus.Creating;
@@ -76,7 +82,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
                 var command = new GetStorageAccountStatusCommand(name)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = Location
                 };
                 command.Execute();
                 status = command.Status;
@@ -100,7 +107,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var delete = new DeleteStorageAccountCommand(name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             delete.Execute();
         }
@@ -110,7 +118,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var keys = new GetStorageAccountKeysCommand(name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             keys.Execute();
             return new string[2] {keys.PrimaryStorageKey, keys.SecondaryStorageKey};
@@ -121,7 +130,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var getStorageAccountList = new ListStorageAccountsCommand
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             getStorageAccountList.Execute();
             return getStorageAccountList.StorageAccounts;
@@ -146,7 +156,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var storageAccounts = new GetStorageAccountStatusCommand(name)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             storageAccounts.Execute();
             return storageAccounts.Status;

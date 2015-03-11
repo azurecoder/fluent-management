@@ -15,6 +15,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Types.Exceptions;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
@@ -78,10 +79,16 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         #endregion
 
-        protected BlobCommand()
+        protected BlobCommand(string defaultLocation = LocationConstants.NorthEurope)
         {
             DateHeader = DateTime.UtcNow.ToString("R", CultureInfo.InvariantCulture);
+            Postfix = (defaultLocation == LocationConstants.ChinaNorth || defaultLocation == LocationConstants.ChinaEast)
+                ? "chinacloudapi.cn"
+                : "windows.net";
+
         }
+
+        public string Postfix { get; set; }
 
         protected abstract StorageServiceType StorageServiceType { get; }
 
@@ -99,7 +106,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
             {
                 try
                 {
-                    var request = HttpWebRequest.Create(String.Format("http://{0}.blob.core.windows.net", AccountName));
+                    var request = HttpWebRequest.Create(String.Format("http://{0}.blob.core.{1}", AccountName, Postfix));
                     request.GetResponse();
                 }
                 catch (WebException ex)

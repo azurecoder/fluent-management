@@ -35,16 +35,20 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
     /// </summary>
     public class CertificateGenerator
     {
-        public CertificateGenerator()
+        public CertificateGenerator(string defaultLocation)
         {
+            Postfix = (defaultLocation == LocationConstants.ChinaNorth || defaultLocation == LocationConstants.ChinaEast)
+              ? "chinacloudapi.cn"
+              : "windows.net";
         }
-
-        public CertificateGenerator(string subscriptionId, X509Certificate2 managementCertificate)
+        public CertificateGenerator(string subscriptionId, X509Certificate2 managementCertificate, string defaultLocation)
+        : this(defaultLocation)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = managementCertificate;
         }
 
+        public string Postfix { get; set; }
         public X509Certificate2 ManagementCertificate { get; set; }
 
         public string SubscriptionId { get; set; }
@@ -192,7 +196,7 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
             var cerBlob = blobContainer.GetBlockBlobReference(String.Format("{0}/{1}.{2}.cer", folder, DerEncodedCertificate.Thumbprint, DateTime.UtcNow.ToString("ddMMyyyy")));
             cerBlob.UploadFromByteArray(GetCerData(), 0, GetCerData().Count());
 
-            return String.Format("http://{0}.blob.core.windows.net/{1}/{2}/{3}.{4}", account, container, folder,
+            return String.Format("http://{0}.blob.core.{1}/{2}/{3}/{4}.{5}", account, Postfix, container, folder,
                 DerEncodedCertificate.Thumbprint, DateTime.UtcNow.ToString("ddMMyyyy"));
         }
 

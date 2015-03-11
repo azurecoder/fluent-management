@@ -28,6 +28,7 @@ let settingCert fileName subscriptionId =
     let settings = PublishSettingsExtractor fileName
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
 let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
+
 let vmClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
 
 
@@ -96,3 +97,7 @@ let watcher = manager.GetRoleStatusChangedWatcher("isaacfoobar",
                                                   (getFromBizsparkPlus subscriptionId).Thumbprint) 
 watcher.RoleStatusChangeHandler.Add(fun status -> printfn "from %s to %s" (status.OldState.ToString()) (status.NewState.ToString()))
 
+let serviceClient = ServiceClient(subscriptionId, getFromBizsparkPlus subscriptionId, "briskchina")
+let locations = serviceClient.AvailableLocations
+locations.[0].VirtualMachineRolesSizes
+|> Seq.iter (fun size -> printfn "%s" (size.ToString()))

@@ -167,7 +167,7 @@ namespace Elastacloud.AzureManagement.Fluent.Services
         {
             ServiceCertificate = new ServiceCertificate(name);
             // we have to also create the certificate!
-            ServiceCertificate.Create();
+            ServiceCertificate.Create(Location);
 
             // add these to the config list we have to implement changes to 
             if (EnableSsl)

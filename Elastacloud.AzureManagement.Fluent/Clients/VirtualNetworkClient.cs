@@ -29,15 +29,18 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
     /// </summary>
     public class VirtualNetworkClient : IVirtualNetworkingClient
     {
-        public VirtualNetworkClient(string subscriptionId, X509Certificate2 managementCertificate)
+        public VirtualNetworkClient(string subscriptionId, X509Certificate2 managementCertificate, string defaultLocation = LocationConstants.NorthEurope)
         {
             SubscriptionId = subscriptionId;
             ManagementCertificate = managementCertificate;
+            Location = defaultLocation;
         }
 
         public X509Certificate2 ManagementCertificate { get; set; }
 
         public string SubscriptionId { get; set; }
+
+        public string Location { get; set; }
         /// <summary>
         /// Gets the available virtual networks in the correct order binding the address ranges to the subnets
         /// </summary>
@@ -46,7 +49,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new ListVirtualNetworksCommand()
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             command.Execute();
             List<VirtualNetworkSite> virtualNetworks = command.VirtualNetworks;
@@ -88,7 +92,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new SetVirtualNetworkConfigCommand(xml)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location
             };
             command.Execute();
             return xml;
@@ -102,7 +107,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetAvailableIpAddressesCommand(vnet, ipToCheck)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.IpAddressCheck;
@@ -116,7 +122,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetVirtualNetworkConfigCommand()
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.VirtualNetworkConfig;
@@ -149,7 +156,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new SetVirtualNetworkConfigCommand(document.ToStringFullXmlDeclaration())
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
         }
@@ -159,7 +167,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetVirtualNetworkAndSubnetsFromCloudServiceCommand(cloudServiceName)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.NetworkDetails;

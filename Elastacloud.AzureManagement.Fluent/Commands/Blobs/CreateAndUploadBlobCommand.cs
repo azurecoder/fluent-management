@@ -9,6 +9,7 @@
 
 using System;
 using System.IO;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -20,14 +21,17 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
     /// </summary>
     internal class CreateAndUploadBlobCommand : BlobCommand
     {
-        internal CreateAndUploadBlobCommand(string containerName, string blobName, string fileNamePath)
+        internal CreateAndUploadBlobCommand(string containerName, string blobName, string fileNamePath, string defaultLocation = LocationConstants.NorthEurope)
+            : base(defaultLocation)
         {
             ContainerName = containerName;
             BlobName = blobName;
             FileNamePath = fileNamePath;
             HttpVerb = HttpVerbPut;
+            Location = defaultLocation;
+            
         }
-
+        internal string Location { get; set; }
         internal string FileNamePath { get; set; }
         internal string DeploymentPath { get; set; }
 
@@ -38,8 +42,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         public override void Execute()
         {
-            string accessContainer = DeploymentPath = String.Format("http://{0}.blob.core.windows.net/{1}/{2}", AccountName, ContainerName, BlobName);
-            string baseUri = String.Format("http://{0}.blob.core.windows.net/", AccountName);
+            string accessContainer = DeploymentPath = String.Format("http://{0}.blob.core.{1}/{2}/{3}", AccountName, Postfix, ContainerName, BlobName);
+            string baseUri = String.Format("http://{0}.blob.core.{1}/", AccountName, Postfix);
 
             var client = new CloudBlobClient(new Uri(baseUri), new StorageCredentials(AccountName, AccountKey));
             var container = client.GetContainerReference(ContainerName);

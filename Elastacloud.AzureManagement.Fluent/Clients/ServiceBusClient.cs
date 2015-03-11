@@ -26,14 +26,16 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
         private readonly string _subscriptionId;
         private readonly X509Certificate2 _managementCertificate;
 
-        public ServiceBusClient(string subscriptionId, X509Certificate2 certificate)
+        public ServiceBusClient(string subscriptionId, X509Certificate2 certificate, string defaultLocation = LocationConstants.NorthEurope)
         {
             _subscriptionId = subscriptionId;
             _managementCertificate = certificate;
+            Location = defaultLocation;
         }
 
         #region Implementation of IServiceBusClient
 
+        public string Location { get; set; }
         /// <summary>
         /// Creates a namespace given a name value 
         /// </summary>
@@ -50,7 +52,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new CreateServiceBusNamespaceCommand(name, location)
                 {
                     SubscriptionId = _subscriptionId,
-                    Certificate = _managementCertificate
+                    Certificate = _managementCertificate,
+                    Location = Location
                 };
             command.Execute();
             Namespace = name;
@@ -64,7 +67,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new CheckServiceBusNamespaceAvailabilityCommand(name)
             {
                 SubscriptionId = _subscriptionId,
-                Certificate = _managementCertificate
+                Certificate = _managementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.IsAvailable;
@@ -78,7 +82,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new DeleteServiceBusNamespaceCommand(name)
             {
                 SubscriptionId = _subscriptionId,
-                Certificate = _managementCertificate
+                Certificate = _managementCertificate,
+                Location = Location 
             };
             command.Execute();
         }
@@ -91,7 +96,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetServiceBusNamespaceListCommand(location)
             {
                 SubscriptionId = _subscriptionId,
-                Certificate = _managementCertificate
+                Certificate = _managementCertificate,
+                Location = Location 
             };
             command.Execute();
             return command.Namespaces;
@@ -105,7 +111,8 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             var command = new GetServiceBusPolicyConnectionStringCommand(@namespace, ruleName)
             {
                 SubscriptionId = _subscriptionId,
-                Certificate = _managementCertificate
+                Certificate = _managementCertificate,
+                Location = Location
             };
             command.Execute();
             if (command.ConnectionString == null)

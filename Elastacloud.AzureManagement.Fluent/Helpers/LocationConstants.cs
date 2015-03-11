@@ -20,6 +20,8 @@ namespace Elastacloud.AzureManagement.Fluent.Helpers
 		public const string WestUS = "West US";
 		public const string EastUS = "East US";
 		public const string EastAsia = "East Asia";
-		public const string SouthEastAsia = "South East Asia";
+        public const string SouthEastAsia = "South East Asia";
+        public const string ChinaNorth = "China North";
+        public const string ChinaEast = "China East";
 	}
 }

@@ -60,8 +60,8 @@ let vnClient = VirtualNetworkClient(subscriptionId, (getFromBizsparkPlus subscri
 let vNets = vnClient.GetAvailableVirtualNetworks()
 let vNetToTest = vNets |> Seq.head 
 let addressRange1 = vNetToTest.AddressRanges |> Seq.head
-vnClient.AddSubnetToAddressRange(vNetToTest.Name, addressRange1.AddressPrefix, "fred");
-
+vnClient.AddSubnetToAddressRange(vNetToTest.Name, addressRange1.AddressPrefix, "fred")
+vnClient.RemoveSubnet(vNetToTest.Name, "fred")
 
 validateNextAvailableSubnetAddress "10.1.0.255" "10.1.0.0/16"
 NextAvailableSubnet addressRange1.AddressPrefix vNetToTest  

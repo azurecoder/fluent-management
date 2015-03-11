@@ -12,10 +12,10 @@ using System.Runtime.InteropServices;
 [assembly: GuidAttribute("909b2b8c-10bf-4f0d-a94e-208ef3bdca52")]
 [assembly: InternalsVisibleToAttribute("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleToAttribute("Elastacloud.AzureManagement.Fluent.Tests")]
-[assembly: AssemblyVersionAttribute("0.5.1.8")]
-[assembly: AssemblyFileVersionAttribute("0.5.1.8")]
+[assembly: AssemblyVersionAttribute("0.5.1.10")]
+[assembly: AssemblyFileVersionAttribute("0.5.1.10")]
 namespace System {
     internal static class AssemblyVersionInformation {
-        internal const string Version = "0.5.1.8";
+        internal const string Version = "0.5.1.10";
     }
 }

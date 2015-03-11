@@ -8,6 +8,7 @@
  ************************************************************************************************************/
 
 using System;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 
 namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 {
@@ -16,7 +17,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
     /// </summary>
     internal class DeleteBlobContainerCommand : BlobCommand
     {
-        internal DeleteBlobContainerCommand(string containerName)
+        internal DeleteBlobContainerCommand(string containerName, string defaultLocation = LocationConstants.NorthEurope)
+        : base(defaultLocation)
         {
             ContainerName = containerName;
             HttpVerb = HttpVerbDelete;
@@ -29,8 +31,8 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Blobs
 
         public override void Execute()
         {
-            string accessContainer = String.Format("http://{0}.blob.core.windows.net/{1}?restype=container", AccountName,
-                                                   ContainerName);
+            string accessContainer = String.Format("http://{0}.blob.core.{1}/{2}?restype=container", AccountName,
+                                                   Postfix, ContainerName);
             string canResource =
                 String.Format("/{0}/{1}\nrestype:container", AccountName, ContainerName);
             string authHeader = CreateAuthorizationHeader(canResource);

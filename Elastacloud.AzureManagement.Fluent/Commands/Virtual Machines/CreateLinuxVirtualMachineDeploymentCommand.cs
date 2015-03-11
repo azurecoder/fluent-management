@@ -26,13 +26,14 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// Used to construct the command to create a virtual machine deployment including the creation of a role
         /// </summary>
         // https://management.core.windows.net/<subscription-id>/services/hostedservices/<cloudservice-name>/deployments
-        internal CreateLinuxVirtualMachineDeploymentCommand(List<LinuxVirtualMachineProperties> properties, string cloudServiceName)
+        internal CreateLinuxVirtualMachineDeploymentCommand(List<LinuxVirtualMachineProperties> properties, string cloudServiceName, string defaultLocation = LocationConstants.NorthEurope)
         {
             AdditionalHeaders["x-ms-version"] = "2012-03-01";
             OperationId = "hostedservices";
             ServiceType = "services";
             HttpCommand = (CloudServiceName = cloudServiceName) + "/deployments";
             Properties = properties;
+            DefaultLocation = defaultLocation;
         }
 
         /// <summary>
@@ -40,6 +41,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         /// </summary>
         public string CloudServiceName { get; set; }
 
+        public string DefaultLocation { get; set; }
         /// <summary>
         /// The full virtual machine properties of the windows instance the needs to be deployed
         /// </summary>
@@ -53,7 +55,10 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.VirtualMachines
         {
             var deployment = Deployment.GetAdHocLinuxTemplateDeployment(Properties);
             var document = new XDocument(deployment.GetXmlTree());
-            return document.ToStringFullXmlDeclarationWithReplace();
+            string ammended = document.ToStringFullXmlDeclarationWithReplace();
+            return (DefaultLocation == LocationConstants.ChinaNorth || DefaultLocation == LocationConstants.ChinaEast)
+                ? ammended.Replace("blob.core.windows.net", "blob.core.chinacloudapi.cn") : ammended;
+
         }
 
         /// <summary>
