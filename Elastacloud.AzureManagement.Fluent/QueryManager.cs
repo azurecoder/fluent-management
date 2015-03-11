@@ -98,7 +98,7 @@ namespace Elastacloud.AzureManagement.Fluent
                                       // we can get a 307 from Azure sometimes so important to react with the new location
                                       parser(response);
                                       return response;
-                                  });
+                                  });   
         }
 
         public string ExtractLocation(HttpWebResponse response)
