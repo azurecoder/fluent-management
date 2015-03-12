@@ -74,13 +74,16 @@ namespace Elastacloud.AzureManagement.Fluent.Services
 
         #endregion
 
-        internal DeploymentManager(string subscriptionId)
+        internal DeploymentManager(string subscriptionId, string defaultLocation = LocationConstants.NorthEurope)
         {
             SubscriptionId = subscriptionId;
             RolesInstances = new Dictionary<string, int>();
             CloudConfigChanges = new List<ICloudConfig>();
             EnableSsl = EnableRemoteDesktop = false;
+            DefaultLocation = defaultLocation;
         }
+
+        public string DefaultLocation { get; set; }
 
         #region Implementation of IDefinitionActivity
 
@@ -455,7 +458,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             var command = new GetHostedServiceListCommand
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = DefaultLocation
             };
             command.Execute();
             return command.HostedServices;
@@ -472,7 +476,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
                 var command = new GetCloudServicePropertiesCommand(cloudService.Name)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = DefaultLocation
                 };
                 command.Execute();
                 cloudService.Deployments = command.CloudServiceDeployments;
@@ -491,7 +496,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             var command = new GetDeploymenRoleNamesCommand(serviceName)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = DefaultLocation
             };
             command.Execute();
             return command.RoleNames;
@@ -508,7 +514,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             var command = new GetDeploymenConfigurationCommand(serviceName)
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = DefaultLocation
             };
             command.Execute();
             return command.Configuration;
@@ -526,7 +533,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
             var command = new GetHostedServiceListCommand
             {
                 SubscriptionId = SubscriptionId,
-                Certificate = ManagementCertificate
+                Certificate = ManagementCertificate,
+                Location = DefaultLocation
             };
             command.Execute();
             // enumerate the collection to see whether any of the hosted services 
@@ -535,7 +543,8 @@ namespace Elastacloud.AzureManagement.Fluent.Services
                 var serviceCommand = new GetHostedServiceContainsDeploymentCommand(a.Name)
                 {
                     SubscriptionId = SubscriptionId,
-                    Certificate = ManagementCertificate
+                    Certificate = ManagementCertificate,
+                    Location = DefaultLocation
                 };
                 serviceCommand.Execute();
                 if (serviceCommand.ContainsProductionDeployment)

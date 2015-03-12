@@ -31,21 +31,24 @@ namespace Elastacloud.AzureManagement.Fluent
         /// </summary>
         private readonly string _subscriptionId;
 
-        /// <summary>
+        /// <summary>, 
         /// Constructs a subscription manager which can be used to get other managers specific to the operations being requested
         /// </summary>
         /// <param name="subscriptionId">the subscription id</param>
-        public SubscriptionManager(string subscriptionId)
+        public SubscriptionManager(string subscriptionId, string defaultLocation = LocationConstants.NorthEurope)
         {
             _subscriptionId = subscriptionId;
+            Location = defaultLocation;
         }
+
+        public string Location { get; set; }
 
         /// <summary>
         /// Gets a manager to use on all types of deployment for PaaS
         /// </summary>
         public Services.ICertificateActivity GetDeploymentManager()
         {
-            return new DeploymentManager(_subscriptionId);
+            return new DeploymentManager(_subscriptionId, Location);
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Elastacloud.AzureManagement.Fluent
         /// <returns>A SubscriptionDetailsManager instance</returns>
         public Subscriptions.ICertificateActivity GetSubscriptionDetailsManager()
         {
-            return new SubscriptionDetailsManager(_subscriptionId);
+            return new SubscriptionDetailsManager(_subscriptionId, Location);
         }
 
         /// <summary>

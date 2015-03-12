@@ -10,6 +10,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using Elastacloud.AzureManagement.Fluent.Commands.Subscriptions;
+using Elastacloud.AzureManagement.Fluent.Helpers;
 using Elastacloud.AzureManagement.Fluent.Helpers.PublishSettings;
 using Elastacloud.AzureManagement.Fluent.Types;
 
@@ -23,13 +24,15 @@ namespace Elastacloud.AzureManagement.Fluent.Subscriptions
 		/// <summary>
 		/// Sets the subscription id with the manager class
 		/// </summary>
-		internal SubscriptionDetailsManager(string subscriptionId)
+		internal SubscriptionDetailsManager(string subscriptionId, string defaultLocation = LocationConstants.NorthEurope)
 		{
 			SubscriptionId = subscriptionId;
+		    Location = defaultLocation;
 		}
 
 		#region Implementation of IAzureManager
 
+	    public string Location { get; set; }
 		/// <summary>
 		/// Event used to capture any trace information for long running async processes
 		/// </summary>
@@ -96,10 +99,11 @@ namespace Elastacloud.AzureManagement.Fluent.Subscriptions
 		SubscriptionInformation ISubscriptionQuery.GetSubscriptionInformation()
 		{
 			var subscriptionCommand = new GetSubscriptionCommand
-																		{
-																			SubscriptionId = SubscriptionId,
-																			Certificate = ManagementCertificate
-																		};
+			{
+				SubscriptionId = SubscriptionId,
+				Certificate = ManagementCertificate,
+                Location = Location
+			};
 			subscriptionCommand.Execute();
 			return subscriptionCommand.SubscriptionInformation;
 		}
@@ -112,10 +116,11 @@ namespace Elastacloud.AzureManagement.Fluent.Subscriptions
 		List<LocationInformation> ISubscriptionQuery.GetSubscriberLocations()
 		{
 			var subscriptionCommand = new GetSubscriberLocationsCommand
-																		{
-																			SubscriptionId = SubscriptionId,
-																			Certificate = ManagementCertificate
-																		};
+			{
+				SubscriptionId = SubscriptionId,
+				Certificate = ManagementCertificate,
+                Location = Location
+			};
 			subscriptionCommand.Execute();
 			return subscriptionCommand.Locations;
 		}
