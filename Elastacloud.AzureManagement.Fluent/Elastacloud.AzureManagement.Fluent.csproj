@@ -280,6 +280,7 @@
     <Compile Include="Types\CloudServiceStatus.cs" />
     <Compile Include="Types\ComputeMode.cs" />
     <Compile Include="Types\AvailableServices.cs" />
+    <Compile Include="Types\Exceptions\FluentManagementWebException.cs" />
     <Compile Include="Types\Mobile Services\ScaleSettings.cs" />
     <Compile Include="Types\Virtual Machines\ImageProperties.cs" />
     <Compile Include="Types\Virtual Machines\EndpointAclRule.cs" />

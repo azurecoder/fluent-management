@@ -1,4 +1,4 @@
-﻿#r @"packages\FAKE\tools\FakeLib.dll" // include Fake lib
+﻿#r @"packages\FAKE.3.17.0\tools\FakeLib.dll" // include Fake lib
 open Fake 
 open Fake.AssemblyInfoFile
 open Fake.NuGetHelper
@@ -9,7 +9,7 @@ open Fake.Git.Staging
 Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 
 [<Literal>]
-let version = "0.5.1.9"
+let version = "0.5.1.12"
 // 1. Increment the minor number assemblyinfo version
 CreateCSharpAssemblyInfo (sprintf @"%s\Elastacloud.AzureManagement.Fluent\Properties\AssemblyInfo.cs" Environment.CurrentDirectory)    [Attribute.Title("Elastacloud.AzureManagement.Fluent")
                                                                                                                                         Attribute.Description("Library used for management of Windows Azure services, SQL, storage, networking, WASD, WAMS and VM's")

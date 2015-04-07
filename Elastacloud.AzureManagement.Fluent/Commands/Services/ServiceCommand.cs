@@ -278,7 +278,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Services
             if(_lastFailureResponse != null)
                 throw new FluentManagementException(_lastFailureResponse, "ServiceCommand");
             if (_exception != null)
-                throw _exception;
+                throw new FluentManagementWebException(_exception as WebException);
         }
 
         #endregion
