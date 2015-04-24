@@ -42,14 +42,14 @@ let sshEndpoint = InputEndpoint(EndpointName = "ssh",
                                 Port = Nullable(22),
                                 Protocol = Protocol.TCP)
 let properties = new LinuxVirtualMachineProperties(
-                                                    VmSize = VmSize.STANDARD_D1,
+                                                    VmSize = VmSize.Standard_D1,
                                                     UserName = "azurecoder",
                                                     AdministratorPassword = "P@ssword761",
                                                     HostName = "briskit",
                                                     RoleName = "briskit",
                                                     CloudServiceName = "briskit1003",
                                                     PublicEndpoints = List<InputEndpoint>([|sshEndpoint|]),
-                                                    CustomTemplateName = "b39f27a8b8c64d52b05eac6a62ebad8__Ubuntu-14_10-amd64-server-20141204-en-us-30GB",
+                                                    CustomTemplateName = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_10-amd64-server-20150416-en-us-30GB",
                                                     DeploymentName = "briskit1003",
                                                     StorageAccountName = "clustered")//,
                                                     //VirtualNetwork = VirtualNetworkDescriptor(
@@ -63,6 +63,8 @@ try
                                                                   "briskit1003") |> ignore
 with
 | :? ApplicationException as fmwe -> printfn "%s" fmwe.Message |> ignore
+let hosts = vmClient.GetHostDetails("briskit1003")
+vmClient.GetCurrentUbuntuImage()
                                     
 
 // test 1: Ensure that above contains no subnets when it's created and returns the address range + 1 ip
