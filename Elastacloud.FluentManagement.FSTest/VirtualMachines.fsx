@@ -21,6 +21,7 @@ open System.Collections.Generic
 open System.Security.Cryptography.X509Certificates
 open Elastacloud.AzureManagement.Fluent.Types.VirtualNetworks
 open Elastacloud.AzureManagement.Fluent.Watchers
+open Elastacloud.AzureManagement.Fluent.Types.Exceptions
 
 let subscriptionId = "84bf11d2-7751-4ce7-b22d-ac44bf33cbe9"
 /// Start Fuctions 
@@ -41,7 +42,7 @@ let sshEndpoint = InputEndpoint(EndpointName = "ssh",
                                 Port = Nullable(22),
                                 Protocol = Protocol.TCP)
 let properties = new LinuxVirtualMachineProperties(
-                                                    VmSize = VmSize.Small,
+                                                    VmSize = VmSize.STANDARD_D1,
                                                     UserName = "azurecoder",
                                                     AdministratorPassword = "P@ssword761",
                                                     HostName = "briskit",
@@ -56,9 +57,14 @@ let properties = new LinuxVirtualMachineProperties(
                                                      //                                         SubnetName = "fred"))
 
 vmClient.LinuxVirtualMachineStatusEvent.Subscribe(fun vmstatus -> printfn "from %s to %s" (vmstatus.OldStatus.ToString()) (vmstatus.NewStatus.ToString()))
-vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
-                                                              List<LinuxVirtualMachineProperties>([|properties|]),
-                                                              "briskit1003")
+try
+    vmClient.CreateNewVirtualMachineDeploymentFromTemplateGallery(
+                                                                  List<LinuxVirtualMachineProperties>([|properties|]),
+                                                                  "briskit1003") |> ignore
+with
+| :? ApplicationException as fmwe -> printfn "%s" fmwe.Message |> ignore
+                                    
+
 // test 1: Ensure that above contains no subnets when it's created and returns the address range + 1 ip
 // test 2: Receive events on state changes and ensure readyrole
 // test 3: When created delete the subnet from the vnet - should generate a subnet busy exception of some sort
