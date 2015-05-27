@@ -375,5 +375,15 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             command.Execute();
             return command.VirtualNetworks;
         }
+
+        public void OpenPorts(string cloudServiceName, string virtualMachineName, params InputEndpoint[] endpoints)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClosePorts(string cloudSErviceName, string virtualMachineName, params InputEndpoint[] endpoints)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

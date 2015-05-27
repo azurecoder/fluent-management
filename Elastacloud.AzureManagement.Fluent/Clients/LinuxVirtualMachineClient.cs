@@ -610,6 +610,41 @@ namespace Elastacloud.AzureManagement.Fluent.Clients
             return command.VirtualNetworks;
         }
 
+        public void OpenPorts(string cloudServiceName, string virtualMachineName, params InputEndpoint[] endpoints)
+        {
+            // 1. Get host details
+            var host = GetHostDetails(cloudServiceName);
+            var vmHost = host.First(hostVm => hostVm.RoleName == virtualMachineName);
+            // 2. Update Xml by inserting objects
+            var finalEndpoints = vmHost.Endpoints.Concat(endpoints).ToArray();
+            // 3. Commit using UpdateRole
+            var command = new UpdateVirtualMachinePortsCommand(cloudServiceName, virtualMachineName, finalEndpoints)
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+        }
+
+        public void ClosePorts(string cloudServiceName, string virtualMachineName, params InputEndpoint[] endpoints)
+        {
+            // 1. Get host details
+            var host = GetHostDetails(cloudServiceName);
+            var vmHost = host.First(hostVm => hostVm.RoleName == virtualMachineName);
+            // 2. Update Xml by inserting objects
+            var query = from a in vmHost.Endpoints
+                        where !(from b in endpoints
+                                select b.Port).Contains(a.Port)
+                        select a;
+            // 3. Commit using UpdateRole
+            var command = new UpdateVirtualMachinePortsCommand(cloudServiceName, virtualMachineName, query.ToArray())
+            {
+                SubscriptionId = SubscriptionId,
+                Certificate = ManagementCertificate
+            };
+            command.Execute();
+        }
+
         #endregion
     }
 

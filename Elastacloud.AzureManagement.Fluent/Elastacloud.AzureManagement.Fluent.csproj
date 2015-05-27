@@ -155,6 +155,7 @@
     <Compile Include="Commands\Services\DeleteCloudServiceAndDeploymentCommand.cs" />
     <Compile Include="Commands\SqlAzure\DeleteSqlFirewallRuleCommand.cs" />
     <Compile Include="Commands\SqlAzure\ListFirewallRulesCommand.cs" />
+    <Compile Include="Commands\Virtual Machines\UpdateVirtualMachinePortsCommand.cs" />
     <Compile Include="Commands\Virtual Machines\AddLinuxVirtualMachineToDeploymentCommand.cs" />
     <Compile Include="Commands\Virtual Machines\GetVirtualDisksCommand.cs" />
     <Compile Include="Commands\Virtual Machines\GetVirtualMachineContextCommand.cs" />

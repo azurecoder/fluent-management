@@ -62,6 +62,9 @@ namespace Elastacloud.AzureManagement.Fluent.Clients.Interfaces
         /// Gets the virtual networks available in the current subscription
         /// </summary>
         List<VirtualNetworkSite> GetAvailableVirtualNetworks();
-        // put a placeholder in here to do the same for availability sets
+        // used to open the ports for a virtual machine deployment
+        void OpenPorts(string cloudServiceName, string virtualMachineName, params InputEndpoint[] endpoints);
+        // used to close the ports for virtual machine deployment
+        void ClosePorts(string cloudSErviceName, string virtualMachineName, params InputEndpoint[] endpoints);
     }
 }

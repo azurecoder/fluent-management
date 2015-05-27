@@ -1,6 +1,6 @@
-﻿#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.dll"
-#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Types.dll"
-#r "D:\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Utils.dll"
+﻿#r "C:\\Users\\Richard\\Downloads\\Lenovo backup\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.dll"
+#r "C:\\Users\\Richard\\Downloads\\Lenovo backup\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Types.dll"
+#r "C:\\Users\\Richard\\Downloads\\Lenovo backup\\Projects\\Elastacloud\\fluent-management\\Elastacloud.AzureManagement.Fluent\\bin\\Release\\Elastacloud.AzureManagement.Fluent.Utils.dll"
 #r "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.5\\System.Xml.Linq.dll"
 #r @"..\packages\IPNetwork.1.3.1.0\lib\LukeSkywalker.IPNetwork.dll"
 #r @"..\packages\FSharp.Data.2.0.14\lib\net40\FSharp.Data.dll"
@@ -28,8 +28,10 @@ let subscriptionId = "84bf11d2-7751-4ce7-b22d-ac44bf33cbe9"
 let settingCert fileName subscriptionId =
     let settings = PublishSettingsExtractor fileName
     settings.AddAllPublishSettingsCertificatesToPersonalMachineStore(subscriptionId).[0] 
-let getFromBizsparkPlus = settingCert "D:\\Projects\\BizSpark Plus-7-8-2014-credentials.publishsettings"
+let getFromBizsparkPlus = settingCert "C:\\Users\\Richard\\Downloads\\Lenovo backup\\Projects\\bizspark.pubsettings"
 let vmClient = LinuxVirtualMachineClient(subscriptionId, getFromBizsparkPlus subscriptionId)
+let csName = "briskit1003"
+let vmName = "briskit"
 
 
 let storageClient = StorageClient(subscriptionId, getFromBizsparkPlus subscriptionId)
@@ -37,10 +39,14 @@ let accounts = storageClient.GetStorageAccountList()
 let account = accounts |> Seq.filter (fun account -> account.Name = "azurecoder11")
 
 
+
+
+
 let sshEndpoint = InputEndpoint(EndpointName = "ssh",
                                 LocalPort = 22,
                                 Port = Nullable(22),
                                 Protocol = Protocol.TCP)
+
 let properties = new LinuxVirtualMachineProperties(
                                                     VmSize = VmSize.Standard_D1,
                                                     UserName = "azurecoder",
@@ -63,6 +69,14 @@ try
                                                                   "briskit1003") |> ignore
 with
 | :? ApplicationException as fmwe -> printfn "%s" fmwe.Message |> ignore
+
+let port23 = InputEndpoint(EndpointName = "test 23", LocalPort = 23, Port = Nullable(23), Protocol = Protocol.TCP)
+let port24 = InputEndpoint(EndpointName = "test 24", LocalPort = 24, Port = Nullable(24), Protocol = Protocol.TCP)
+let port22 = InputEndpoint(EndpointName = "ssh", LocalPort = 22, Port = Nullable(22), Protocol = Protocol.TCP)
+let endpoints = [| port23; port24|]
+let endpointsClose = [| port22 |]
+vmClient.OpenPorts(csName, vmName, endpoints)
+vmClient.ClosePorts(csName, vmName, endpointsClose)
 let hosts = vmClient.GetHostDetails("briskit1003")
 vmClient.GetCurrentUbuntuImage()
                                     

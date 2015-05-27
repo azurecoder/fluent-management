@@ -98,15 +98,31 @@ namespace Elastacloud.AzureManagement.Fluent.Types.VirtualMachines
         public XElement GetXmlTree()
         {
             var namer = new RandomAccountName();
-            var element = new XElement(Namespaces.NsWindowsAzure + "Role",
-                                       new XElement(Namespaces.NsWindowsAzure + "RoleName", RoleName),
-                                       new XElement(Namespaces.NsWindowsAzure + "RoleType", RoleType));
-            var configurationSets = new XElement(Namespaces.NsWindowsAzure + "ConfigurationSets", OperatingSystemConfigurationSet.GetXmlTree(),
-                                                 NetworkConfigurationSet.GetXmlTree());
+            XElement element = null;
+            if (RoleName != null)
+            {
+                element = new XElement(Namespaces.NsWindowsAzure + "Role",
+                    new XElement(Namespaces.NsWindowsAzure + "RoleName", RoleName),
+                    new XElement(Namespaces.NsWindowsAzure + "RoleType", RoleType));
+            }
+            else
+            {
+                element = new XElement(Namespaces.NsWindowsAzure + "PersistentVMRole");
+            }
+            XElement configurationSets = new XElement(Namespaces.NsWindowsAzure + "ConfigurationSets",
+                    NetworkConfigurationSet.GetXmlTree());
+
+            if (OperatingSystemConfigurationSet != null)
+                configurationSets.Add(OperatingSystemConfigurationSet.GetXmlTree());
             element.Add(configurationSets);
-            element.Add(HardDisks.GetXmlTree());
-            element.Add(new XElement(Namespaces.NsWindowsAzure + "Label", Convert.ToBase64String(Encoding.UTF8.GetBytes(RoleName))));
-            element.Add(OSHardDisk.GetXmlTree());
+            if (HardDisks != null)
+                element.Add(HardDisks.GetXmlTree());
+            if (RoleName != null)
+                element.Add(new XElement(Namespaces.NsWindowsAzure + "Label", Convert.ToBase64String(Encoding.UTF8.GetBytes(RoleName))));
+            if (OSHardDisk != null)
+                element.Add(OSHardDisk.GetXmlTree());
+            // TODO: Another hack the enum value is always present here so assume if we have no OS hard disk then we don't need a role size
+            if (OSHardDisk != null)
             element.Add(new XElement(Namespaces.NsWindowsAzure + "RoleSize", RoleSize.ToString()));
             if (AvailabilityNameSet != null)
                 element.Add(new XElement(Namespaces.NsWindowsAzure + "AvailabilitySetName", AvailabilityNameSet));
