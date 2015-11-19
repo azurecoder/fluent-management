@@ -36,6 +36,7 @@ namespace Elastacloud.AzureManagement.Fluent.Commands.Parsers
                     {
                         Name = deployment.Element(GetSchema() + "Name").Value,
                         Slot = (DeploymentSlot) Enum.Parse(typeof (DeploymentSlot), deployment.Element(GetSchema() + "DeploymentSlot").Value),
+                        DeploymentID = deployment.Element(GetSchema() + "PrivateID").Value,
                     };
                 if (deployment.Elements(GetSchema() + "RoleInstanceList") != null)
                 {
